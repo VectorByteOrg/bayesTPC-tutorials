@@ -1,0 +1,5 @@
+---
+title: "Basics"
+---
+
+Here we introduce basic functionality of the package!

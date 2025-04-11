@@ -1,0 +1,5 @@
+---
+title: "Tutorials for bayesTPC"
+---
+
+This webpage is designed to be an evolving document with up-to-date tutorials on the R [package bayesTPC](about.qmd). These tutorials have been developed over a number of years with content by the [bayesTPC team](team.qmd). Portions of these materials have appeared else where (such as in a [VectorByte Training workshop](https://vectorbyteorg.github.io/vectorbyte-training4/materials.html#bayestpc), an [EEID training workshop](https://vectorbyteorg.github.io/EEID2024-training/materials.html#fitting-tpcs-using-bayestpc), and the published [paper describing the package](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.70004)). However, we felt that it was important to have a central location where we could aggregate these materials and update them as new functionality is added to the package. 
