@@ -1,0 +1,55 @@
+project:
+  type: website
+
+website:
+  title: "bayesTPC Tutorials"
+  navbar:
+    background:	"primary"
+    foreground: "light"
+    logo: "graphics/vblogoedit.png"
+    left:
+      - href: about.qmd
+        text: About bayesTPC
+      - href: startup.qmd
+        text: Getting Started
+      - href: materials.qmd
+        text: Materials
+      - href: team.qmd
+        text: Team
+    right:
+      - icon: github
+        href: https://github.com/VectorByteOrg/bayesTPC-tutorials
+      - icon: twitter
+        href: https://twitter.com/vectorbite_rcn
+    search: TRUE
+  sidebar:
+    title: "Materials" 
+    style: "docked"
+    search: true
+    contents:
+      - text: "Materials"
+        href: materials.qmd
+      - section: "Basics"
+        href: basics-summary.qmd
+        contents:
+          - more-basics.qmd
+          - basics-knitr.qmd
+      - section: "User Options"
+        contents:
+          - layout.qmd
+          - layout-knitr.qmd
+      - section: "Advanced"
+        contents:
+          - text: "User Defined TPCs"
+            href: addingTPCs.qmd
+          - custom-theme.qmd
+      - acknowlegment.qmd        
+format:
+  html:
+    theme: lumen
+    css: styles.css
+    toc: true
+
+editor: source
+
+
