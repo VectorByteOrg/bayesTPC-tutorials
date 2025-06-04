@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "basics-summary.html",
+    "href": "basics-summary.html",
+    "title": "Basics",
+    "section": "",
+    "text": "Here we introduce basic functionality of the package!",
+    "crumbs": [
+      "Materials",
+      "Basics"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "The bayesTPC package",
+    "section": "",
+    "text": "The bayesTPC R package is for Bayesian fitting of Thermal Performance Curves (TPCs) to trait responses. The package is built using the nimble language and machinery as the underlying engine for Markov Chain Monte Carlo (MCMC). Our main aims in releasing bayesTPC were to support the adoption of Bayesian approaches in thermal physiology, and to promote TPC fitting that adequately quantifies uncertainty.\nA paper introducing the package was published Methods in Ecology and Evolution. This paper introduces much of the functionality of the package. The version of the package corresponding to the published paper is available on Zenodo. The current development version of the package is available through our github repository."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Tutorials for bayesTPC",
+    "section": "",
+    "text": "This webpage is designed to be an evolving document with up-to-date tutorials on the R package bayesTPC. These tutorials have been developed over a number of years with content by the bayesTPC team. Portions of these materials have appeared else where (such as in a VectorByte Training workshop, an EEID training workshop, and the published paper describing the package). However, we felt that it was important to have a central location where we could aggregate these materials and update them as new functionality is added to the package."
+  },
+  {
+    "objectID": "materials.html",
+    "href": "materials.html",
+    "title": "Materials",
+    "section": "",
+    "text": "Here we introduce the materials!",
+    "crumbs": [
+      "Materials"
+    ]
+  }
+]
