@@ -1,5 +1,26 @@
 [
   {
+    "objectID": "startup.html",
+    "href": "startup.html",
+    "title": "Pre-work and set-up",
+    "section": "",
+    "text": "We will be using R for all data manipulation and analyses/model fitting. Any operating system (Windows, Mac, Linux) will do, as long as you have R (version 3.6 or higher) installed.\nYou may use any IDE/ GUI for R (VScode, RStudio, Emacs, etc). For most people, RStudio is a good option. Whichever one you decide to use, please make sure it is installed and tested before the workshop.\nWe will also be using Slack for additional support during the training. Accepted students will receive an e-mail with joining information. We will have a channel on Slack dedicated to software/hardware issues and troubleshooting.\nWe also host all materials on GitHub, and we recommend that all students have a GitHub account.\n\n\n\n\nWe are assuming familiarity with R basics as well as at least introductory statistics, including up through simple linear regression. If you would like materials to review, we recommend that you do the following:\nReview of R\n\nGo to The Multilingual Quantitative Biologist, and read+work through the Biological Computing in R Chapter.\nIn addition / alternatively to pre-work element (1), here are some resources for brushing up on R at the end of the Intro R Chapter you can try. There are many more resources online (e.g., this and this ) – pick something that suits your learning style.\n\n\nReview of statistics\n\nReview background on introductory probability and statistics (solutions to exercises). You can also use the resources on The Multilingual Quantitative Biologist - Basic Data Analyses and Statistics through into linear models.\nReview the conceptual basics of Simple Linear Regression. We’ll refresh fitting linear models in R as well as transformations and diagnostic plots during the workshop."
+  },
+  {
+    "objectID": "startup.html#hardware-and-software",
+    "href": "startup.html#hardware-and-software",
+    "title": "Pre-work and set-up",
+    "section": "",
+    "text": "We will be using R for all data manipulation and analyses/model fitting. Any operating system (Windows, Mac, Linux) will do, as long as you have R (version 3.6 or higher) installed.\nYou may use any IDE/ GUI for R (VScode, RStudio, Emacs, etc). For most people, RStudio is a good option. Whichever one you decide to use, please make sure it is installed and tested before the workshop.\nWe will also be using Slack for additional support during the training. Accepted students will receive an e-mail with joining information. We will have a channel on Slack dedicated to software/hardware issues and troubleshooting.\nWe also host all materials on GitHub, and we recommend that all students have a GitHub account."
+  },
+  {
+    "objectID": "startup.html#pre-requisites",
+    "href": "startup.html#pre-requisites",
+    "title": "Pre-work and set-up",
+    "section": "",
+    "text": "We are assuming familiarity with R basics as well as at least introductory statistics, including up through simple linear regression. If you would like materials to review, we recommend that you do the following:\nReview of R\n\nGo to The Multilingual Quantitative Biologist, and read+work through the Biological Computing in R Chapter.\nIn addition / alternatively to pre-work element (1), here are some resources for brushing up on R at the end of the Intro R Chapter you can try. There are many more resources online (e.g., this and this ) – pick something that suits your learning style.\n\n\nReview of statistics\n\nReview background on introductory probability and statistics (solutions to exercises). You can also use the resources on The Multilingual Quantitative Biologist - Basic Data Analyses and Statistics through into linear models.\nReview the conceptual basics of Simple Linear Regression. We’ll refresh fitting linear models in R as well as transformations and diagnostic plots during the workshop."
+  },
+  {
     "objectID": "basics-summary.html",
     "href": "basics-summary.html",
     "title": "Basics",
@@ -11,11 +32,32 @@
     ]
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "The bayesTPC package",
+    "objectID": "people_current.html",
+    "href": "people_current.html",
+    "title": "Current QED Lab Members",
     "section": "",
-    "text": "The bayesTPC R package is for Bayesian fitting of Thermal Performance Curves (TPCs) to trait responses. The package is built using the nimble language and machinery as the underlying engine for Markov Chain Monte Carlo (MCMC). Our main aims in releasing bayesTPC were to support the adoption of Bayesian approaches in thermal physiology, and to promote TPC fitting that adequately quantifies uncertainty.\nA paper introducing the package was published Methods in Ecology and Evolution. This paper introduces much of the functionality of the package. The version of the package corresponding to the published paper is available on Zenodo. The current development version of the package is available through our github repository."
+    "text": "## Principal Investigator"
+  },
+  {
+    "objectID": "people_current.html#postdoctoral-researchers",
+    "href": "people_current.html#postdoctoral-researchers",
+    "title": "Current QED Lab Members",
+    "section": "Postdoctoral Researchers",
+    "text": "Postdoctoral Researchers\n\nDr. Cat Lippi"
+  },
+  {
+    "objectID": "people_current.html#graduate-students",
+    "href": "people_current.html#graduate-students",
+    "title": "Current QED Lab Members",
+    "section": "Graduate Students",
+    "text": "Graduate Students\n\nAlicia Arneson (Biology)\n\n\nPiper Zimmerman (Stats)\n\n\nParul Patil (Stats)"
+  },
+  {
+    "objectID": "people_current.html#undergraduate-student-researchers",
+    "href": "people_current.html#undergraduate-student-researchers",
+    "title": "Current QED Lab Members",
+    "section": "Undergraduate Student Researchers",
+    "text": "Undergraduate Student Researchers\n\nYusi Yao\nSana Sahwney"
   },
   {
     "objectID": "index.html",
@@ -25,13 +67,156 @@
     "text": "This webpage is designed to be an evolving document with up-to-date tutorials on the R package bayesTPC. These tutorials have been developed over a number of years with content by the bayesTPC team. Portions of these materials have appeared else where (such as in a VectorByte Training workshop, an EEID training workshop, and the published paper describing the package). However, we felt that it was important to have a central location where we could aggregate these materials and update them as new functionality is added to the package."
   },
   {
+    "objectID": "leahJ.html",
+    "href": "leahJ.html",
+    "title": "Dr. Leah R. Johnson",
+    "section": "",
+    "text": "Dr. Johnson is an Associate Professor of Statistics at Virginia Tech. Her research interests are in statistical and mathematical biology, ecology, and epidemiology. In particular, she is interested in how individual behavior and local interactions between individuals in a population influence population level patterns, and statistical methodologies for inference of mechanistic models of biological systems. Dr. Johnson is also moving into ecological forecasting."
+  },
+  {
+    "objectID": "leahJ.html#bio",
+    "href": "leahJ.html#bio",
+    "title": "Dr. Leah R. Johnson",
+    "section": "",
+    "text": "Dr. Johnson is an Associate Professor of Statistics at Virginia Tech. Her research interests are in statistical and mathematical biology, ecology, and epidemiology. In particular, she is interested in how individual behavior and local interactions between individuals in a population influence population level patterns, and statistical methodologies for inference of mechanistic models of biological systems. Dr. Johnson is also moving into ecological forecasting."
+  },
+  {
+    "objectID": "leahJ.html#education",
+    "href": "leahJ.html#education",
+    "title": "Dr. Leah R. Johnson",
+    "section": "Education",
+    "text": "Education\nUniversity of California Santa Cruz | Santa Cruz, CA\nPh.D. in Physics/Applied Math and Statistics | 2006\nUniversity of California Santa Cruz | Santa Cruz, CA\nM.S. in Physics | 2003\nCollege of William and Mary | Williamsburg, VA\nB.S. in Physics | 2001"
+  },
+  {
+    "objectID": "leahJ.html#major-projects",
+    "href": "leahJ.html#major-projects",
+    "title": "Dr. Leah R. Johnson",
+    "section": "Major Projects",
+    "text": "Major Projects\nVectorBiTE RCN | US PI\nVectorByte Initiative | PI\nEcological Forecasting Initiative RCN | Steering Committee"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "The bayesTPC package",
+    "section": "",
+    "text": "The bayesTPC R package is for Bayesian fitting of Thermal Performance Curves (TPCs) to trait responses. The package is built using the nimble language and machinery as the underlying engine for Markov Chain Monte Carlo (MCMC). Our main aims in releasing bayesTPC were to support the adoption of Bayesian approaches in thermal physiology, and to promote TPC fitting that adequately quantifies uncertainty.\nA paper introducing the package was published Methods in Ecology and Evolution. This paper introduces much of the functionality of the package. The version of the package corresponding to the published paper is available on Zenodo. The current development version of the package is available through our github repository."
+  },
+  {
     "objectID": "materials.html",
     "href": "materials.html",
-    "title": "Materials",
+    "title": "VectorByte Training Materials 2025",
     "section": "",
-    "text": "Here we introduce the materials!",
+    "text": "Lecture\n\n \n\n\n\n\nLecture Slides\nPractical\nDataset: transforms.csv\n\n \n\n\n\n\nThe VecDyn website.\nAbout the VecDyn API\nOther Materials Coming Soon!\n\n \n\n\n\n\nLecture Slides\nPractical\nDataset: Walton Co, FL Mosquito data\n\n \n\n\n\n\nLecture – coming soon\nOther materials – coming soon\ndataset: NEON_tickplots_13sites_utf8.csv\n\n\n\n\n\n\nLecture\nPractical\nDataset: NEONphenologyClean.csv\n\n \n\n\n\n\nLecture Slides – coming soon\nLecture Notes – coming soon\nPractical – coming soon\nadditional R code – df_spline.R – coming soon\n\n \n\n\n\n\nDescription – coming soon\ndataset: coming soon!",
     "crumbs": [
       "Materials"
     ]
+  },
+  {
+    "objectID": "materials.html#introduction-to-the-workshop",
+    "href": "materials.html#introduction-to-the-workshop",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#regression-in-r-refresher-transformations-and-diagnostics",
+    "href": "materials.html#regression-in-r-refresher-transformations-and-diagnostics",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture Slides\nPractical\nDataset: transforms.csv",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#introduction-to-the-vecdyn-database",
+    "href": "materials.html#introduction-to-the-vecdyn-database",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "The VecDyn website.\nAbout the VecDyn API\nOther Materials Coming Soon!",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#time-dependent-regression-analysis",
+    "href": "materials.html#time-dependent-regression-analysis",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture Slides\nPractical\nDataset: Walton Co, FL Mosquito data",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#introduction-to-climate-and-weather-data-for-time-dependent-analyses",
+    "href": "materials.html#introduction-to-climate-and-weather-data-for-time-dependent-analyses",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture – coming soon\nOther materials – coming soon\ndataset: NEON_tickplots_13sites_utf8.csv",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#basics-of-forecasting-time-series-using-r",
+    "href": "materials.html#basics-of-forecasting-time-series-using-r",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture\nPractical\nDataset: NEONphenologyClean.csv",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#gaussian-process-models-gps-for-time-dependent-data",
+    "href": "materials.html#gaussian-process-models-gps-for-time-dependent-data",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Lecture Slides – coming soon\nLecture Notes – coming soon\nPractical – coming soon\nadditional R code – df_spline.R – coming soon",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "materials.html#dengue-forecasting-challenge",
+    "href": "materials.html#dengue-forecasting-challenge",
+    "title": "VectorByte Training Materials 2025",
+    "section": "",
+    "text": "Description – coming soon\ndataset: coming soon!",
+    "crumbs": [
+      "Materials"
+    ]
+  },
+  {
+    "objectID": "people_alumni.html#postdoctoral-researchers",
+    "href": "people_alumni.html#postdoctoral-researchers",
+    "title": "Lab Alumni",
+    "section": "Postdoctoral Researchers",
+    "text": "Postdoctoral Researchers\n\nDr. Paul Huxley\n\n\nDr. Oswaldo Villena Carpio\n\n\nDr. Philipp Boersch-Supan\n\n\nDr. Rachel A. Taylor"
+  },
+  {
+    "objectID": "people_alumni.html#graduate-students",
+    "href": "people_alumni.html#graduate-students",
+    "title": "Lab Alumni",
+    "section": "Graduate Students",
+    "text": "Graduate Students\n\nDr. John W. Smith, Jr. – Virginia Tech, PhD, Statistics, 2022\n\n\nDr. Zachary Gajewski – Virginia Tech PhD, Biology, 2021\n\n\nDr. Fadoua El Moustaid – Virginia Tech PhD, Biology, 2019\n\n\nMadison Pinko – Virginia Tech MS, Biology, 2022\n\n\nTessa Anwyll – Virginia Tech MS, Statistics 2020"
+  },
+  {
+    "objectID": "people_alumni.html#undergraduate-researchers-vt",
+    "href": "people_alumni.html#undergraduate-researchers-vt",
+    "title": "Lab Alumni",
+    "section": "Undergraduate Researchers (VT)",
+    "text": "Undergraduate Researchers (VT)\n\nSean Sorek\nJoe Harrison\nLauren Chapman (Statistics)\nConnor Lachance (Statistics)\nIulia Voina (Statistics)\nZorian Thornton (CMDA)\nHani Slamani (CMDA)\nSarah Hebert (CMDA & Statistics)\nAndrew Ahnn (CS & Math)\nLaelef Abebe\nCordel Harris"
+  },
+  {
+    "objectID": "people_alumni.html#undergraduate-researchers-usf",
+    "href": "people_alumni.html#undergraduate-researchers-usf",
+    "title": "Lab Alumni",
+    "section": "Undergraduate Researchers (USF)",
+    "text": "Undergraduate Researchers (USF)\n\nJames Martin\nAbagail Dobson\nKaleigh Nelson\nLuc Olivier\nMatt Cuffaro"
   }
 ]

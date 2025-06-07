@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Materials – bayesTPC Tutorials</title>
+<title>VectorByte Training Materials 2025 – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7b4406b7675125bc2ba204020e191172.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8d5f57067dc9c550835fb6e6067c57d9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4d73039f7e60b7ecd955e335c00cb637.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -80,7 +80,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./graphics/vblogoedit.png" alt="" class="navbar-logo">
+    <img src="./images/vblogoedit.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">bayesTPC Tutorials</span>
@@ -97,17 +97,32 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">About bayesTPC</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./startup.qmd"> 
+    <a class="nav-link" href="./startup.html"> 
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./materials.html" aria-current="page"> 
 <span class="menu-text">Materials</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./team.qmd"> 
-<span class="menu-text">Team</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-team" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Team</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-team">    
+        <li>
+    <a class="dropdown-item" href="./leahJ.html">
+ <span class="dropdown-text">PI: Dr.&nbsp;LR Johnson</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./people_current.html">
+ <span class="dropdown-text">Current Members</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./people_alumni.html">
+ <span class="dropdown-text">Lab Alumni</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -141,7 +156,7 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -216,23 +231,39 @@ ul.task-list li input[type="checkbox"] {
   </li>
     </ul>
     </div>
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#live-workshop-materials" id="toc-live-workshop-materials" class="nav-link active" data-scroll-target="#live-workshop-materials">Live Workshop Materials</a>
+  <ul class="collapse">
+  <li><a href="#introduction-to-the-workshop" id="toc-introduction-to-the-workshop" class="nav-link" data-scroll-target="#introduction-to-the-workshop">Introduction to the Workshop</a></li>
+  <li><a href="#regression-in-r-refresher-transformations-and-diagnostics" id="toc-regression-in-r-refresher-transformations-and-diagnostics" class="nav-link" data-scroll-target="#regression-in-r-refresher-transformations-and-diagnostics">Regression in R Refresher (Transformations and Diagnostics)</a></li>
+  <li><a href="#introduction-to-the-vecdyn-database" id="toc-introduction-to-the-vecdyn-database" class="nav-link" data-scroll-target="#introduction-to-the-vecdyn-database">Introduction to the VecDyn database</a></li>
+  <li><a href="#time-dependent-regression-analysis" id="toc-time-dependent-regression-analysis" class="nav-link" data-scroll-target="#time-dependent-regression-analysis">Time dependent regression analysis</a></li>
+  <li><a href="#introduction-to-climate-and-weather-data-for-time-dependent-analyses" id="toc-introduction-to-climate-and-weather-data-for-time-dependent-analyses" class="nav-link" data-scroll-target="#introduction-to-climate-and-weather-data-for-time-dependent-analyses">Introduction to climate and weather data for time dependent analyses</a></li>
+  <li><a href="#basics-of-forecasting-time-series-using-r" id="toc-basics-of-forecasting-time-series-using-r" class="nav-link" data-scroll-target="#basics-of-forecasting-time-series-using-r">Basics of Forecasting Time Series using <code>R</code></a></li>
+  <li><a href="#gaussian-process-models-gps-for-time-dependent-data" id="toc-gaussian-process-models-gps-for-time-dependent-data" class="nav-link" data-scroll-target="#gaussian-process-models-gps-for-time-dependent-data">Gaussian Process models (GPs) for Time Dependent Data</a></li>
+  <li><a href="#dengue-forecasting-challenge" id="toc-dengue-forecasting-challenge" class="nav-link" data-scroll-target="#dengue-forecasting-challenge">Dengue Forecasting Challenge</a></li>
+  </ul></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content column-page-right" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Materials</h1>
+<h1 class="title">VectorByte Training Materials 2025</h1>
 </div>
 
 
 
-<div class="quarto-title-meta">
+<div class="quarto-title-meta column-page-right">
 
     
   
@@ -244,9 +275,81 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Here we introduce the materials!</p>
+<section id="live-workshop-materials" class="level1">
+<h1>Live Workshop Materials</h1>
+<section id="introduction-to-the-workshop" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-the-workshop">Introduction to the Workshop</h2>
+<ul>
+<li><a href="VB_IntroTimeDepData.qmd">Lecture</a></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="regression-in-r-refresher-transformations-and-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="regression-in-r-refresher-transformations-and-diagnostics">Regression in R Refresher (Transformations and Diagnostics)</h2>
+<ul>
+<li><a href="VB_RegDiagTrans.qmd">Lecture Slides</a></li>
+<li><a href="VB_RegDiagTrans_practical.qmd">Practical</a></li>
+<li>Dataset: <a href="./data/transforms.csv">transforms.csv</a></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="introduction-to-the-vecdyn-database" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-the-vecdyn-database">Introduction to the VecDyn database</h2>
+<ul>
+<li><a href="https://vectorbyte.crc.nd.edu/vecdyn-datasets">The VecDyn website</a>.</li>
+<li><a href="https://www.vectorbyte.org/blog/vecdyn-api">About the VecDyn API</a></li>
+<li>Other Materials Coming Soon!</li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="time-dependent-regression-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="time-dependent-regression-analysis">Time dependent regression analysis</h2>
+<ul>
+<li><a href="VB_TimeDepData.qmd">Lecture Slides</a></li>
+<li><a href="VB_TimeDepData_practical.qmd">Practical</a></li>
+<li>Dataset: <a href="./data/Culex_erraticus_walton_covariates_aggregated.csv">Walton Co, FL Mosquito data</a></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="introduction-to-climate-and-weather-data-for-time-dependent-analyses" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-to-climate-and-weather-data-for-time-dependent-analyses">Introduction to climate and weather data for time dependent analyses</h2>
+<ul>
+<li><a href="">Lecture – coming soon</a></li>
+<li><a href="">Other materials – coming soon</a></li>
+<li>dataset: <a href="data/NEON_tickplots_13sites_utf8.csv">NEON_tickplots_13sites_utf8.csv</a></li>
+</ul>
+<p><br><br></p>
+</section>
+<section id="basics-of-forecasting-time-series-using-r" class="level2">
+<h2 class="anchored" data-anchor-id="basics-of-forecasting-time-series-using-r">Basics of Forecasting Time Series using <code>R</code></h2>
+<ul>
+<li><a href="VB_TimeSeries.qmd">Lecture</a></li>
+<li><a href="VB_TimeSeriesForecastingPractical.qmd">Practical</a></li>
+<li>Dataset: <a href="data/NEONphenologyClean.csv">NEONphenologyClean.csv</a></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="gaussian-process-models-gps-for-time-dependent-data" class="level2">
+<h2 class="anchored" data-anchor-id="gaussian-process-models-gps-for-time-dependent-data">Gaussian Process models (GPs) for Time Dependent Data</h2>
+<ul>
+<li><a href="">Lecture Slides – coming soon</a></li>
+<li><a href="">Lecture Notes – coming soon</a></li>
+<li><a href="">Practical – coming soon</a></li>
+<li><a href="">additional R code – df_spline.R – coming soon</a></li>
+</ul>
+<p><br> <br></p>
+</section>
+<section id="dengue-forecasting-challenge" class="level2">
+<h2 class="anchored" data-anchor-id="dengue-forecasting-challenge">Dengue Forecasting Challenge</h2>
+<ul>
+<li><a href="">Description – coming soon</a></li>
+<li>dataset: <a href="">coming soon!</a></li>
+</ul>
+<p><br> <br></p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

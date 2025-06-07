@@ -1,0 +1,87 @@
+---
+title: "Lab Alumni"
+description: |
+  Previous members of the QED Lab.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<br> <br>
+
+## Postdoctoral Researchers
+
+#### [Dr. Paul Huxley](paulH.html)
+
+#### [Dr. Oswaldo Villena Carpio](https://scholar.google.com/citations?user=iYXom3MAAAAJ)
+
+#### [Dr. Philipp Boersch-Supan](http://pboesu.github.io)
+
+#### [Dr. Rachel A. Taylor](https://rachelataylor.weebly.com/)
+
+## Graduate Students
+
+#### [Dr. John W. Smith, Jr.](https://johnwilliamsmithjr.github.io/) -- Virginia Tech, PhD, Statistics, 2022
+
+#### [Dr. Zachary Gajewski](https://scholar.google.com/citations?user=gVEASc8AAAAJ&hl=en) -- Virginia Tech PhD, Biology, 2021
+
+#### [Dr. Fadoua El Moustaid](https://scholar.google.com/citations?user=XN6Ef3oAAAAJ&hl=en) -- Virginia Tech PhD, Biology, 2019
+
+#### Madison Pinko -- Virginia Tech MS, Biology, 2022
+
+#### Tessa Anwyll -- Virginia Tech MS, Statistics 2020
+
+<br>
+
+## Undergraduate Researchers (VT)
+
+-   [Sean Sorek](seanS.qmd)
+-   [Joe Harrison](joeh.qmd)
+-   Lauren Chapman (Statistics)
+-   Connor Lachance (Statistics)
+-   Iulia Voina (Statistics)
+-   Zorian Thornton (CMDA)
+-   Hani Slamani (CMDA)
+-   Sarah Hebert (CMDA & Statistics)
+-   Andrew Ahnn (CS & Math)
+-   Laelef Abebe
+-   Cordel Harris
+
+## Undergraduate Researchers (USF)
+
+-   James Martin
+-   Abagail Dobson
+-   Kaleigh Nelson
+-   Luc Olivier
+-   Matt Cuffaro
+
+```{=html}
+<!-- Default Statcounter code for QED
+http://leah.johnson-gramacy.com/QED/ -->
+```
+
+```{=html}
+<script type="text/javascript">
+var sc_project=10740637; 
+var sc_invisible=1; 
+var sc_security="092cf49e"; 
+</script>
+```
+
+```{=html}
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+```
+
+<noscript>
+
+::: statcounter
+<a title="web statistics"
+href="https://statcounter.com/" target="_blank"><img src="https://c.statcounter.com/10740637/0/092cf49e/1/" alt="web statistics" class="statcounter"/></a>
+:::
+
+</noscript>
+
+<!-- End of Statcounter Code -->
