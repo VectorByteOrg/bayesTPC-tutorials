@@ -1,30 +1,42 @@
-# bayesTPC Tutorials
+Repository Cleanup & bayesTPC Updates (June 2025)
 
-This repository contains tutorials for the bayesTPC software package. 
+June 12–14, 2025: bayesTPC Function Updates
+	•	Updated to the development version of bayesTPC from GitHub (johnwilliamsmithjr/bayesTPC).
+	•	Renamed data loading function:
+	•	get_datasets() → get_VB_datasets()
+	•	Removed deprecated function bayesTPC_summary(); replaced with standard S3 method: summary().
+	•	Posterior prediction functions (plot_prediction, posterior_predictive) now return custom objects (e.g., "btpc_prediction"), requiring manual extraction (e.g., $summary).
+	•	plot_prediction() returns NULL unless temp_range is explicitly provided.
 
-## Overall Tasks
+⸻
 
-### Learning and Setup
-- [ ] Learn how to use **bayesTPC** to fit TPCs
-- [ ] Update and revise tutorial materials (copy into the new repository)
+June 29, 2025: Model Fitting Error & NIMBLE Compatibility
+	•	Encountered error with b_TPC() due to missing internal getNimbleOption() function in newer versions of nimble.
+	•	Fixed by downgrading nimble to version 0.13.2:
 
-### Trait Data Aggregation
-- [ ] Aggregate trait data related to **bluetongue**
-- [ ] Check existing data sheets for completeness
-- [ ] Redigitize any missing data from the original paper
+remotes::install_version("nimble", version = "0.13.2")
 
-### New Data Collection
-- [ ] Find and digitize **newer trait data** for future inclusion
 
-### bayesTPC Re-fitting
-- [ ] Using the **bayesTPC** pipeline, **refit all TPCs** from the previous paper (only using original data)
-- [ ] Write a **blog post guide**:
-  - [ ] Explain how to use the pipeline
-  - [ ] Demonstrate how to obtain **MAP estimators**
-  - [ ] Emphasize utility for modelers in future studies
 
-### BONUS Task
-- [ ] Re-digitize **proportion data** to include **counts/sample size**
-- [ ] Prepare the dataset for use in a future **binomial TPC paper**
+⸻
 
-## Development Log
+June 30, 2025: GitHub Push Failed Due to Large Files
+	•	Updated .gitignore to exclude cache, site output, and large intermediate files:
+
+*_cache/
+_site/
+*.rdb
+*.rdx
+*.RData
+*.tar.gz
+
+
+	•	Removed large files from Git history using git filter-repo:
+
+git filter-repo --force --path-glob '*.rdb' --invert-paths
+
+
+	•	Reconnected origin remote and force-pushed cleaned history:
+
+git remote add origin https://github.com/VectorByteOrg/bayesTPC-tutorials.git
+git push --set-upstream origin yusi --force
