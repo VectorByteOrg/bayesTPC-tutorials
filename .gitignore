@@ -4,3 +4,15 @@
 .Ruserdata
 
 /.quarto/
+
+/_cache/
+/_site/
+/*_cache/
+*_cache/
+*.rdb
+*.rdx
+*.RData
+*.tar.gz
+*.html
+
+*_files/
