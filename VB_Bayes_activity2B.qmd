@@ -1,0 +1,512 @@
+---
+title: "Introduction to Bayesian Methods"
+format:
+  html:
+    toc: true
+    toc-location: left
+    html-math-method: katex
+    css: styles.css
+---
+
+# Introduction
+
+This section is focused on using the `bayesTPC` package to fit TPCs to data using the methods we've explored in the Bayesian lectures and the first two activities. Here we won't be talking much about the implementation, but instead will rely on the `bayesTPC` package and it's functions to allow us to specify, fit, and analyze the data.
+
+## Packages and tools
+
+For this practical you will need to first install [nimble](), then be sure to install the following packages:
+
+```{r, results="hide", warning=FALSE, message=FALSE}
+# Load libraries
+library(nimble)
+library(HDInterval)
+library(MCMCvis)
+library(coda) # makes diagnostic plots
+library(IDPmisc) # makes nice colored pairs plots to look at joint posteriors
+library(matrixStats)
+library(truncnorm)
+##library(mcmcplots) # another option for diagnostic plots, currently unused
+```
+
+<br> We are also introducing our new, in development, package `bayesTPC`. It is currently available through github.
+
+```{r, message=FALSE}
+#install.packages("devtools")
+#devtools::install_github("johnwilliamsmithjr/bayesTPC")
+library(bayesTPC)
+```
+
+# *Aedes* data revisited using Bayesian fitting
+
+Now let's do some Bayesian model fitting to *Aedes* thermal performance data. We will use the `bayesTPC` package that implements some of the standard TPC functions (e.g., quadratic, Briere) with truncated normal observation errors, reasonable default priors, and helper functions to make visualizing MCMC output and model predictions simpler.
+
+First, we load the data:
+
+```{r}
+set.seed(1234)
+Aaeg.data <- read.csv("data/AeaegyptiTraitData.csv")
+```
+
+## The Data
+
+These data are traits from *Aedes aegypti* mosquitoes measured across temperature in lab experiments. The traits we have data on thermal performance are: <br> <br> - pEA: proportion surviving from egg to adulthood\
+- MDR: mosquito development rate\
+- PDR: parasite development rate (= 1/EIP the extrinsic incubation period)\
+- $\mu$ (mu): death rate (here = 1/longevity)
+
+Note that some of the traits come in multiple forms (e.g., $\mu$ and 1/$\mu$, PDR and EIP, if we're assuming lifespan and development time are exponentially distributed -- a common modeling assumption).
+
+As always, first we have a look at the data:
+
+```{r}
+head(Aaeg.data)
+```
+
+Now let's pull a subset of the data related to mortality/survival:
+
+```{r, fig.align='center'}
+mu.data <- subset(Aaeg.data, trait.name == "mu")
+lf.data <- subset(Aaeg.data, trait.name == "1/mu")
+par(mfrow=c(1,2), bty="l") 
+plot(trait ~ Temp, data = mu.data, ylab="mu")
+plot(trait ~ Temp, data = lf.data, ylab="1/mu")
+```
+
+Note that the $\mu$ data is u-shaped and the lifespan data is hump-shaped.
+
+We could choose to fit this either way. Since thermal performance metrics are often assumed to be unimodal thermal responses, we will fit lifespan instead of $\mu$ as our example. Thus, we'll need to convert the $\mu$ data to lifespan by taking the inverse. We will combine the data, by assuming that lifespan is $1/\mu$ (not usually a good idea, but we're going to do it here so we have more data for the example).
+
+```{r, fig.align='center'}
+mu.data.inv <- mu.data # make a copy of the mu data
+mu.data.inv$trait <- 1/mu.data$trait # take the inverse of the trait values to convert mu to lifespan
+lf.data.comb <- rbind(mu.data.inv, lf.data) # combine both lifespan data sets together 
+par(mfrow=c(1,1), bty="l") 
+plot(trait ~ Temp, data = lf.data.comb, ylab="1/mu",
+     ylim=c(0,40))
+```
+
+## Two thermal performance curve models
+
+Although there are many functional forms that can be used to describe TPCs, we'll focus on two of the more common (and easy to fit) functions. Traits that respond unimodally but symmetrically to temperature (often the case for compound traits) can be fit with a quadratic function: $$f_1(T) = \begin{cases} 0 &\text {if } T \leq T_0 \\
+-q (T-T_0) (T-T_m) & \text {if } T_0 < T <T_m \\
+ 0 &\text{if } T \geq T_m \end{cases}$$\
+Traits that respond unimodally but asymetrically can be fited with a Briere function: $$
+f_2(T) = \begin{cases} 0 &\text {if } T \leq T_0 \\
+q T (T-T_0) \sqrt{T_m-T} & \text {if } T_0 < T <T_m \\
+ 0 &\text{if } T \geq T_m \end{cases}$$
+
+In both models, $T_0$ is the lower thermal limit, $T_m$ is the upper thermal limit (i.e., where the trait value goes to zero on either end), and $q>0$ scales the height of the curve, (and so also the value of the trait at the optimum temperature). Note that above we're assuming that the quadratic must be concave down (hence the negative sign), and that the performance goes to zero outside of the thermal limits.
+
+# Fitting with the `bayesTPC` package
+
+## Model and data specification
+
+Unlike the previous Bayesian example, `bayesTPC` has a number of TPCs already implemented. We can view which TPC models are currently implemented:
+
+```{r}
+get_models()
+```
+
+We can view the form of the implemented TPC using the `get_formula` function:
+
+```{r}
+get_formula("quadratic")
+```
+
+Currently, the likelihood for all TPCs is by default is a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using "get_default_priors":
+
+```{r}
+get_default_priors("quadratic")
+```
+
+As you can see, for the quadratic function, the default priors are specified via uniform distributions (the two arguments specific the lower and upper bounds, respectively). For the quadratic (and the Briere), the curvature parameter must be positive, and the priors need to be specified to ensure that $T_{min}<T_{max}$. Note that if you want to set a prior to a normal distribution, unlike in R and most other programs, in nimble (and thus `bayesTPC`) the inverse of the variance of the normal distribution is used, denoted by $\tau = \frac{1}{\sigma^2}$.
+
+`bayesTPC` expects data to be in a named list with the "Trait" as the response and "Temp" as the predictor, that is:
+
+```{r}
+lf.data.bTPC<-list(Trait = lf.data.comb$trait, Temp=lf.data.comb$Temp)
+```
+
+The workhorse of the `bayesTPC` package is the `b_TPC` function. If you are happy to use the default priors, etc, the usage is simply:
+
+```{r}
+library(bayesTPC)
+library(nimble)
+AedTestFit<- b_TPC(data = lf.data.bTPC, model = 'quadratic')
+```
+
+<br> We can examine the object that is saved. It includes the data, information on the priors, numbers of samples, and the samples themselves.
+
+```{r}
+names(AedTestFit)
+```
+
+<br> We'll mostly be using the samples:
+
+```{r}
+dim(AedTestFit$samples) # number of samples then number of params
+head(AedTestFit$samples) # show first few sets of samples
+```
+
+<br> Notice that the samples are of type MCMC, which means they've been formatted with the coda package (which `bayesTPC` uses for some of the plotting and diagnostics). Further, by default we take 10000 samples, no burnin, using a random walk sampler.
+
+But we may also want to check what model we fit and the priors that were set:
+
+```{r}
+AedTestFit$model_type
+AedTestFit$priors
+```
+
+## MCMC diagnostics
+
+We'll show you a few different ways to examine the output. View the summary of parameters (only the first 5 lines, or it will also show you all of your derived quantities):
+
+```{r}
+summary(AedTestFit$samples)
+```
+
+<br> We can also assess this visually by plotting the chains of the three main TPC parameters and the standard devation of the normal observation model:
+
+```{r, fig.align='center'}
+par(mfrow=c(2,2))
+traceplot(AedTestFit)
+```
+
+These all seem to be mixing alright, although we can see that we need to drop a bit of the burn-in.
+
+We can examine the ACF of the chains as well (one for each parameter), similarly to a time series, to again check for autocorrelation within the chain (we want the autocorrelation to be fairly low):
+
+```{r, fig.align='center'}
+s1<-as.data.frame(AedTestFit$samples)
+par(mfrow=c(2,2))
+for(i in 1:4) {
+  acf(s1[,i], lag.max=50, main="",
+      ylab = paste("ACF: ", names(s1)[i], sep=""))
+}
+```
+
+There is still a bit of autocorrelation, especially for the 3 quadratic parameters, but it isn't too bad. The chain for $\sigma$ is mixing best (the ACF falls off the most quickly). We could reduce the autocorrelation even further by thinning the chain **(i.e., change the `nt` parameter to 5 or 10)**.
+
+The last important diagnostic is to compare the prior and posterior distributions. Various packages in R have bespoke functions to do this. `bayesTPC` includes a built in function that creates posterior/prior overlap plots for all model parameters (note that the priors are smoothed because the algorithm uses kernel smoothing instead of the exact distribution).
+
+```{r}
+ppo_plot(AedTestFit)
+```
+
+The prior distribution here is very different from the posterior. These data are highly informative for the parameters of interest and are very unlikely to be influenced much by the prior distribution (although you can always change the priors to check this). However, notice that the posteriors of $T_m$ and $T_0$ are slightly truncated by their priors.
+
+## Visualizing the joint posterior of parameters
+
+Now that we've confirmed that things are working well, it's often useful to also look at the joint distribution of all of your parameters together. Of course, if you have a high dimensional posterior, rendering a 2-D representation can be difficult. Instead, the standard is to examine the pair-wise posterior distribution, for instance as follows:
+
+```{r, fig.align='center'}
+#ipairs(AedTestFit)
+ipairs(AedTestFit)
+```
+
+As you can see, estimates of $T_0$ and $T_m$ are highly correlated with $q$-- not surprising given the interplay between them in the quadratic function. This correlation is an important feature of the system, and we use the full posterior distribution that includes this correlation when we want to build the corresponding posterior distribution of the behavior of the quadratic function that we've fit.
+
+## Modifying the fitting routines
+
+As we noted above, the `bTPC` function has a set of default specifications for multiple components for every type of implemented TPC. Many of these we can change. For example, above we noted that we can see that we need to drop samples for the burn-in. We might also want to change priors, or use an alternative sampler.
+
+```{r}
+AedQuadFit <- b_TPC(data = lf.data.bTPC, ## data
+                    model = 'quadratic', ## model to fit
+                    niter = 11000, ## total iterations
+                    burn = 1000, ## number of burn in samples
+                    samplerType = 'AF_slice', ## slice sampler
+                    priors = list(q = 'dunif(0, .5)', 
+                                  sigma.sq = 'dexp(1)') ## priors
+                    ) 
+```
+
+<br> Let's take a look at the output in this case:
+
+```{r}
+summary(AedQuadFit$samples)
+```
+
+<br> We again plot the chains of the three main TPC parameters and the standard deviation of the normal observation model:
+
+```{r, fig.align='center'}
+## plot(lf.fit.mcmc[,c(1,3,4)]) ## default coda plot
+par(mfrow=c(2,2))
+traceplot(AedQuadFit)
+```
+
+These all seem to be mixing well, better that the first time, although we can see that we need to drop a bit of the burn-in.
+
+We again look at ACF of the chains as well (one for each parameter):
+
+```{r, fig.align='center'}
+s1<-as.data.frame(AedQuadFit$samples)
+par(mfrow=c(2,2))
+for(i in 1:4) acf(s1[,i], lag.max=50, main="", ylab = paste("ACF: ", names(s1)[i], sep=""))
+```
+
+Notice this falls off much more quickly -- the samples from the slice filter in this case are less autocorrelated than the default random walk ("RW") filter.
+
+And comparing the new priors to the posteriors:
+
+```{r}
+ppo_plot(AedQuadFit, burn = 1000)
+```
+
+Let's also fit the Briere function to the data, just to see how it does:
+
+```{r}
+AedBriFit <- b_TPC(data = lf.data.bTPC, ## data
+                    model = 'briere', ## model to fit
+                    niter = 11000, ## total iterations
+                    burn = 1000, ## number of burn in samples
+                    samplerType = 'AF_slice', ## slice sampler
+                    priors = list(T_min = "dunif(5,10)",
+                                  T_max = "dunif(18,35)",
+                                  sigma.sq = 'dexp(1)') ## priors
+                    ) 
+```
+
+```{r}
+summary(AedBriFit$samples)
+```
+
+We again plot the chains of the three main TPC parameters and the standard deviation of the normal observation model:
+
+```{r, fig.align='center'}
+## plot(lf.fit.mcmc[,c(1,3,4)]) ## default coda plot
+par(mfrow=c(2,2))
+traceplot(AedBriFit, burn=1000)
+```
+
+Overall very good mixing, but we can see our choice of priors wasn't ideal.
+
+We again look at ACF of the chains as well (one for each parameter):
+
+```{r, fig.align='center'}
+s2<-as.data.frame(AedBriFit$samples[1000:10000,])
+par(mfrow=c(2,2))
+for(i in 1:4) {
+  acf(s2[,i], lag.max=50, main="",
+      ylab = paste("ACF: ", names(s2)[i], sep=""))
+}
+```
+
+This is great! Finally comparing the new priors to the posteriors:
+
+```{r}
+ppo_plot(AedBriFit, burn = 1000)
+```
+
+Now we look at the joint posterior.
+
+```{r, fig.align='center'}
+ipairs(AedBriFit, burn=1000)
+```
+
+Finally, what if we wanted to fit a model not included in `bayesTPC`?
+
+Let's look at how the package defines the Briere model.
+
+```{r}
+get_default_model_specification("briere")
+```
+
+<br> For our model, we will choose an alternate Briere formula, changing the square root to a cube root.
+
+$$
+f_2(T) = \begin{cases} 0 &\text{if } T \leq T_0 \\
+q T (T-T_0) \sqrt[3]{T_m-T} & \text{if } T_0 < T <T_m \\
+ 0 &\text{if } T \geq T_m \end{cases}  
+$$
+
+```{r}
+my_briere_formula <- expression(q * (Temp - T_min) * ((T_max > Temp) * abs(T_max - Temp))^(1/3) * (T_max > Temp) * (Temp > T_min))
+```
+
+<br> Now, we choose the priors we want to sample from. We'll include a little more flexibility here to ensure the model fits how we want it to.
+
+```{r}
+my_briere_priors <- c(
+  q = "dunif(0,1)",
+  T_max = "dunif(20,45)",
+  T_min = "dunif(-5,10)")
+```
+
+<br> Since we have no constants we need to add, that's all the information we need! We can use `specify_normal_model()` to create a model object we can train.
+
+```{r}
+my_briere <- specify_normal_model("my_briere", #model name
+                                  parameters = my_briere_priors, #names are parameters, values are priors
+                                  formula = my_briere_formula
+                                  )
+```
+
+<br> Now we can use this model just like any other.
+
+```{r}
+get_formula("my_briere")
+get_default_priors("my_briere")
+```
+
+<br> We can also pass the model object in, instead of just the name. `configure_model()` returns the BUGS model that will be trained.
+
+```{r}
+cat(configure_model(my_briere))
+```
+
+<br> Now, let's train our Briere model.
+
+```{r}
+AedMyBriFit <- b_TPC(data = lf.data.bTPC, ## data
+                    model = 'my_briere', ## model to fit
+                    niter = 11000, ## total iterations
+                    burn = 1000, ## number of burn in samples
+                    samplerType = 'AF_slice', ## slice sampler
+                    priors = list(sigma.sq = 'dexp(1)') ## priors
+                    )  
+```
+
+<br> Finally, we can run the same diagnostics as before.
+
+```{r}
+par(mfrow=c(2,2))
+traceplot(AedMyBriFit, burn=1000)
+```
+
+Looks like the mixing went well again. How about ACF?
+
+```{r, fig.align='center'}
+s3<-as.data.frame(AedMyBriFit$samples[1000:10000,])
+par(mfrow=c(2,2))
+for(i in 1:4) {
+  acf(s3[,i], lag.max=50, main="",
+      ylab = paste("ACF: ", names(s3)[i], sep=""))
+}
+```
+
+Good! Finally, let's look at our posterior distributions and see how well we fit the data.
+
+```{r}
+ppo_plot(AedMyBriFit)
+ipairs(AedMyBriFit, burn = 1000)
+```
+
+# Model Selection
+
+`coda` lets us pull the Watanabe--Akaike information criterion (WAIC) from the models we've fit. We're currently working on providing more model selection methods in `bayesTPC`.
+
+```{r}
+AedTestFit$mcmc$getWAIC()
+AedQuadFit$mcmc$getWAIC()
+AedBriFit$mcmc$getWAIC()
+AedMyBriFit$mcmc$getWAIC()
+```
+
+<br> It looks like the default Briere model performed ever so slightly better, but the values are similar enough.
+
+## Plot the fits
+
+First extract the fits/predictions using the `bayesTPC_summary` function and use the `tidyverse` to save the model predictions as a `tibble`. We can then use `ggplot` to generate a pretty plot of our TPC with prediction bounds
+
+```{r, message=FALSE, warning=FALSE, fig.show='hide'}
+# library(tidyverse)
+# briere_fit <- as_tibble(bayesTPCsummary(AedMyBriFit, plot = FALSE))
+# head(briere_fit)
+
+# Load required packages
+library(bayesTPC)
+library(tidyverse)
+
+summary_result <- summary(AedMyBriFit)
+briere_df <- as_tibble(summary_result$statistics, rownames = "Parameter")
+
+summary_result <- summary(AedMyBriFit)
+briere_fit <- as_tibble(summary_result$statistics, rownames = "Parameter")
+```
+
+```{r}
+params <- MAP_estimate(AedMyBriFit)
+temp_seq <- seq(5, 45, by = 0.2)
+# Define the Brière function
+briere_model <- function(T, q, T_min, T_max) {
+  out <- q * (T - T_min) * ((T_max > T) * abs(T_max - T))^(1/3)
+  out[(T < T_min) | (T > T_max)] <- 0
+  return(out)
+}
+
+# Apply using your MAP estimates
+pred_values <- briere_model(temp_seq, 
+                            q = params["q"], 
+                            T_min = params["T_min"], 
+                            T_max = params["T_max"])
+briere_fit <- tibble(Temperature = temp_seq,
+                     Prediction = pred_values)
+
+ggplot(briere_fit) +
+  geom_line(aes(Temperature, Prediction), linewidth = 0.4) +
+  theme_bw() + 
+  geom_point(data = lf.data.comb, aes(Temp, trait),
+             shape = 21, fill = '#C0C0C0', col = '#000000',
+             alpha = 0.8, stroke = 0.5, size = 2) +
+  theme(text = element_text(size = 12),
+        legend.position = 'none',
+        axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_y_continuous(expression(plain(paste("lifespan (days)")))) +
+  labs(x = expression(plain(paste("Temperature, ", degree, "C"))))
+```
+
+We can also use the built in function, `posteriorPredTPC()`, to plot the median and lower/upper bounds from samples taken from the posterior distribution.
+
+```{r, results='hide'}
+posterior_predictive(AedMyBriFit)
+```
+
+Finally we can plot the fits/predictions. These are the posterior estimates of the fitted lines to the data. Recall that we can take each accepted sample, and plug it into the quadratic equations. This gives us the same number of possible lines as samples. We can then summarize these with the HPD intervals across each temperature. This is especially easy in this case because we've already saved these samples as output in our model file:
+
+## Additional analyses
+
+Once you have all of these samples, you can do many other things. For example, you can use the `which.max()` function to find the peak temperature ($T_{pk}$) for adult lifespan and its value at $T_{pk}$:
+
+```{r}
+lifespan_Tpk <- briere_fit %>% slice(which.max(Prediction))
+T_pk <- lifespan_Tpk$Temperature
+max_lifespan <- lifespan_Tpk$Prediction
+```
+
+<br> You can then plot $T_{pk}$ and the trait value at $T_{pk}$:
+
+```{r}
+ggplot(briere_fit) +
+  geom_line(aes(Temperature, Prediction), linewidth = 0.4) +
+  theme_bw() + 
+  geom_point(data = lf.data.comb, aes(Temp, trait),
+             shape = 21, fill = '#C0C0C0', col = '#000000',
+             alpha = 0.8, stroke = 0.5, size = 2) +
+  geom_point(data = lifespan_Tpk, aes(Temperature, Prediction),
+             shape = 23, fill = 'yellow', col = '#000000',
+             alpha = 0.8, stroke = 0.5, size = 3) +
+  theme(text = element_text(size = 12),
+        legend.position = 'none',
+        axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()) +
+  scale_y_continuous(expression(plain(paste("lifespan (days)")))) +
+  labs(x = expression(plain(paste("Temperature, ", degree, "C"))))
+```
+
+<br>
+
+This suggests that the optimal temperature for adult lifespan in *Aedes aegypti* is 25.8 degrees Celsius! Can you now figure out how to get the credible intervals for $T_{pk}$ and the trait value at $T_{pk}$?
+
+# Other *Aedes aegypti* traits (Independent Practice)
+
+In addition to lifespan/mortality rate for *Aedes aegypti*, this file we used also includes PDR/EIP data. You can also download some other trait data from the [VectorByte -- VecTraits Databases](https://vectorbyte.crc.nd.edu/vectraits-explorer)
+
+Write you own analysis as an independent, self-sufficient `R` script that produces all the plots in a reproducible workflow when sourced. You may need to use a Briere function instead of quadratic.
+
+<br>

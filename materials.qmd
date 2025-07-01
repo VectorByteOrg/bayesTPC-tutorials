@@ -1,79 +1,19 @@
----
-title: "VectorByte Training Materials 2025"
-format:
-  html:
-    toc: true
-    toc-location: left
-    html-math-method: katex
-    css: styles.css
----
+## VectorByte Training Workshop
 
-# Live Workshop Materials
+-   [Practical](VB_Bayes_activity2B.qmd)
+-   Datasets:
+    -   [*Aedes* data](data/AeaegyptiTraitData.csv)
+    
+## EEID 2024 Training Workshop
 
-## Introduction to the Workshop
+### Fitting TPCs using `bayesTPC`
 
--   [Lecture](VB_IntroTimeDepData.qmd)
-
-<br> <br>
-
-## Regression in R Refresher (Transformations and Diagnostics)
-
--   [Lecture Slides](VB_RegDiagTrans.qmd)
--   [Practical](VB_RegDiagTrans_practical.qmd)
--   Dataset: [transforms.csv](/data/transforms.csv)
-
-<br> <br>
-
-## Introduction to the VecDyn database
-
--   [The VecDyn website](https://vectorbyte.crc.nd.edu/vecdyn-datasets).
--   [About the VecDyn API](https://www.vectorbyte.org/blog/vecdyn-api)
--   Other Materials Coming Soon!
-
-<br> <br>
-
-## Time dependent regression analysis
-
--   [Lecture Slides](VB_TimeDepData.qmd)
--   [Practical](VB_TimeDepData_practical.qmd)
--   Dataset: [Walton Co, FL Mosquito data](/data/Culex_erraticus_walton_covariates_aggregated.csv)
-
+-   [Practical](EEID2024_basic.qmd)
 <br> <br>
 
 
-## Introduction to climate and weather data for time dependent analyses
+### Advanced features in `bayesTPC`
 
-- [Lecture -- coming soon]()
-- [Other materials -- coming soon]()
-- dataset: [NEON_tickplots_13sites_utf8.csv](data/NEON_tickplots_13sites_utf8.csv)
-
-<br><br>
-
-
-## Basics of Forecasting Time Series using `R`
-
--   [Lecture](VB_TimeSeries.qmd)
--   [Practical](VB_TimeSeriesForecastingPractical.qmd)
--   Dataset: [NEONphenologyClean.csv](data/NEONphenologyClean.csv)
-
-
-<br> <br>
-
-
-## Gaussian Process models (GPs) for Time Dependent Data
-
--   [Lecture Slides -- coming soon]()
--   [Lecture Notes -- coming soon]()
--   [Practical -- coming soon]()
--   [additional R code -- df_spline.R -- coming soon]()
-
-<br> <br>
-
-## Dengue Forecasting Challenge
-
-- [Description -- coming soon]()
-- dataset: [coming soon!]()
-
-<br>
-<br>
-
+-   [Practical](EEID2024_advanced.qmd)
+-   Datasets:
+    -   [Antibiotic data](data/ab_data.csv)

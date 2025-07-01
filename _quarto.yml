@@ -28,28 +28,7 @@ website:
       - icon: twitter
         href: https://twitter.com/vectorbite_rcn
     search: TRUE
-  sidebar:
-    title: "Materials" 
-    style: "docked"
-    search: true
-    contents:
-      - text: "Materials"
-        href: materials.qmd
-      - section: "Basics"
-        href: basics-summary.qmd
-        contents:
-          - more-basics.qmd
-          - basics-knitr.qmd
-      - section: "User Options"
-        contents:
-          - layout.qmd
-          - layout-knitr.qmd
-      - section: "Advanced"
-        contents:
-          - text: "User Defined TPCs"
-            href: addingTPCs.qmd
-          - custom-theme.qmd
-      - acknowlegment.qmd        
+      
 format:
   html:
     page-layout: full
