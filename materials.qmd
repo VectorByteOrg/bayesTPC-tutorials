@@ -1,19 +1,27 @@
+## bayesTPC Tutorial Examples
+
+This page showcases a series of practical examples that demonstrate how to use the `bayesTPC` package for fitting thermal performance curves (TPCs) to biological trait data. These examples are drawn from hands-on training sessions and real-world use cases, and are intended to guide new users in applying `bayesTPC` to their own datasets.
+
+Whether you are just getting started or exploring more advanced features, these materials walk through key modeling steps using curated datasets.
+
 ## VectorByte Training Workshop
 
--   [Practical](VB_Bayes_activity2B.qmd)
--   Datasets:
-    -   [*Aedes* data](data/AeaegyptiTraitData.csv)
-    
-## EEID 2024 Training Workshop
+This short activity was developed as part of the VectorByte training series. It introduces basic usage of `bayesTPC` in the context of modeling mosquito traits.
 
-### Fitting TPCs using `bayesTPC`
+-   **Practical**: [Fitting a basic trait model](VB_Bayes_activity2B.qmd)
+-   **Dataset**: [*Aedes aegypti* trait data](data/AeaegyptiTraitData.csv)
 
--   [Practical](EEID2024_basic.qmd)
-<br> <br>
+## EEID 2024 Workshop
 
+The following materials were used during the 2024 EEID (Ecology and Evolution of Infectious Diseases) workshop. They include both an introductory walkthrough and an advanced module demonstrating model customization.
 
-### Advanced features in `bayesTPC`
+### Basic Usage: Fitting TPCs with `bayesTPC`
 
--   [Practical](EEID2024_advanced.qmd)
--   Datasets:
-    -   [Antibiotic data](data/ab_data.csv)
+-   **Practical**: [Introductory example](EEID2024_basic.qmd)
+
+### Advanced Usage: Exploring Custom Models
+
+This activity goes beyond basic fitting to explore advanced options in `bayesTPC`, including likelihood customization and visual diagnostics.
+
+-   **Practical**: [Advanced example](EEID2024_advanced.qmd)
+-   **Dataset**: [Antibiotic resistance data](data/ab_data.csv)
