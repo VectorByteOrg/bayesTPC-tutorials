@@ -30,18 +30,16 @@ website:
       - icon: twitter
         href: https://twitter.com/vectorbite_rcn
     search: TRUE
-      
+    
 format:
   html:
-    page-layout: full
-    column: screen-inset
+    # page-layout: full
+    # column: screen-inset
     theme: cosmo
     css: styles.css
     toc: true
     fig-align: center
-    fig-width: 6
-    fig-height: 4
     fig-format: png
-    fig-dpi: 150
+    fig-cap-location: bottom
 
 editor: source
