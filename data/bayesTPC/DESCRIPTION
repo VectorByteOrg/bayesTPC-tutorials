@@ -1,0 +1,24 @@
+Type: Package
+Package: bayesTPC
+Title: bayesTPC
+Version: 1.1.6
+Authors@R: c( person("John W.", "Smith", email = "john.smith20@montana.edu", role = "aut"),
+	person("Sean", "Sorek", email = "sssorek1@gmail.com", role = c("aut", "cre")))
+Maintainer: Sean Sorek <sssorek1@gmail.com>
+Description: An R package for fitting mathematical models that describe
+    thermal performance curves.
+License: GPL-3
+Imports: cli, coda, HDInterval, IDPmisc, matrixStats, nimble,
+        truncnorm, methods, httr, jsonlite
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Depends: R (>= 3.5.0)
+Roxygen: list(markdown = TRUE)
+URL: https://github.com/johnwilliamsmithjr/bayesTPC
+BugReports: https://github.com/johnwilliamsmithjr/bayesTPC/issues
+Suggests: covr, testthat (>= 3.0.0), withr
+Config/testthat/edition: 3
+NeedsCompilation: no
+Packaged: 2024-12-03 20:03:33 UTC; Sean Sorek HP Laptop
+Author: John W. Smith [aut],
+  Sean Sorek [aut, cre]

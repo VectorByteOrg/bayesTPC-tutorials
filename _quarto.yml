@@ -12,8 +12,10 @@ website:
         text: About bayesTPC
       - href: startup.qmd
         text: Getting Started
+      - href: intro.qmd
+        text: Materials    
       - href: materials.qmd
-        text: Materials
+        text: More Examples
       - text: "Team"
         menu:
           - text: "PI: Dr. LR Johnson"
@@ -36,7 +38,10 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+    fig-align: center
+    fig-width: 6
+    fig-height: 4
+    fig-format: png
+    fig-dpi: 150
 
 editor: source
-
-

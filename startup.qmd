@@ -1,79 +1,73 @@
 ---
-format: html
-editor: source
+output: github_document
 ---
 
-# Welcome
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
 
-This site serves as a self-contained tutorial for using the `bayesTPC` R package — a flexible, powerful tool for fitting **Bayesian thermal performance curves (TPCs)**. It was originally developed to support **trait-based modeling of vector-borne diseases** (see our [paper](https://doi.org/10.1111/ele.13861)), but it works for any system where temperature-dependent trait modeling is needed.
+library(bayesTPC)
+```
 
-Whether you're joining one of our workshops or exploring independently, this guide will help you get started.
+# bayesTPC: An accessible interface to fit Bayesian thermal performance curves in R.
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/johnwilliamsmithjr/bayesTPC/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/johnwilliamsmithjr/bayesTPC/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/johnwilliamsmithjr/bayesTPC/branch/master/graph/badge.svg)](https://app.codecov.io/gh/johnwilliamsmithjr/bayesTPC?branch=master)
+<!-- badges: end -->
 
-## What is bayesTPC?
+**bayesTPC** is an R package to help conveniently fit common thermal performance models using Bayesian MCMC. We provide functionality to substitute for or supplement BUGS modelling workflows, especially for those without experience in Bayesian methods. To this end, **bayesTPC** contains a simple model specification format, BUGS configuration helpers, end-to-end model fitting methods, and model diagnostics.
 
-The `bayesTPC` package provides a general framework for fitting thermal performance curves with uncertainty via **Bayesian MCMC inference**. Key features include:
+## Installation
 
-- Predefined model types (e.g., Brière, Quadratic, Gaussian) and modular customization
-- Built-in MCMC sampling via [`nimble`](https://r-nimble.org/)
-- Posterior summarization, prediction, and diagnostic visualization
-- Clean API with helper functions for data prep and reproducibility
+You can install the development version of **bayesTPC** from [GitHub](https://github.com/) with:
 
-If you are working with trait data that varies with temperature (like survival, development rate, or fecundity), this package is built to help.
+``` r
+remotes::install_github("johnwilliamsmithjr/bayesTPC")
+```
 
+## Functionality
 
-## What This Tutorial Includes
+### Models
 
-This tutorial site includes:
+`bayesTPC` offers many pre-configured TPC models. We can use `get_models()` to view all implemented models.
+```{r}
+get_models()
+```
 
-- Installation & Setup: How to get the package running  
-- Core Usage: Loading and formatting data, fitting models  
-- Plotting & Prediction: Creating visualizations from model output  
-- Advanced Features: Posterior predictions, T<sub>pk</sub> extraction, and more  
-- Workshop Materials: Live example walkthroughs from EEID and VectorByte training sessions  
+To see the exact specification of a particular model, we can use
+```{r}
+get_default_model_specification("briere")
+```
 
-You can follow the tutorial linearly or jump into the [Materials](materials.qmd) section to start working with data.
+Use `get_formula()`, `get_default_priors()`, and `get_default_constants()` to display the individual components of a any model included in `bayesTPC`.
 
-## Pre-work and Setup
+For those with experience in fitting models in BUGS, `configure_model()` provides pre-formatted code.
 
-### Software
+### Fitting
 
-You will need:
+The fitting workhorse of `bayesTPC` is the `b_TPC()` function. With `b_TPC()`, a user only needs to specify the dataset and desired model and `bayesTPC` handles configuring and running an MCMC using `nimble`. The user can also change the model priors, the sampler used, and other hyperparameters of the MCMC.
 
-- [`R`](https://cran.r-project.org/) (version 3.6 or higher)
-- A preferred R IDE (we recommend [RStudio](https://www.rstudio.com/))
-- The ability to install packages from GitHub (via `devtools` or `remotes`)
+### Changing and Specifying models
 
-If you're attending a workshop, we’ll also use:
+One can also create their own models by specifying a formula and priors using `specify_model()`, along with its wrappers `specify_normal_model()` and `specify_binomial_model()`.
 
-- Slack for support and communication
-- GitHub for accessing and submitting materials
+`bayesTPC` accepts both the name of a model and the model object itself as inputs to its workhorse functions. This provides two methods for users to customize existing models: providing customized priors and constants in the options of the functions themselves, or by storing the model object in the local environment and using the `change_priors()` and `change_constants()` functions. Note that since R objects are immutable, the modified models must be stored again.
 
+### Summaries
 
-### Recommended Background
+The fit object returned by `b_TPC()` can be summarized in multiple ways. `summary()` gives a detailed summary of the MCMC results, and `plot()` shows the fit given by the center (mean or median) and bounding (95% quantiles or hdi) MCMC samples. Similarly, `posterior_predictive()` and `plot_prediction()` take samples of the posterior to predict new values.
 
-This tutorial assumes some familiarity with:
+### Diagnostics
 
-- Core R syntax
-- Reading in data, basic plotting, using packages
-- Introductory statistics, including linear regression and distributions
+`bayesTPC` provides multiple MCMC diagnostic plots. `traceplot()` wraps `coda::traceplot()` and shows the sampled values by sequential iteration. `bayesTPC_ipairs()` wraps `IDPmisc::ipairs()` and shows the pairwise joint posterior distributions of all model parameters. These wrappers are provided for convenience.
 
-#### R Refresher:
+The `ppo_plot()` function shows the overlap between the priors specified versus a kernel density estimation of the posterior sample.
 
-1. [Biological Computing in R (MulQuaBio)](https://mhasoba.github.io/TheMulQuaBio/notebooks/07-R.html)
-2. [Codecademy's Learn R Course](https://www.codecademy.com/learn/learn-r)
-3. [Dataquest's R for Data Science](https://www.dataquest.io/blog/learn-r-for-data-science/)
+### Vectraits API
 
-#### Stats Review:
-
-- [Introductory stats review](Stats_review.qmd)
-- [Solutions to exercises](Stats_review_soln.qmd)
-- [Simple linear regression concepts](VB_RegRev.qmd)
-
-
-## What’s Next?
-
-Head to the [Materials](materials.qmd) page to explore example-driven workflows.  
-Or learn more about the package on the [About bayesTPC](about.qmd) page.
-
-We’re excited to help you get started!
+`bayesTPC` also includes a basic API to access the Vectraits database of disease vector trait data. One can either retrieve a pre-known dataset using `get_VB_dataset()` or `get_VB_datasets()`, or search specific keywords using `find_VB_datasets()`.

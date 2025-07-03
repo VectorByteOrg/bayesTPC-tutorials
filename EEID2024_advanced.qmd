@@ -189,7 +189,7 @@ We want to add the flexTPC functional form to bayesTPC in order to fit this data
 
 ### Writing down an expression for the flexTPC functional form
 
-Every functional form in bayesTPC needs to be written down as an expression in R. Let's start by writing down an expression for the flexTPC equation. In order to avoid some numerical issues, we'll actually write it in a slightly different way than shown in the equation above. It is not important to understand how these two forms are related, but here's an [explanation](flexTPC_code_equation.pdf) if you're curious (you can safely skip this). 
+Every functional form in bayesTPC needs to be written down as an expression in R. Let's start by writing down an expression for the flexTPC equation. In order to avoid some numerical issues, we'll actually write it in a slightly different way than shown in the equation above. It is not important to understand how these two forms are related, but here's an [explanation](flexTPC_code_equation.pdf) if you're curious (you can safely skip this).
 
 ```{r}
 ## Note: This looks a little different from the equation as written above, but is
@@ -441,6 +441,7 @@ for(i in 1:20) {
   lines(temp, ndcurves[ , i], col=alpha('black', 0.2))
 }
 ```
+
 Each curve we're plotting corresponds to the flexTPC model when the parameters are fixed at the current iteration of the MCMC chain. With Bayesian methods, rather than fitting a single curve we have a posterior distribution of possible curves that are consistent with the data and priors.
 
 Now we can plot the medians (or means) and 95% credible interval at each temperature value in our grid for all antibiotic conditions.
