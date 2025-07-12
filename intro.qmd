@@ -20,10 +20,11 @@ This dataset comes from the paper *Effects of High and Fluctuating Temperatures 
 
 ## Using Vectraits
 ```{r}
-data <- get_VB_dataset(106)
+#data <- get_VB_dataset(106)
+data<-read.csv("data/VByte_106_development_rate.csv")
 ```
 
-Thanks to Vectraits' standardized column naming, we can learn about our data through subsetting columns.
+Thanks to Vectraits standardized column naming, we can learn about our data through subsetting columns.
 
 ```{r}
 # Traits measured

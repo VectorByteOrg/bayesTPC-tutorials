@@ -58,7 +58,13 @@ The data we want to fit is available on the VecTraits database. We can use the h
 ```{r, results = F}
 #| cache: true
 
-aedes_data <- get_VB_datasets(577:579) # updated get_datasets to get_VB_datasets
+##aedes_data <- get_VB_datasets(577:579) # updated get_datasets to get_VB_datasets
+
+aedes_data<-list()
+
+aedes_data[[1]]<-read.csv("data/VByte_577.csv")
+aedes_data[[2]]<-read.csv("data/VByte_578.csv")
+aedes_data[[3]]<-read.csv("data/VByte_579.csv")
 
 ```
 
@@ -66,7 +72,7 @@ aedes_data <- get_VB_datasets(577:579) # updated get_datasets to get_VB_datasets
 We have downloaded all three datasets. As always, first we have a look at the data (just looking at a few columns, since the VecTraits format is large so it can hold a lot of different types of information):
 
 ```{r}
-cols<-c(2,5,6,9,68)
+cols<-c(2,4,5,6,30)
 aedes1<-aedes_data[[3]]
 head(aedes1[,cols])
 ```
