@@ -1,0 +1,16 @@
+/* Limit the width of all figures */
+.quarto-figure, img {
+  max-width: 50%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Optional: make code blocks and captions look nicer */
+.fig-caption {
+  font-style: italic;
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: 0.5em;
+}
