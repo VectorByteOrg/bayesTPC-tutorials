@@ -1,27 +1,71 @@
-## bayesTPC Tutorial Examples
+---
+title: "Tutorials"
+subtitle: "Comprehensive guides for bayesTPC"
+---
 
-This page showcases a series of practical examples that demonstrate how to use the `bayesTPC` package for fitting thermal performance curves (TPCs) to biological trait data. These examples are drawn from hands-on training sessions and real-world use cases, and are intended to guide new users in applying `bayesTPC` to their own datasets.
+# bayesTPC Tutorials
 
-Whether you are just getting started or exploring more advanced features, these materials walk through key modeling steps using curated datasets.
+This page contains comprehensive tutorials that walk you through using `bayesTPC` for fitting thermal performance curves (TPCs) to biological trait data. These tutorials are designed for different skill levels and use cases.
 
-## VectorByte Training Workshop
+## Getting Started
 
-This short activity was developed as part of the VectorByte training series. It introduces basic usage of `bayesTPC` in the context of modeling mosquito traits.
+If you're new to `bayesTPC`, start with our **[Quick Start Guide](intro.qmd)** for a 5-minute introduction, then dive into these detailed tutorials.
 
--   **Practical**: [Fitting a basic trait model](VB_Bayes_activity2B.qmd)
--   **Dataset**: [*Aedes aegypti* trait data](data/AeaegyptiTraitData.csv)
+## Tutorial Series
 
-## EEID 2024 Workshop
+### EEID 2024 Workshop Materials
 
-The following materials were used during the 2024 EEID (Ecology and Evolution of Infectious Diseases) workshop. They include both an introductory walkthrough and an advanced module demonstrating model customization.
+These comprehensive tutorials were developed for the 2024 EEID (Ecology and Evolution of Infectious Diseases) workshop and provide complete workflows with real datasets.
 
-### Basic Usage: Fitting TPCs with `bayesTPC`
+#### Basic Tutorial: Complete Workflow {#basic-tutorial}
 
--   **Practical**: [Introductory example](EEID2024_basic.qmd)
+**Perfect for beginners** - Learn the full bayesTPC workflow from data preparation to model selection.
 
-### Advanced Usage: Exploring Custom Models
+- **Tutorial**: [EEID 2024 Basic](EEID2024_basic.qmd)
+- **Dataset**: *Aedes aegypti* mosquito trait data (development rate, adult longevity, juvenile survival)
+- **Key topics**: Data formatting, model fitting, diagnostics, model comparison
+- **Jump to sections**: [Packages](EEID2024_basic.qmd#basic-packages), [Data setup](EEID2024_basic.qmd#basic-aedes-data), [TPC models](EEID2024_basic.qmd#basic-models), [Example 1](EEID2024_basic.qmd#basic-example1), [Example 2](EEID2024_basic.qmd#basic-example2), [Model selection](EEID2024_basic.qmd#basic-model-selection), [Practice](EEID2024_basic.qmd#basic-practice)
 
-This activity goes beyond basic fitting to explore advanced options in `bayesTPC`, including likelihood customization and visual diagnostics.
+#### Advanced Tutorial: Custom Models {#advanced-tutorial}
 
--   **Practical**: [Advanced example](EEID2024_advanced.qmd)
--   **Dataset**: [Antibiotic resistance data](data/ab_data.csv)
+**For experienced users** - Learn to create custom TPC models and perform advanced analyses.
+
+- **Tutorial**: [EEID 2024 Advanced](EEID2024_advanced.qmd)
+- **Dataset**: *E. coli* growth under antibiotics
+- **Key topics**: Custom model creation, posterior transformations, model comparison
+- **Jump to sections**: [Antibiotics overview](EEID2024_advanced.qmd#adv-antibiotics), [flexTPC model](EEID2024_advanced.qmd#adv-flexTPC), [Add flexTPC](EEID2024_advanced.qmd#adv-add-flex), [Fitting](EEID2024_advanced.qmd#adv-fitting), [Transformations](EEID2024_advanced.qmd#adv-transformations), [Topt](EEID2024_advanced.qmd#adv-topt), [Posterior at T](EEID2024_advanced.qmd#adv-tpc-at-T), [Model comparison](EEID2024_advanced.qmd#adv-model-comparison)
+
+### VectorByte Training Workshop
+
+A focused activity for learning bayesTPC in the context of vector biology.
+
+- **Tutorial**: [VectorByte Workshop](VB_Bayes_activity2B.qmd)
+- **Dataset**: [*Aedes aegypti* trait data](data/AeaegyptiTraitData.csv)
+- **Focus**: Basic trait modeling with mosquito data
+
+## Dataset Resources
+
+All tutorials use real biological datasets:
+
+- **[VecTraits Database](https://vectorbyte.crc.nd.edu/vectraits-explorer)**: Access thousands of vector trait datasets
+- **[Antibiotic resistance data](data/ab_data.csv)**: *E. coli* growth under various antibiotics
+- **[Mosquito trait data](data/AeaegyptiTraitData.csv)**: Development, survival, and longevity data
+
+## Learning Path
+
+**New to bayesTPC?** Follow this sequence:
+1. [Quick Start Guide](intro.qmd) (5 minutes)
+2. [EEID Basic Tutorial](EEID2024_basic.qmd#basic-packages) (comprehensive workflow)
+3. [VectorByte Workshop](VB_Bayes_activity2B.qmd) (hands-on practice)
+4. [EEID Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC) (custom models)
+
+**Experienced user?** Jump directly to:
+- [Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC) for custom model creation
+- [Model comparison section](EEID2024_advanced.qmd#adv-model-comparison) for WAIC analysis
+- [Posterior transformations](EEID2024_advanced.qmd#adv-transformations) for advanced analysis
+
+## Need Help?
+
+- Check the [Common issues section](intro.qmd#common-issues-and-solutions) in the Quick Start Guide
+- Review [diagnostics and troubleshooting](EEID2024_basic.qmd#basic-example1) in the Basic Tutorial
+- See [convergence tips](EEID2024_advanced.qmd#adv-fitting) in the Advanced Tutorial

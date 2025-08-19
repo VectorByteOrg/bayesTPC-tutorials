@@ -1,238 +1,106 @@
 ---
-title: "Introduction to bayesTPC"
-# author: "Sean Sorek, Yusi"
+title: "Quick Start Guide"
+subtitle: "Get up and running with bayesTPC in minutes"
 format: html
 whitespace: small
 ---
 
-On this page, we will show how to use bayesTPC to fit basic TPCs. We assume familiarity with Bayesian model fitting and MCMCs for the sake of this demonstration.
+This quick start guide will get you fitting thermal performance curves with `bayesTPC` in just a few minutes. For detailed tutorials with real datasets and advanced techniques, see our [Tutorials](materials.qmd) page.
 
-# Loading required packages
+# Installation
+
+First, install the required packages:
+
+```{r eval=FALSE}
+# Install nimble first
+install.packages("nimble")
+
+# Install bayesTPC from GitHub
+remotes::install_github("johnwilliamsmithjr/bayesTPC")
+```
+
+# Load packages
 
 ```{r}
 library(nimble)
 library(bayesTPC)
 ```
 
-# Exploring and formatting data
+# Your first TPC fit
 
-This dataset comes from the paper *Effects of High and Fluctuating Temperatures on Myzus persicae* by Davis et. al. (10.1093/ee/35.6.1461). We can retrieve the data from the [Vectraits database](https://vectorbyte-qa.crc.nd.edu/vectraits-explorer) using the API built into bayesTPC.
+## 1. Prepare your data
 
-## Using Vectraits
-```{r}
-data <- get_VB_dataset(106)
-```
-
-Thanks to Vectraits' standardized column naming, we can learn about our data through subsetting columns.
+Your data should be in a list with two elements: `Trait` (your response variable) and `Temp` (temperature in °C).
 
 ```{r}
-# Traits measured
-unique(data$OriginalTraitName)
-# Species
-unique(data$Interactor1)
-# Does the data come from the lab or the field?
-unique(data$LabField)
-# life stage of organism measured
-unique(data$Interactor1Stage)
-# Unit of data
-unique(data$OriginalTraitUnit)
-```
-
-From our exploration, we now know that we are fitting development rate in days for juvenile *Myzus persicae* measured in the lab. A full list of all possible data features and their definitions is available on the [Vectraits website](https://vectorbyte-qa.crc.nd.edu/vectraits-columndefs). 
-
-## Observations
-To access the observations and their respective temperatures, we look at these columns:
-```{r}
-head(data$OriginalTraitValue)
-head(data$Interactor1Temp)
-```
-
-To fit using `bayesTPC`, we have to format our traits and temperatures into a named list.
-```{r}
+# Example: development rate data
+data <- read.csv("data/VByte_106_development_rate.csv")
 data_list <- list(Trait = data$OriginalTraitValue, Temp = data$Interactor1Temp)
-plot(data_list$Trait ~ data_list$Temp, ylab = "Trait", xlab = "Temp",
-     main = "Trait vs Temperature", pch = 16)
+
+# Quick plot to see the data
+plot(data_list$Trait ~ data_list$Temp, ylab = "Development Rate", xlab = "Temperature (°C)", pch = 16)
 ```
 
-# Models
+## 2. Choose a model
 
-`bayesTPC` offers many pre-configured TPC models. We can use `get_models()`.
+`bayesTPC` comes with many pre-built models. See what's available:
+
 ```{r}
 get_models()
 ```
 
-To see the exact specification of a particular model, we can use
-```{r}
-get_default_model_specification("briere")
-```
+For this example, we'll use the Briere model, which is good for asymmetric unimodal curves.
 
-Here we can see the exact model formula, along with what distribution parameter is being fit (i.e. mean for a normal distribution, success rate for a binomial distribution, etc.). The default priors for all model parameters are also shown. To see the individual parts of each specification, we can use `get_formula()`, `get_default_priors()`, and `get_default_constants()`.
-
-Now that we know what we have available, let's fit our data to the briere model.
-
-# Fitting
-
-## Default Models
-If the default model priors are satisfactory, fitting in `bayesTPC` can be done simply using `b_TPC()`.
+## 3. Fit the model
 
 ```{r}
 set.seed(1)
-fit1 <- b_TPC(data = data_list, model = "briere")
-fit1
+fit <- b_TPC(data = data_list, model = "briere")
 ```
 
-Printing our fit object returns a simple summary of the MCMC results. We can use `summary()` to see a more detailed analysis.
+## 4. Check the results
 
 ```{r}
-summary(fit1)
+# Basic summary
+print(fit)
+
+# Plot the fit
+plot(fit, temp_interval = seq(0, 35, length.out = 1000))
 ```
 
-Something doesn't look quite right. Our MAP estimate is the sample with the highest posterior probability, but it isn't even close to the mean and median of each parameter. This can suggest we haven't converged to the best fit. Thankfully, `bayesTPC` offers diagnostics to measure whether our model fits our data.
+That's it! You've successfully fit a thermal performance curve.
 
-## Diagnostics
+# Next steps
 
-The simplest diagnostic we can perform is to just plot our model.
+This quick start covered the basics. For more detailed tutorials, check out:
 
-```{r}
-plot(fit1)
+- **[Basic Tutorial](EEID2024_basic.qmd#basic-packages)**: Complete workflow with diagnostics, model selection, and best practices
+- **[Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC)**: Custom model creation and advanced analysis techniques
+- **[VectorByte Workshop](VB_Bayes_activity2B.qmd)**: Hands-on activity with mosquito trait data
+
+# Common issues and solutions
+
+## Poor convergence
+If your model doesn't converge well, try:
+- Adjusting priors: `priors = list(T_min = "dunif(-5,10)", T_max = "dunif(30,40)")`
+- Using a different sampler: `samplerType = "AF_slice"`
+- Adding initial values: `inits = list(T_min = 10, T_max = 32)`
+
+## Model selection
+Compare models using WAIC:
+```{r eval=FALSE}
+fit1 <- b_TPC(data_list, "briere")
+fit2 <- b_TPC(data_list, "quadratic")
+bayesTPC::get_WAIC(fit1)
+bayesTPC::get_WAIC(fit2)
 ```
 
-Oh dear. Well, at least we have a better idea of what went wrong. Our priors for the minimum and maximum temperatures were far too lenient. For example, when we specified that the prior for `T_min` was `dunif(0,24)`, we told `bayesTPC` that all values between 0 and 24 degrees Celcius were equally reasonable a priori. Looking at the data, this is not a reasonable assumption, as the trait value was relatively not close to zero at temperatures greater than 15. To confirm what went wrong, we can look at the traceplots for each parameter. 
-
-```{r}
-par(mfrow = c(2,2))
-traceplot(fit1, burn = 100)
+## Custom models
+Create your own TPC function:
+```{r eval=FALSE}
+my_model <- specify_normal_model("my_model", 
+                                parameters = c(q = "dunif(0,1)", T_max = "dunif(30,50)"),
+                                formula = expression(q * Temp * (T_max - Temp)))
 ```
 
-If our model converged, we would see the parameters not move too much after an initial burn in period. This means the traces should look like a "fuzzy caterpillar". Near the 8000th iteration, the MCMC goes to a completely different solution.
-
-
-
-## Modifying the fitting routine
-
-Let's change our priors and set some reasonable initial values.
-
-```{r}
-fit2 <- b_TPC(data = data_list, model = "briere",
-             priors = list(q = "dunif(0,.0003)",
-                           T_min = "dunif(-5,10)",
-                           T_max = "dunif(30,40)"),
-             inits = list(T_min = 10, T_max = 32))
-fit2
-par(mfrow = c(2,2))
-traceplot(fit2)
-```
-After a burn-in period of 1000 iterations, we seem to have converged to a decent solution. Let's verify this by looking at the fit.
-
-```{r}
-plot(fit2, temp_interval = seq(0, 35, length.out = 1000), legend_position = "topleft", burn = 1000)
-```
-
-That looks a lot better! We have successfully fit a thermal performance curve using `bayesTPC`.
-
-## More plots
-
-Now let's explore more tools we can use to analyze our fits. First, let's look at how the distribution of our parameters has changed using `ppo_plot()`.
-
-```{r}
-ppo_plot(fit2)
-```
-
-We can also look at the pairwise posterior joint distributions of our parameters using `ipairs()`, which is a wrapper of `IDPmisc::ipairs()`.
-
-```{r}
-ipairs(fit2)
-```
-
-Here, we can see the relationships between our different parameters. Observe that the minimum temperature and the scale parameter are strongly positively correlated. For a simple model, this isn't going to cause any fitting issues. If we're having trouble due to correlated parameters, we can change the sampling method used by modifying the `samplerType` option on `b_TPC()`. Currently, `bayesTPC` supports four samplers: a standard random walk "RW", a blocked random walk "RW_block", a slice sampler "slice", and an automated factor slice sampler "AF_slice". We recommend using "AF_slice" if model convergence becomes an issue, and using the default option otherwise.
-
-# Creating our own models
-
-What if we wanted to fit a model not included in `bayesTPC`?
-
-Let's look at how the package defines the briere model.
-
-```{r}
-get_default_model_specification("briere")
-```
-
-For our model, we will choose an alternate briere formula, changing the square root to a cube root.
-
-$$
-f(T) = \begin{cases} 0 &\mbox{if } T \leq T_0 \\
-q T (T-T_0) \sqrt[3]{T_m-T} & \mbox{if } T_0 < T <T_m \\
- 0 &\mbox{if } T \geq T_m \end{cases}  
-$$
-
-```{r}
-my_briere_formula <- expression(q * Temp * (Temp - T_min) * ((T_max > Temp) * abs(T_max - Temp))^(1/3) * (T_max > Temp) * (Temp > T_min))
-```
-
-Now, we choose the priors we want to sample from. We'll include a little more flexibility here to ensure the model fits how we want it to.
-
-```{r}
-my_briere_priors <- c(
-  q = "dunif(0,.0003)",
-  T_max = "dunif(30,40)",
-  T_min = "dunif(-5,10)"
-)
-```
-
-Since we have no constants we need to add, that's all the information we need! We can use `specify_normal_model()` to create a model object we can train.
-
-```{r}
-my_briere <- specify_normal_model("my_briere", #model name
-                                  parameters = my_briere_priors, #names are parameters, values are priors
-                                  formula = my_briere_formula
-                                  )
-```
-
-Now we can use this model just like any other.
-
-```{r}
-get_formula("my_briere")
-get_default_priors("my_briere")
-```
-
-We can also pass the model object in, instead of just the name. For those who've created MCMC's using the BUGS language, `configure_model()` returns the BUGS model that will be trained.
-
-```{r}
-cat(configure_model(my_briere))
-```
-
-Now, let's train our briere model. 
-
-```{r}
-fit3 <- b_TPC(data = data_list, model = "my_briere")  
-```
-
-Finally, we can run the same diagnostics as before. 
-
-```{r}
-par(mfrow=c(2,2))
-traceplot(fit3)
-```
-
-Good! Finally, let's look at our posterior distributions and see how well we fit the data.
-
-```{r}
-plot(fit3, temp_interval = seq(0, 35, length.out = 1000), legend_position = "topleft", burn = 2000)
-ppo_plot(fit3)
-ipairs(fit3)
-```
-
-# Model Selection
-
-`coda` lets us pull the Watanabe–Akaike information criterion (WAIC) from the models we've fit.
-
-```{r}
-fit1$mcmc$getWAIC()
-fit2$mcmc$getWAIC()
-fit3$mcmc$getWAIC()
-```
-
-It looks like the default briere model performed the best out of all three fits.
-
-# Conclusion
-
-This introduction has showcased the basic functionality of bayesTPC and shows how to fit a basic thermal performance curve. Future examples will delve into fitting different kinds of models, best practices for fitting Bayesian TPCs, and more advanced features that `bayesTPC` provides. We hope you find it as useful and enjoyable to work with as we do and good luck on your model fitting adventures!
+For detailed explanations and examples, see our [full tutorials](materials.qmd).
