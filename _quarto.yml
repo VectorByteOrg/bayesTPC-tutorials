@@ -13,9 +13,7 @@ website:
       - href: startup.qmd
         text: Getting Started
       - href: intro.qmd
-        text: Materials    
-      - href: materials.qmd
-        text: More Examples
+        text: Tutorials    
       - text: "Team"
         menu:
           - text: "PI: Dr. LR Johnson"
@@ -30,18 +28,17 @@ website:
       - icon: twitter
         href: https://twitter.com/vectorbite_rcn
     search: TRUE
-      
+
 format:
   html:
     page-layout: full
-    column: screen-inset
     theme: cosmo
     css: styles.css
     toc: true
     fig-align: center
-    fig-width: 6
-    fig-height: 4
+    fig-width: 6       
+    fig-height: 4.5    
     fig-format: png
-    fig-dpi: 150
+    fig-cap-location: bottom
 
 editor: source

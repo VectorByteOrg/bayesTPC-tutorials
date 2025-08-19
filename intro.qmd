@@ -1,13 +1,17 @@
 ---
-title: "Quick Start Guide"
-subtitle: "Get up and running with bayesTPC in minutes"
+title: "Getting Started with bayesTPC"
+subtitle: "Learn to fit thermal performance curves in minutes"
 format: html
 whitespace: small
 ---
 
-This quick start guide will get you fitting thermal performance curves with `bayesTPC` in just a few minutes. For detailed tutorials with real datasets and advanced techniques, see our [Tutorials](materials.qmd) page.
+# Welcome to bayesTPC
 
-# Installation
+This guide will get you fitting thermal performance curves (TPCs) with `bayesTPC` quickly and efficiently. Whether you're new to Bayesian methods or an experienced user, we have tutorials designed for your skill level.
+
+## Quick Start (5 minutes)
+
+### Installation
 
 First, install the required packages:
 
@@ -19,74 +23,94 @@ install.packages("nimble")
 remotes::install_github("johnwilliamsmithjr/bayesTPC")
 ```
 
-# Load packages
+### Your First TPC Fit
 
 ```{r}
 library(nimble)
 library(bayesTPC)
-```
 
-# Your first TPC fit
+# Load example data
+data <- read.csv("data/AeaegyptiTraitData.csv")
+data_list <- list(Trait = data$trait, Temp = data$Temp)
 
-## 1. Prepare your data
-
-Your data should be in a list with two elements: `Trait` (your response variable) and `Temp` (temperature in °C).
-
-```{r}
-# Example: development rate data
-data <- read.csv("data/VByte_106_development_rate.csv")
-data_list <- list(Trait = data$OriginalTraitValue, Temp = data$Interactor1Temp)
-
-# Quick plot to see the data
+# Quick plot
 plot(data_list$Trait ~ data_list$Temp, ylab = "Development Rate", xlab = "Temperature (°C)", pch = 16)
 ```
 
-## 2. Choose a model
-
-`bayesTPC` comes with many pre-built models. See what's available:
-
 ```{r}
-get_models()
-```
-
-For this example, we'll use the Briere model, which is good for asymmetric unimodal curves.
-
-## 3. Fit the model
-
-```{r}
+# Choose a model and fit
 set.seed(1)
 fit <- b_TPC(data = data_list, model = "briere")
-```
 
-## 4. Check the results
-
-```{r}
-# Basic summary
+# Check results
 print(fit)
-
-# Plot the fit
 plot(fit, temp_interval = seq(0, 35, length.out = 1000))
 ```
 
 That's it! You've successfully fit a thermal performance curve.
 
-# Next steps
+## Tutorial Series
 
-This quick start covered the basics. For more detailed tutorials, check out:
+### For Beginners: Complete Workflow
 
-- **[Basic Tutorial](EEID2024_basic.qmd#basic-packages)**: Complete workflow with diagnostics, model selection, and best practices
-- **[Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC)**: Custom model creation and advanced analysis techniques
-- **[VectorByte Workshop](VB_Bayes_activity2B.qmd)**: Hands-on activity with mosquito trait data
+**[EEID 2024 Basic Tutorial](EEID2024_basic.qmd)** - Perfect for new users
+- **Dataset**: *Aedes aegypti* mosquito traits (development rate, adult longevity, juvenile survival)
+- **What you'll learn**: Data formatting, model fitting, diagnostics, model comparison
+- **Time**: 30-45 minutes
+- **Jump to**: [Packages](EEID2024_basic.qmd#basic-packages) | [Data setup](EEID2024_basic.qmd#basic-aedes-data) | [Examples](EEID2024_basic.qmd#basic-example1) | [Practice](EEID2024_basic.qmd#basic-practice)
 
-# Common issues and solutions
+### For Advanced Users: Custom Models
 
-## Poor convergence
-If your model doesn't converge well, try:
-- Adjusting priors: `priors = list(T_min = "dunif(-5,10)", T_max = "dunif(30,40)")`
-- Using a different sampler: `samplerType = "AF_slice"`
-- Adding initial values: `inits = list(T_min = 10, T_max = 32)`
+**[EEID 2024 Advanced Tutorial](EEID2024_advanced.qmd)** - For experienced users
+- **Dataset**: *E. coli* growth under antibiotics
+- **What you'll learn**: Custom model creation, posterior transformations, advanced analysis
+- **Time**: 45-60 minutes
+- **Jump to**: [Custom models](EEID2024_advanced.qmd#adv-flexTPC) | [Fitting](EEID2024_advanced.qmd#adv-fitting) | [Transformations](EEID2024_advanced.qmd#adv-transformations)
 
-## Model selection
+### Hands-on Practice
+
+**[VectorByte Workshop](VB_Bayes_activity2B.qmd)** - Interactive activity
+- **Focus**: Mosquito trait modeling
+- **Format**: Self-contained exercise
+- **Time**: 20-30 minutes
+
+## Learning Paths
+
+### **New to bayesTPC?**
+1. **Quick Start** (above) - 5 minutes
+2. **[Basic Tutorial](EEID2024_basic.qmd#basic-packages)** - Complete workflow
+3. **[VectorByte Workshop](VB_Bayes_activity2B.qmd)** - Hands-on practice
+4. **[Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC)** - Custom models
+
+### **Experienced user?**
+- Jump directly to **[Advanced Tutorial](EEID2024_advanced.qmd#adv-flexTPC)** for custom model creation
+- Check **[Model comparison](EEID2024_advanced.qmd#adv-model-comparison)** for WAIC analysis
+- Explore **[Posterior transformations](EEID2024_advanced.qmd#adv-transformations)** for advanced analysis
+
+## Available Datasets
+
+All tutorials use real biological datasets:
+
+- **[VecTraits Database](https://vectorbyte.crc.nd.edu/vectraits-explorer)**: Access thousands of vector trait datasets
+- **[Antibiotic resistance data](data/ab_data.csv)**: *E. coli* growth under various antibiotics
+- **[Mosquito trait data](data/AeaegyptiTraitData.csv)**: Development, survival, and longevity data
+
+## Common Issues & Solutions
+
+### Poor convergence?
+Try these adjustments:
+```{r eval=FALSE}
+# Adjust priors
+priors = list(T_min = "dunif(-5,10)", T_max = "dunif(30,40)")
+
+# Use different sampler
+samplerType = "AF_slice"
+
+# Add initial values
+inits = list(T_min = 10, T_max = 32)
+```
+
+### Model selection?
 Compare models using WAIC:
 ```{r eval=FALSE}
 fit1 <- b_TPC(data_list, "briere")
@@ -95,7 +119,7 @@ bayesTPC::get_WAIC(fit1)
 bayesTPC::get_WAIC(fit2)
 ```
 
-## Custom models
+### Custom models?
 Create your own TPC function:
 ```{r eval=FALSE}
 my_model <- specify_normal_model("my_model", 
@@ -103,4 +127,18 @@ my_model <- specify_normal_model("my_model",
                                 formula = expression(q * Temp * (T_max - Temp)))
 ```
 
-For detailed explanations and examples, see our [full tutorials](materials.qmd).
+## Need Help?
+
+- **Diagnostics**: See [troubleshooting section](EEID2024_basic.qmd#basic-example1) in Basic Tutorial
+- **Convergence**: Check [convergence tips](EEID2024_advanced.qmd#adv-fitting) in Advanced Tutorial
+- **Package issues**: Ensure you're using `nimble` version 0.13.2 (see [README](README.md))
+
+## What's Next?
+
+Once you're comfortable with the basics, explore:
+- **Different TPC models**: `get_models()` shows all available options
+- **Custom likelihoods**: Beyond normal distributions
+- **Model comparison**: Using WAIC and other criteria
+- **Real data**: Apply to your own research questions
+
+Ready to dive deeper? Start with the **[Basic Tutorial](EEID2024_basic.qmd#basic-packages)** for a comprehensive workflow!
