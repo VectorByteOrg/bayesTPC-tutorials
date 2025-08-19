@@ -40,3 +40,12 @@ git filter-repo --force --path-glob '*.rdb' --invert-paths
 
 git remote add origin https://github.com/VectorByteOrg/bayesTPC-tutorials.git
 git push --set-upstream origin yusi --force
+
+⸻
+
+August 19, 2025: Site Reorganization
+	•	Merged Getting Started and Materials pages to eliminate redundant content
+	•	Updated navbar: "Materials" → "Tutorials" 
+	•	Added subsection anchors to EEID tutorials for direct linking
+	•	Integrated Quick Start guide with working code example
+	•	Added tutorial descriptions with time estimates and learning paths
