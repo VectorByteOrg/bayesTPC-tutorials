@@ -2,7 +2,7 @@
 title: "Replicating Published Research with bayesTPC"
 subtitle: "A step-by-step guide to refitting thermal performance curves from El Moustaid et al. (2021)"
 format: html
-toc: true
+toc: false
 ---
 
 In this blog post, I'll walk you through my process of replicating thermal performance curve analyses from [El Moustaid et al. (2021)](https://doi.org/10.1186/s13071-021-04826-y) using `bayesTPC`. I'll show you how I take published research and recreate it with modern Bayesian methods.
@@ -15,7 +15,219 @@ In this blog post, I'll walk you through my process of replicating thermal perfo
 
 ## Data Preparation
 
-[To be developed as I work through the paper step by step]
+### Loading and Exploring the BTV Dataset
+
+Let's start by loading the digitized trait data from the paper. The data contains trait measurements for C. sonorensis and C. variipennis across different temperatures.
+
+```{r}
+#| label: load-btv-data
+#| echo: true
+
+# Load required libraries
+library(readxl)
+library(dplyr)
+library(tidyr)
+
+# Load the BTV dataset
+btv_data <- read_excel("data/BTV_Joe_ph_ph.xlsx")
+
+# Basic data exploration
+cat("Dataset dimensions:", dim(btv_data), "\n")
+cat("Species in dataset:", unique(btv_data$interactor1species), "\n")
+cat("Temperature range:", range(btv_data$interactor1temp, na.rm = TRUE), "°C\n")
+cat("Available traits:", unique(btv_data$originaltraitname), "\n")
+```
+
+### Data Cleaning and Organization
+
+Now let's clean and organize the data for our 11 target traits. According to the paper, we need to fit:
+
+1. **a** - biting rate
+2. **F** - fecundity  
+3. **p_E** - egg survival probability
+4. **p_L** - larval survival probability
+5. **p_P** - pupal survival probability
+6. **ρ_E** - egg development rate
+7. **ρ_L** - larval development rate
+8. **ρ_P** - pupal development rate
+9. **μ** - adult mortality rate
+10. **b** - vector competence
+11. **ν** - parasite development rate (ν = 1/EIP)
+
+```{r}
+#| label: clean-btv-data
+#| echo: true
+
+# Filter for our target species
+target_species <- c("sonorensis", "Variipennis")
+btv_clean <- btv_data %>%
+  filter(interactor1species %in% target_species) %>%
+  filter(!is.na(originaltraitvalue) & originaltraitvalue > 0) %>%
+  select(
+    species = interactor1species,
+    trait_name = originaltraitname,
+    trait_value = originaltraitvalue,
+    temperature = interactor1temp,
+    replicates = replicates
+  )
+
+# Map trait names to our target variables
+trait_mapping <- c(
+  "vector competence" = "b",
+  "Extrinsic Incubation Period (EIP)" = "EIP",  # Will convert to ν = 1/EIP
+  "Development Rate" = "rho",  # Development rate (could be ρ_E, ρ_L, or ρ_P)
+  "Development time" = "dev_time",  # Will convert to rate
+  "Development Time" = "dev_time",  # Will convert to rate
+  "survival rate" = "survival",  # Could be p_E, p_L, or p_P
+  "Survival Rate" = "survival",  # Could be p_E, p_L, or p_P
+  "survival time" = "survival_time",  # Will convert to survival rate
+  "Infection Rate" = "infection_rate",
+  "infection Rate" = "infection_rate",
+  "Dissemination Rate" = "dissemination_rate",
+  "dissemination rate" = "dissemination_rate"
+)
+
+# Apply trait mapping
+btv_clean <- btv_clean %>%
+  mutate(
+    trait_code = trait_mapping[trait_name],
+    trait_code = ifelse(is.na(trait_code), "other", trait_code)
+  )
+
+# Show data summary
+cat("Cleaned data summary:\n")
+print(table(btv_clean$species, btv_clean$trait_code))
+```
+
+### Preparing Individual Trait Datasets
+
+Now let's extract and prepare each trait for bayesTPC fitting. We'll create separate datasets for each trait:
+
+```{r}
+#| label: prepare-trait-datasets
+#| echo: true
+
+# Function to prepare trait data for bayesTPC
+prepare_trait_data <- function(data, trait_code, species_filter = NULL) {
+  filtered_data <- data %>%
+    filter(trait_code == !!trait_code)
+  
+  if (!is.null(species_filter)) {
+    filtered_data <- filtered_data %>%
+      filter(species == species_filter)
+  }
+  
+  if (nrow(filtered_data) == 0) {
+    return(NULL)
+  }
+  
+  # Convert to bayesTPC format
+  trait_data <- list(
+    Trait = filtered_data$trait_value,
+    Temp = filtered_data$temperature
+  )
+  
+  return(trait_data)
+}
+
+# Extract key traits for C. sonorensis
+sonorensis_traits <- list()
+
+# EIP data (will convert to ν = 1/EIP)
+eip_data <- prepare_trait_data(btv_clean, "EIP", "sonorensis")
+if (!is.null(eip_data)) {
+  # Convert EIP to ν (parasite development rate)
+  sonorensis_traits$nu <- list(
+    Trait = 1 / eip_data$Trait,  # ν = 1/EIP
+    Temp = eip_data$Temp
+  )
+}
+
+# Vector competence (b)
+b_data <- prepare_trait_data(btv_clean, "b", "sonorensis")
+if (!is.null(b_data)) {
+  sonorensis_traits$b <- b_data
+}
+
+# Development rates
+rho_data <- prepare_trait_data(btv_clean, "rho", "sonorensis")
+if (!is.null(rho_data)) {
+  sonorensis_traits$rho <- rho_data
+}
+
+# Survival data
+survival_data <- prepare_trait_data(btv_clean, "survival", "sonorensis")
+if (!is.null(survival_data)) {
+  sonorensis_traits$survival <- survival_data
+}
+
+# Show what we have
+cat("Available traits for C. sonorensis:\n")
+print(names(sonorensis_traits))
+
+# Display sample data
+if (length(sonorensis_traits) > 0) {
+  cat("\nSample data for ν (parasite development rate):\n")
+  if ("nu" %in% names(sonorensis_traits)) {
+    print(head(data.frame(sonorensis_traits$nu)))
+  }
+}
+```
+
+## Model Specification
+
+### Setting Up TPC Models with Paper's Priors
+
+Now let's set up the Brière and Quadratic TPC models with the priors from the paper's Supplement Table A.2. According to the paper:
+
+- **Brière model**: For left-skewed traits (survivals, biting, fecundity, b, ν)
+- **Quadratic model**: For symmetric traits (development times, μ)
+
+```{r}
+#| label: setup-models
+#| echo: true
+
+library(bayesTPC)
+
+# Check available models
+cat("Available TPC models in bayesTPC:\n")
+print(get_models())
+
+# Get default specifications
+cat("\nBrière model specification:\n")
+print(get_default_model_specification("briere"))
+
+cat("\nQuadratic model specification:\n")
+print(get_default_model_specification("quadratic"))
+
+# Get default priors
+cat("\nBrière model priors:\n")
+print(get_default_priors("briere"))
+
+cat("\nQuadratic model priors:\n")
+print(get_default_priors("quadratic"))
+```
+
+### Customizing Priors Based on Paper
+
+The paper provides specific priors in Supplement Table A.2. Let's set up custom model specifications that match these priors:
+
+```{r}
+#| label: custom-priors
+#| echo: true
+
+# For now, let's use the default models and focus on the data processing
+# We'll customize priors later when we have the exact paper specifications
+
+cat("Using default Brière model for now:\n")
+print(get_default_model_specification("briere"))
+
+cat("\nUsing default Quadratic model for now:\n")
+print(get_default_model_specification("quadratic"))
+
+# Note: We'll need to customize these with the exact priors from the paper's Supplement Table A.2
+# once we have access to those specifications
+```
 
 ## Replicating Figure 3: Latent Period Survival Probability
 
@@ -103,5 +315,26 @@ lines(nu_range, f3_right, col = "purple", lwd = 2)
 legend("topright", legend = c("Dietz (1993)", "Gubbins et al. (2008)", "Turner et al. (2013)"),
        col = c("black", "blue", "purple"), lwd = 2, bty = "n", cex = 1.1)
 ```
+
+### Key Observations
+
+The three formulas show different patterns:
+
+1. **Dietz (1993)**: Exponential decay with μ, approaches 1 as ν increases
+2. **Gubbins et al. (2008)**: Hyperbolic relationship, more gradual changes
+3. **Turner et al. (2013)**: Cubic relationship, shows intermediate behavior
+
+These differences reflect different assumptions about the underlying biological processes governing the latent period survival.
+
+## Next Steps: Trait Fitting
+
+Now that we have the data prepared and Figure 3 replicated, the next phase will involve:
+
+1. **Fitting each trait** with appropriate TPC models and priors
+2. **Extracting MAP estimates** and posterior summaries
+3. **Computing S(T)** from the fitted trait curves
+4. **Comparing results** with the original paper
+
+This systematic approach will allow us to validate the paper's findings and explore the robustness of their conclusions using modern Bayesian methods.
 
 ## Model Fitting
