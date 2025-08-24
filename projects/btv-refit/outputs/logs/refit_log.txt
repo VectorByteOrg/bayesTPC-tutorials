@@ -1,0 +1,7 @@
+BTV Refit Log - Started at 2025-08-24 18:29:20.109362
+2025-08-24 18:30:18.976477 SUCCESS: p sonorensis Data points: 12 RMSE: NA 
+2025-08-24 18:31:12.55588 SUCCESS: b sonorensis Data points: 62 RMSE: NA 
+2025-08-24 18:32:07.38482 SUCCESS: nu sonorensis Data points: 285 RMSE: NA 
+2025-08-24 18:33:02.109925 SUCCESS: rho sonorensis Data points: 12 RMSE: NA 
+2025-08-24 18:33:57.621324 SUCCESS: p variipennis Data points: 15 RMSE: NA 
+2025-08-24 18:34:55.320867 SUCCESS: rho variipennis Data points: 31 RMSE: NA 

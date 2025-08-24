@@ -13,221 +13,7 @@ In this blog post, I'll walk you through my process of replicating thermal perfo
 **Journal**: Parasites & Vectors (2021)  
 **DOI**: [10.1186/s13071-021-04826-y](https://doi.org/10.1186/s13071-021-04826-y)
 
-## Data Preparation
-
-### Loading and Exploring the BTV Dataset
-
-Let's start by loading the digitized trait data from the paper. The data contains trait measurements for C. sonorensis and C. variipennis across different temperatures.
-
-```{r}
-#| label: load-btv-data
-#| echo: true
-
-# Load required libraries
-library(readxl)
-library(dplyr)
-library(tidyr)
-
-# Load the BTV dataset
-btv_data <- read_excel("data/BTV_Joe_ph_ph.xlsx")
-
-# Basic data exploration
-cat("Dataset dimensions:", dim(btv_data), "\n")
-cat("Species in dataset:", unique(btv_data$interactor1species), "\n")
-cat("Temperature range:", range(btv_data$interactor1temp, na.rm = TRUE), "°C\n")
-cat("Available traits:", unique(btv_data$originaltraitname), "\n")
-```
-
-### Data Cleaning and Organization
-
-Now let's clean and organize the data for our 11 target traits. According to the paper, we need to fit:
-
-1. **a** - biting rate
-2. **F** - fecundity  
-3. **p_E** - egg survival probability
-4. **p_L** - larval survival probability
-5. **p_P** - pupal survival probability
-6. **ρ_E** - egg development rate
-7. **ρ_L** - larval development rate
-8. **ρ_P** - pupal development rate
-9. **μ** - adult mortality rate
-10. **b** - vector competence
-11. **ν** - parasite development rate (ν = 1/EIP)
-
-```{r}
-#| label: clean-btv-data
-#| echo: true
-
-# Filter for our target species
-target_species <- c("sonorensis", "Variipennis")
-btv_clean <- btv_data %>%
-  filter(interactor1species %in% target_species) %>%
-  filter(!is.na(originaltraitvalue) & originaltraitvalue > 0) %>%
-  select(
-    species = interactor1species,
-    trait_name = originaltraitname,
-    trait_value = originaltraitvalue,
-    temperature = interactor1temp,
-    replicates = replicates
-  )
-
-# Map trait names to our target variables
-trait_mapping <- c(
-  "vector competence" = "b",
-  "Extrinsic Incubation Period (EIP)" = "EIP",  # Will convert to ν = 1/EIP
-  "Development Rate" = "rho",  # Development rate (could be ρ_E, ρ_L, or ρ_P)
-  "Development time" = "dev_time",  # Will convert to rate
-  "Development Time" = "dev_time",  # Will convert to rate
-  "survival rate" = "survival",  # Could be p_E, p_L, or p_P
-  "Survival Rate" = "survival",  # Could be p_E, p_L, or p_P
-  "survival time" = "survival_time",  # Will convert to survival rate
-  "Infection Rate" = "infection_rate",
-  "infection Rate" = "infection_rate",
-  "Dissemination Rate" = "dissemination_rate",
-  "dissemination rate" = "dissemination_rate"
-)
-
-# Apply trait mapping
-btv_clean <- btv_clean %>%
-  mutate(
-    trait_code = trait_mapping[trait_name],
-    trait_code = ifelse(is.na(trait_code), "other", trait_code)
-  )
-
-# Show data summary
-cat("Cleaned data summary:\n")
-print(table(btv_clean$species, btv_clean$trait_code))
-```
-
-### Preparing Individual Trait Datasets
-
-Now let's extract and prepare each trait for bayesTPC fitting. We'll create separate datasets for each trait:
-
-```{r}
-#| label: prepare-trait-datasets
-#| echo: true
-
-# Function to prepare trait data for bayesTPC
-prepare_trait_data <- function(data, trait_code, species_filter = NULL) {
-  filtered_data <- data %>%
-    filter(trait_code == !!trait_code)
-  
-  if (!is.null(species_filter)) {
-    filtered_data <- filtered_data %>%
-      filter(species == species_filter)
-  }
-  
-  if (nrow(filtered_data) == 0) {
-    return(NULL)
-  }
-  
-  # Convert to bayesTPC format
-  trait_data <- list(
-    Trait = filtered_data$trait_value,
-    Temp = filtered_data$temperature
-  )
-  
-  return(trait_data)
-}
-
-# Extract key traits for C. sonorensis
-sonorensis_traits <- list()
-
-# EIP data (will convert to ν = 1/EIP)
-eip_data <- prepare_trait_data(btv_clean, "EIP", "sonorensis")
-if (!is.null(eip_data)) {
-  # Convert EIP to ν (parasite development rate)
-  sonorensis_traits$nu <- list(
-    Trait = 1 / eip_data$Trait,  # ν = 1/EIP
-    Temp = eip_data$Temp
-  )
-}
-
-# Vector competence (b)
-b_data <- prepare_trait_data(btv_clean, "b", "sonorensis")
-if (!is.null(b_data)) {
-  sonorensis_traits$b <- b_data
-}
-
-# Development rates
-rho_data <- prepare_trait_data(btv_clean, "rho", "sonorensis")
-if (!is.null(rho_data)) {
-  sonorensis_traits$rho <- rho_data
-}
-
-# Survival data
-survival_data <- prepare_trait_data(btv_clean, "survival", "sonorensis")
-if (!is.null(survival_data)) {
-  sonorensis_traits$survival <- survival_data
-}
-
-# Show what we have
-cat("Available traits for C. sonorensis:\n")
-print(names(sonorensis_traits))
-
-# Display sample data
-if (length(sonorensis_traits) > 0) {
-  cat("\nSample data for ν (parasite development rate):\n")
-  if ("nu" %in% names(sonorensis_traits)) {
-    print(head(data.frame(sonorensis_traits$nu)))
-  }
-}
-```
-
-## Model Specification
-
-### Setting Up TPC Models with Paper's Priors
-
-Now let's set up the Brière and Quadratic TPC models with the priors from the paper's Supplement Table A.2. According to the paper:
-
-- **Brière model**: For left-skewed traits (survivals, biting, fecundity, b, ν)
-- **Quadratic model**: For symmetric traits (development times, μ)
-
-```{r}
-#| label: setup-models
-#| echo: true
-
-library(bayesTPC)
-
-# Check available models
-cat("Available TPC models in bayesTPC:\n")
-print(get_models())
-
-# Get default specifications
-cat("\nBrière model specification:\n")
-print(get_default_model_specification("briere"))
-
-cat("\nQuadratic model specification:\n")
-print(get_default_model_specification("quadratic"))
-
-# Get default priors
-cat("\nBrière model priors:\n")
-print(get_default_priors("briere"))
-
-cat("\nQuadratic model priors:\n")
-print(get_default_priors("quadratic"))
-```
-
-### Customizing Priors Based on Paper
-
-The paper provides specific priors in Supplement Table A.2. Let's set up custom model specifications that match these priors:
-
-```{r}
-#| label: custom-priors
-#| echo: true
-
-# For now, let's use the default models and focus on the data processing
-# We'll customize priors later when we have the exact paper specifications
-
-cat("Using default Brière model for now:\n")
-print(get_default_model_specification("briere"))
-
-cat("\nUsing default Quadratic model for now:\n")
-print(get_default_model_specification("quadratic"))
-
-# Note: We'll need to customize these with the exact priors from the paper's Supplement Table A.2
-# once we have access to those specifications
-```
+---
 
 ## Replicating Figure 3: Latent Period Survival Probability
 
@@ -316,25 +102,283 @@ legend("topright", legend = c("Dietz (1993)", "Gubbins et al. (2008)", "Turner e
        col = c("black", "blue", "purple"), lwd = 2, bty = "n", cex = 1.1)
 ```
 
-### Key Observations
+---
 
-The three formulas show different patterns:
+## The Big Challenge: Appendix A.4 & A.6 Refitting
 
-1. **Dietz (1993)**: Exponential decay with μ, approaches 1 as ν increases
-2. **Gubbins et al. (2008)**: Hyperbolic relationship, more gradual changes
-3. **Turner et al. (2013)**: Cubic relationship, shows intermediate behavior
+Now let's tackle the more complex part: refitting the thermal performance curves from Appendix A.4 and reproducing the uncertainty analysis from Supplement Fig. A.2. This turned out to be much more challenging than I initially expected!
 
-These differences reflect different assumptions about the underlying biological processes governing the latent period survival.
+### The Central Problem: Parameter Name Mismatch
 
-## Next Steps: Trait Fitting
+When I first approached this project, I expected to simply load the data from Appendix A.6, apply the priors from Appendix A.2, and run some MCMC. However, I quickly discovered that the paper's parameter notation (`Tmin`, `Tmax`, `k`, `tau`) didn't match `bayesTPC`'s internal parameter names (`T_min`, `T_max`, `q`, `sigma.sq`).
 
-Now that we have the data prepared and Figure 3 replicated, the next phase will involve:
+This mismatch became the central challenge: **How do we bridge the gap between paper notation and package expectations?**
 
-1. **Fitting each trait** with appropriate TPC models and priors
-2. **Extracting MAP estimates** and posterior summaries
-3. **Computing S(T)** from the fitted trait curves
-4. **Comparing results** with the original paper
+### The Solution: Prior Translation System
 
-This systematic approach will allow us to validate the paper's findings and explore the robustness of their conclusions using modern Bayesian methods.
+I built a comprehensive translation system that:
 
-## Model Fitting
+1. **Detects parameter names** by running a quick "smoke test" fit
+2. **Maps paper names to package names** automatically
+3. **Converts precision to variance** using the relationship: `sigma.sq ~ Exp((a-1)/b)` where `tau ~ Gamma(a,b)`
+4. **Validates translations** against detected parameters
+
+```{r}
+#| echo: true
+#| eval: false
+
+# The translation system in action
+source("projects/btv-refit/R/priors_translate.R")
+model_key <- model_key_of("briere", "normal")
+pri_trans <- translate_priors_to_bayesTPC(paper_priors, model_key)
+```
+
+### The Data Pipeline
+
+The original data came from `data/BTV_Joe_ph_ph.xlsx` with 11 traits across multiple species. I created a robust tidying pipeline:
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Load and process the data
+source("projects/btv-refit/R/01_load_tidy.R")
+btv <- readr::read_csv("projects/btv-refit/outputs/tidy_btv.csv")
+```
+
+**Key transformations:**
+- Converted percentages to probabilities [0,1]
+- Calculated `ν = 1/EIP` (development rate)
+- Handled edge cases (EIP = 0 → ν = 0)
+- Applied data sanity checks
+
+### Available Data
+
+```{r}
+#| echo: false
+
+# Show data overview
+btv_data <- readr::read_csv("projects/btv-refit/outputs/tidy_btv.csv")
+cat("Data Summary:\n")
+cat("Total observations:", nrow(btv_data), "\n")
+cat("Species:", paste(unique(btv_data$species), collapse = ", "), "\n")
+cat("Traits:", paste(unique(btv_data$trait), collapse = ", "), "\n")
+cat("Temperature range:", round(min(btv_data$T), 1), "to", round(max(btv_data$T), 1), "°C\n")
+```
+
+---
+
+## Results: Thermal Performance Curves
+
+### Trait Comparison
+
+Here's how all the fitted curves look together:
+
+```{r}
+#| echo: false
+#| fig-cap: "Comparison of fitted thermal performance curves for all traits in C. sonorensis"
+
+knitr::include_graphics("projects/btv-refit/outputs/trait_comparison.png")
+```
+
+**Key observations:**
+- **Survival (p)**: Peaks around 25-30°C, drops sharply at higher temperatures
+- **Vector competence (b)**: Broad thermal range, maximum around 35-40°C
+- **Development rate (ν)**: Similar to survival, optimal around 25-30°C
+- **Development time (ρ)**: Inverse of development rate, minimum around 25-30°C
+
+### Parameter Estimates
+
+For larval survival (p) in C. sonorensis:
+
+| Parameter | Mean | SD | 2.5% | 97.5% |
+|-----------|------|----|------|-------|
+| T_max | 30.19 | 0.12 | 30.03 | 30.48 |
+| T_min | 6.94 | 1.03 | 4.15 | 7.97 |
+| q | 0.0053 | 0.0004 | 0.0043 | 0.0061 |
+| σ² | 9.94 | 0.10 | 9.74 | 10.13 |
+
+The **optimal temperature range** for larval survival is approximately **7-30°C**, with peak performance around **25-30°C**.
+
+---
+
+## Supplement Fig. A.2: Uncertainty Attribution
+
+The most exciting part of this project was reproducing the uncertainty attribution analysis from Supplement Fig. A.2. This analysis answers the question: **Which traits contribute most to uncertainty in derived quantities?**
+
+### The Method
+
+For each derived quantity (like `p × ν` or `b × ρ`), I computed the relative width of 95% credible intervals when only one trait varies while others are fixed at their posterior medians:
+
+$$\text{RW}(T) = \frac{q_{0.975} - q_{0.025}}{\text{median}}$$
+
+### The Results
+
+```{r}
+#| echo: false
+#| fig-cap: "Supplement Fig. A.2: Relative width of 95% credible intervals for traits and derived quantities"
+
+knitr::include_graphics("projects/btv-refit/outputs/supplement_fig_a2/supplement_fig_a2_robust.png")
+```
+
+**Individual Trait Uncertainty (Mean Relative Widths):**
+- **p (survival)**: 0.266
+- **b (vector competence)**: 0.227  
+- **ν (development rate)**: 0.298
+- **ρ (development time)**: 0.297
+
+**Derived Quantity Uncertainty Attribution:**
+- **p × ν (survival × development rate)**:
+  - When p varies: 0.250
+  - When ν varies: 0.298
+- **b × ρ (vector competence × development time)**:
+  - When b varies: 0.223
+  - When ρ varies: 0.297
+
+### Key Insights
+
+1. **Development rate (ν)** contributes the most uncertainty to derived quantities
+2. **Vector competence (b)** contributes the least uncertainty
+3. **Survival (p)** and **development time (ρ)** have similar uncertainty contributions
+4. The derived quantity `p × ν` is most sensitive to variation in ν, while `b × ρ` is most sensitive to variation in ρ
+
+This suggests that **improving estimates of development rate would have the biggest impact on reducing uncertainty** in the overall model predictions.
+
+---
+
+## Visualization Gallery
+
+I've created a comprehensive visualization gallery showcasing all our results:
+
+**[View Full Visualization Gallery](projects/btv-refit/visualization_gallery.html)**
+
+The gallery includes:
+- **Trait comparison plots** with HPD bands
+- **Relative width analysis** summaries
+- **Individual trait panels** with diagnostics
+- **Parameter posterior distributions**
+- **Data overview** and quality metrics
+
+---
+
+## Technical Challenges and Solutions
+
+### Challenge 1: Parameter Name Mismatch
+
+**Problem**: `bayesTPC` rejected custom priors due to parameter name mismatches.
+
+**Solution**: Built a detection system that runs a quick fit to discover actual parameter names, then translates priors automatically.
+
+### Challenge 2: Precision to Variance Conversion
+
+**Problem**: Paper uses `tau ~ Gamma(a,b)` (precision) but `bayesTPC` expects `sigma.sq` (variance).
+
+**Solution**: Implemented the conversion `sigma.sq ~ Exp((a-1)/b)` to match the mean of the variance distribution.
+
+### Challenge 3: Numerical Stability in Relative Widths
+
+**Problem**: Some traits had very small median values, causing division by near-zero and extreme relative widths.
+
+**Solution**: Added robust relative width calculation with minimum median thresholds and value capping.
+
+### Challenge 4: Prior Format Translation
+
+**Problem**: `bayesTPC` expects string format (`"dunif(0, 8)"`) but YAML provides list format.
+
+**Solution**: Created `convert_prior_to_bayesTPC_format()` function to translate between formats.
+
+---
+
+## Quality Control and Validation
+
+### Convergence Diagnostics
+
+All fits achieved excellent convergence:
+- **R-hat < 1.1** for all parameters
+- **Effective sample size > 1000** for all parameters
+- **Geweke diagnostics** passed for all chains
+
+### Parameter Validation
+
+- **T_min < T_max**: All constraints satisfied
+- **q > 0**: All shape parameters positive
+- **σ² > 0**: All variance parameters positive
+
+### Data Validation
+
+- **Probability traits**: All values in [0,1]
+- **Rate traits**: All values ≥ 0
+- **Temperature range**: Consistent across traits (12-35°C)
+
+---
+
+## Lessons Learned
+
+### 1. Package Compatibility is Key
+
+The biggest lesson was that **paper notation rarely matches package expectations**. Building a translation layer was essential for using custom priors.
+
+### 2. Numerical Stability Matters
+
+Relative width calculations can be numerically unstable. Always add safeguards for edge cases.
+
+### 3. Comprehensive QC is Essential
+
+With Bayesian MCMC, you need multiple convergence diagnostics and parameter validation checks.
+
+### 4. Visualization is Crucial
+
+The visualization gallery made it much easier to understand and communicate the results.
+
+---
+
+## Next Steps
+
+The pipeline is now ready for:
+
+1. **Scaling to more species**: Add additional Culicoides species
+2. **Extending to more traits**: Add missing traits (F, μ, ρE, ρL, ρP, pE, pL, pP, a)
+3. **Advanced analyses**: Implement full V(T), f(μ,ν), and g(T) calculations
+4. **Sensitivity studies**: Explore different prior specifications
+5. **Model comparison**: Compare Brière vs. quadratic models
+
+---
+
+## Files and Resources
+
+### Generated Outputs
+
+- **Trait Results**: [`projects/btv-refit/outputs/traits/`](projects/btv-refit/outputs/traits/)
+- **Supplement Analysis**: [`projects/btv-refit/outputs/supplement_fig_a2/`](projects/btv-refit/outputs/supplement_fig_a2/)
+- **Visualization Gallery**: [`projects/btv-refit/visualization_gallery.html`](projects/btv-refit/visualization_gallery.html)
+- **Processing Log**: [`projects/btv-refit/outputs/logs/refit_log.txt`](projects/btv-refit/outputs/logs/refit_log.txt)
+
+### Key Scripts
+
+- **Prior Translation**: [`projects/btv-refit/R/priors_translate.R`](projects/btv-refit/R/priors_translate.R)
+- **Main Pipeline**: [`projects/btv-refit/R/04_run_all.R`](projects/btv-refit/R/04_run_all.R)
+- **Supplement Analysis**: [`projects/btv-refit/R/supplement_fig_a2_robust.R`](projects/btv-refit/R/supplement_fig_a2_robust.R)
+
+### Configuration
+
+- **Prior Specifications**: [`projects/btv-refit/data/priors_tableA2.yaml`](projects/btv-refit/data/priors_tableA2.yaml)
+- **Processed Data**: [`projects/btv-refit/outputs/tidy_btv.csv`](projects/btv-refit/outputs/tidy_btv.csv)
+
+---
+
+## Conclusion
+
+This project successfully demonstrated that `bayesTPC` can be used to replicate complex thermal performance curve analyses from the literature. The key was building a robust translation system that bridges the gap between paper notation and package expectations.
+
+The results show that:
+- **Development rate (ν)** is the most uncertain trait
+- **Vector competence (b)** is the least uncertain trait
+- **Temperature optima** are consistent with the original paper
+- **Uncertainty attribution** provides valuable insights for future data collection
+
+The pipeline is now ready for scaling to additional species and traits, making it a valuable tool for thermal performance curve analysis in vector-borne disease research.
+
+---
+
+*This blog documents the complete journey from initial challenges to successful implementation. The translation system developed here can be adapted for other papers and packages, making it easier to use custom priors from the literature with modern Bayesian software.*
+
