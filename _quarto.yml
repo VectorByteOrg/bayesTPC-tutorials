@@ -13,9 +13,9 @@ website:
       - href: startup.qmd
         text: Getting Started
       - href: intro.qmd
-        text: Quick Start    
-      - href: materials.qmd
-        text: Tutorials
+        text: Tutorials    
+      - href: refit_guide.qmd
+        text: Bluetongue Refit
       - text: "Team"
         menu:
           - text: "PI: Dr. LR Johnson"

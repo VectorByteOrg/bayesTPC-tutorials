@@ -1,0 +1,212 @@
+---
+title: "Replicating Published Research with bayesTPC"
+subtitle: "A step-by-step guide to refitting thermal performance curves from El Moustaid et al. (2021)"
+format: html
+toc: false
+---
+
+This guide demonstrates how to use `bayesTPC` to replicate thermal performance curve analyses from [El Moustaid et al. (2021)](https://doi.org/10.1186/s13071-021-04826-y).
+
+## The Paper
+
+**Title**: "Predicting temperature-dependent transmission suitability of bluetongue virus in livestock"  
+**Journal**: Parasites & Vectors (2021)  
+**DOI**: [10.1186/s13071-021-04826-y](https://doi.org/10.1186/s13071-021-04826-y)
+
+---
+
+## Quick Example: Figure 3 Replication
+
+### The Problem
+
+The survival probability **f** depends on two traits:
+- **μ** (mu): Adult mortality rate
+- **ν** (nu): Parasite development rate (ν = 1/EIP)
+
+The paper compares three functional forms:
+
+```{r}
+#| echo: true
+
+# Three formulas for survival probability
+f_dietz <- function(mu, nu) exp(-mu/nu)
+f_gubbins <- function(mu, nu) nu / (nu + mu)
+f_turner <- function(mu, nu) (3*nu / (3*nu + mu))^3
+```
+
+### Implementation
+
+```{r}
+#| echo: true
+#| fig-cap: "Figure 3: Latent period survival probability f as a function of mortality rate μ (left) and parasite development rate ν (right)"
+#| fig-width: 12
+#| fig-height: 5
+
+par(mfrow = c(1, 2), mar = c(5, 5, 4, 2))
+
+# Left: mortality vs survival (ν fixed at 0.061)
+mu_range <- seq(0.2, 0.5, length.out = 100)
+nu_fixed <- 0.061
+
+plot(mu_range, f_dietz(mu_range, nu_fixed), type = "l", col = "black", lwd = 2,
+     xlab = "Mortality rate μ", ylab = "Survival probability f",
+     main = "f vs μ (ν = 0.061)", ylim = c(0, 1))
+lines(mu_range, f_gubbins(mu_range, nu_fixed), col = "blue", lwd = 2)
+lines(mu_range, f_turner(mu_range, nu_fixed), col = "purple", lwd = 2)
+legend("topright", legend = c("Dietz (1993)", "Gubbins et al. (2008)", "Turner et al. (2013)"),
+       col = c("black", "blue", "purple"), lwd = 2, bty = "n")
+
+# Right: parasite development vs survival (μ fixed at 0.15)
+nu_range <- seq(0, 0.7, length.out = 100)
+mu_fixed <- 0.15
+
+plot(nu_range, f_dietz(mu_fixed, nu_range), type = "l", col = "black", lwd = 2,
+     xlab = "Parasite development rate ν", ylab = "Survival probability f",
+     main = "f vs ν (μ = 0.15)", ylim = c(0, 1))
+lines(nu_range, f_gubbins(mu_fixed, nu_range), col = "blue", lwd = 2)
+lines(nu_range, f_turner(mu_fixed, nu_range), col = "purple", lwd = 2)
+legend("topright", legend = c("Dietz (1993)", "Gubbins et al. (2008)", "Turner et al. (2013)"),
+       col = c("black", "blue", "purple"), lwd = 2, bty = "n")
+```
+
+---
+
+## Main Challenge: Appendix A.4 Refitting with bayesTPC
+
+### The Problem
+
+The paper's parameter notation doesn't match `bayesTPC`'s expectations:
+
+| Paper Notation | bayesTPC Expects |
+|----------------|------------------|
+| `Tmin`, `Tmax`, `k`, `tau` | `T_min`, `T_max`, `q`, `sigma.sq` |
+
+### Solution: Prior Translation System
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Load the translation system
+source("projects/btv-refit/R/priors_translate.R")
+
+# Paper-style priors
+paper_priors <- list(
+  Tmin = list(dist = "uniform", min = 0, max = 8),
+  Tmax = list(dist = "uniform", min = 30, max = 40),
+  k = list(dist = "gamma", shape = 1, rate = 20),
+  tau = list(dist = "gamma", shape = 1.5, rate = 0.001)
+)
+
+# Translate to bayesTPC format
+model_key <- model_key_of("briere", "normal")
+pri_trans <- translate_priors_to_bayesTPC(paper_priors, model_key)
+```
+
+### Data Processing
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Load and process data from Appendix A.6
+source("projects/btv-refit/R/01_load_tidy.R")
+btv <- readr::read_csv("projects/btv-refit/outputs/tidy_btv.csv")
+```
+
+**Key transformations:**
+- Convert percentages to probabilities [0,1]
+- Calculate `ν = 1/EIP` (development rate)
+- Handle edge cases (EIP = 0 → ν = 0)
+
+### Model Fitting
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Run the complete pipeline
+source("projects/btv-refit/R/04_run_all.R")
+```
+
+**MCMC Settings:**
+- **Chains**: 5
+- **Iterations**: 25,000
+- **Burn-in**: 5,000
+- **Thinning**: 2
+
+---
+
+## Results
+
+### Thermal Performance Curves
+
+```{r}
+#| echo: false
+#| fig-cap: "Fitted thermal performance curves for all traits in C. sonorensis"
+
+knitr::include_graphics("projects/btv-refit/outputs/trait_comparison.png")
+```
+
+### Parameter Estimates
+
+For larval survival (p) in C. sonorensis:
+
+| Parameter | Mean | SD | 2.5% | 97.5% |
+|-----------|------|----|------|-------|
+| T_max | 30.19 | 0.12 | 30.03 | 30.48 |
+| T_min | 6.94 | 1.03 | 4.15 | 7.97 |
+| q | 0.0053 | 0.0004 | 0.0043 | 0.0061 |
+| σ² | 9.94 | 0.10 | 9.74 | 10.13 |
+
+**Optimal temperature range**: 7-30°C, peak around 25-30°C
+
+### Uncertainty Attribution (Supplement Fig. A.2)
+
+```{r}
+#| echo: false
+#| fig-cap: "Relative width of 95% credible intervals for traits and derived quantities"
+
+knitr::include_graphics("projects/btv-refit/outputs/supplement_fig_a2/supplement_fig_a2_robust.png")
+```
+
+**Key findings:**
+- **Development rate (ν)**: Most uncertain (0.298)
+- **Vector competence (b)**: Least uncertain (0.227)
+- **Survival (p)**: Moderate uncertainty (0.266)
+
+---
+
+## Quality Control
+
+### Convergence Diagnostics
+
+All fits achieved:
+- **R-hat < 1.1** for all parameters
+- **Effective sample size > 1000** for all parameters
+- **Parameter constraints satisfied** (T_min < T_max, q > 0)
+
+### Data Validation
+
+- **Probability traits**: All values in [0,1]
+- **Rate traits**: All values ≥ 0
+- **Temperature range**: Consistent (12-35°C)
+
+---
+
+## Files and Resources
+
+### Pipeline Scripts
+
+- **Prior Translation**: [`projects/btv-refit/R/priors_translate.R`](projects/btv-refit/R/priors_translate.R)
+- **Main Pipeline**: [`projects/btv-refit/R/04_run_all.R`](projects/btv-refit/R/04_run_all.R)
+- **Supplement Analysis**: [`projects/btv-refit/R/supplement_fig_a2_robust.R`](projects/btv-refit/R/supplement_fig_a2_robust.R)
+
+### Outputs
+
+- **Trait Results**: [`projects/btv-refit/outputs/traits/`](projects/btv-refit/outputs/traits/)
+- **Visualization Gallery**: [`projects/btv-refit/visualization_gallery.html`](projects/btv-refit/visualization_gallery.html)
+- **Configuration**: [`projects/btv-refit/data/priors_tableA2.yaml`](projects/btv-refit/data/priors_tableA2.yaml)
+
+---
+
