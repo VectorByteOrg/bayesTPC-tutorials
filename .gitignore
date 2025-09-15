@@ -13,4 +13,4 @@
 *.rdx
 *.RData
 *.tar.gz
-
+*.DS_store
