@@ -13,6 +13,4 @@
 *.rdx
 *.RData
 *.tar.gz
-*.html
 
-*_files/
