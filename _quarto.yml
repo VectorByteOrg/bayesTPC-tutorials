@@ -1,6 +1,6 @@
 project:
   type: website
-
+  output-dir: docs
 website:
   title: "bayesTPC Tutorials"
   navbar:
@@ -14,16 +14,10 @@ website:
         text: Getting Started
       - href: intro.qmd
         text: Tutorials    
-      - href: refit_guide.qmd
+      - href: BT_temp.qmd
         text: Bluetongue Refit
-      - text: "Team"
-        menu:
-          - text: "PI: Dr. LR Johnson"
-            href: leahJ.qmd
-          - text: "Current Members"
-            href: people_current.qmd
-          - text: "Lab Alumni"
-            href: people_alumni.qmd
+      - href: team.qmd
+        text: "Team"
     right:
       - icon: github
         href: https://github.com/VectorByteOrg/bayesTPC-tutorials

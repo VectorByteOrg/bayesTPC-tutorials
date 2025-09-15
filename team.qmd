@@ -1,0 +1,32 @@
+---
+title: "bayesTPC Team"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Principal Investigator
+
+#### [Dr. Leah R. Johnson](leahJ.html)
+
+<br>
+
+## Postdoctoral Researchers
+
+#### [Dr. Paul Huxley](paulH.html)
+
+
+<br>
+
+## Graduate Students
+
+#### [Dr. John W. Smith, Jr.](https://johnwilliamsmithjr.github.io/) -- Virginia Tech, PhD, Statistics, 2022
+
+<br>
+
+## Undergraduate Student Researchers
+
+- [Sean Sorek](seanS.qmd)
+- Yusi Yao

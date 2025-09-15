@@ -15,7 +15,7 @@ This guide will get you fitting thermal performance curves (TPCs) with `bayesTPC
 
 First, install the required packages:
 
-```{r eval=FALSE}
+```{r, eval=FALSE}
 # Install nimble first
 install.packages("nimble")
 
