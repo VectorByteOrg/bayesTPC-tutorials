@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTV Refitting Visualization Gallery</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .plot-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        .plot-card:hover {
+            transform: translateY(-5px);
+        }
+        .plot-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .plot-image {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .results-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .results-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .metric-title {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .metric-value {
+            font-size: 1.1em;
+            color: #333;
+        }
+        .file-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .file-title {
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        .file-list li {
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>BTV Refitting Visualization Gallery</h1>
+        <p>Thermal Performance Curve Analysis using bayesTPC</p>
+        <p>El Moustaid et al. (2021) Appendix A.4 Reproduction</p>
+    </div>
+
+    <div class="results-summary">
+        <div class="results-title">Key Results Summary</div>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-title">Individual Trait Uncertainty (Mean Relative Widths)</div>
+                <div class="metric-value">
+                    <strong>p (survival):</strong> 0.266<br>
+                    <strong>b (vector competence):</strong> 0.227<br>
+                    <strong>ν (development rate):</strong> 0.298<br>
+                    <strong>ρ (development time):</strong> 0.297
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Derived Quantity Uncertainty Attribution</div>
+                <div class="metric-value">
+                    <strong>p × ν (p varies):</strong> 0.250<br>
+                    <strong>p × ν (ν varies):</strong> 0.298<br>
+                    <strong>b × ρ (b varies):</strong> 0.223<br>
+                    <strong>b × ρ (ρ varies):</strong> 0.297
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Data Overview</div>
+                <div class="metric-value">
+                    <strong>Total observations:</strong> 417<br>
+                    <strong>Species:</strong> 2 (sonorensis, variipennis)<br>
+                    <strong>Traits:</strong> 4 (p, b, ν, ρ)<br>
+                    <strong>Temperature range:</strong> 12-35°C
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Parameter Estimates (Larval Survival - p)</div>
+                <div class="metric-value">
+                    <strong>T_max:</strong> 30.19 ± 0.12°C<br>
+                    <strong>T_min:</strong> 6.94 ± 1.03°C<br>
+                    <strong>q:</strong> 0.0053 ± 0.0004<br>
+                    <strong>σ²:</strong> 9.94 ± 0.10
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery">
+        <div class="plot-card">
+            <div class="plot-title">Trait Comparison - All Thermal Performance Curves</div>
+            <img src="outputs/trait_comparison.png" alt="Trait Comparison" class="plot-image">
+            <p style="text-align: center; color: #666; margin-top: 10px;">
+                Comparison of fitted thermal performance curves for all traits in C. sonorensis
+            </p>
+        </div>
+
+        <div class="plot-card">
+            <div class="plot-title">Relative Width Analysis Summary</div>
+            <img src="outputs/relative_width_summary.png" alt="Relative Width Summary" class="plot-image">
+            <p style="text-align: center; color: #666; margin-top: 10px;">
+                Uncertainty analysis showing relative widths of 95% credible intervals
+            </p>
+        </div>
+
+        <div class="plot-card">
+            <div class="plot-title">Supplement Fig. A.2 - Relative Width Analysis</div>
+            <img src="outputs/supplement_fig_a2/supplement_fig_a2_robust.png" alt="Supplement Fig A.2" class="plot-image">
+            <p style="text-align: center; color: #666; margin-top: 10px;">
+                Reproduction of Supplement Fig. A.2 from El Moustaid et al. (2021)
+            </p>
+        </div>
+
+        <div class="plot-card">
+            <div class="plot-title">Individual Trait Panel - Larval Survival (p)</div>
+            <img src="outputs/traits/sonorensis/p/trait_panels.png" alt="Trait Panel p" class="plot-image">
+            <p style="text-align: center; color: #666; margin-top: 10px;">
+                Complete diagnostic panel for larval survival trait including curve, data, and parameter histograms
+            </p>
+        </div>
+    </div>
+
+    <div class="file-info">
+        <div class="file-title">Generated Files</div>
+        <ul class="file-list">
+            <li><strong>Trait Comparison:</strong> outputs/trait_comparison.png</li>
+            <li><strong>Relative Width Summary:</strong> outputs/relative_width_summary.png</li>
+            <li><strong>Supplement Fig. A.2:</strong> outputs/supplement_fig_a2/supplement_fig_a2_robust.png</li>
+            <li><strong>Individual Trait Panels:</strong> outputs/traits/sonorensis/*/trait_panels.png</li>
+            <li><strong>Curve Summaries:</strong> outputs/traits/sonorensis/*/curve_summary.csv</li>
+            <li><strong>Fit Summaries:</strong> outputs/traits/sonorensis/*/fit_summary.json</li>
+            <li><strong>Quality Control:</strong> outputs/traits/sonorensis/*/qc.json</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px; color: #666;">
+        <p><strong>BTV Refitting Analysis</strong> | Generated with bayesTPC and R</p>
+        <p>El Moustaid et al. (2021) Appendix A.4 Reproduction</p>
+    </div>
+</body>
+</html>

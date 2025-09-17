@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.22">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -36,10 +71,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7b4406b7675125bc2ba204020e191172.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f59ae89ec823d45c17daa5ec8f2c755b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-95c0134a92e51afe1e2d7aad80d5e96e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -135,11 +170,27 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#fecundity-dataset-eggs-per-female-per-day-from-supplement-table-a.3" id="toc-fecundity-dataset-eggs-per-female-per-day-from-supplement-table-a.3" class="nav-link active" data-scroll-target="#fecundity-dataset-eggs-per-female-per-day-from-supplement-table-a.3">Fecundity dataset (eggs per female per day) from Supplement Table A.3</a></li>
+  <li><a href="#source-el-moustaid-et-al.-2021-supplement" id="toc-source-el-moustaid-et-al.-2021-supplement" class="nav-link" data-scroll-target="#source-el-moustaid-et-al.-2021-supplement">Source: El Moustaid et al.&nbsp;2021 Supplement</a></li>
+  <li><a href="#original-experiment-lysyk-danyk-2007" id="toc-original-experiment-lysyk-danyk-2007" class="nav-link" data-scroll-target="#original-experiment-lysyk-danyk-2007">Original experiment: Lysyk &amp; Danyk 2007</a>
+  <ul class="collapse">
+  <li><a href="#build-the-fecundity-dataset" id="toc-build-the-fecundity-dataset" class="nav-link" data-scroll-target="#build-the-fecundity-dataset">1. Build the fecundity dataset</a></li>
+  <li><a href="#fit-the-fecundity-tpc-with-bayestpc" id="toc-fit-the-fecundity-tpc-with-bayestpc" class="nav-link" data-scroll-target="#fit-the-fecundity-tpc-with-bayestpc">2. Fit the fecundity TPC with bayesTPC</a></li>
+  <li><a href="#plot-fecundity-panel-using-bayestpcs-built-in-plotting" id="toc-plot-fecundity-panel-using-bayestpcs-built-in-plotting" class="nav-link" data-scroll-target="#plot-fecundity-panel-using-bayestpcs-built-in-plotting">3. Plot fecundity panel using bayesTPC’s built-in plotting</a></li>
+  <li><a href="#model-diagnostics" id="toc-model-diagnostics" class="nav-link" data-scroll-target="#model-diagnostics">4. Model diagnostics</a></li>
+  <li><a href="#save-results" id="toc-save-results" class="nav-link" data-scroll-target="#save-results">5. Save results</a></li>
+  <li><a href="#parameter-summary" id="toc-parameter-summary" class="nav-link" data-scroll-target="#parameter-summary">6. Parameter summary</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page-left" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -148,7 +199,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div class="quarto-title-meta column-page">
+<div class="quarto-title-meta column-page-left">
 
     
   
@@ -160,9 +211,392 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Coming Soon!</p>
+<section id="fecundity-dataset-eggs-per-female-per-day-from-supplement-table-a.3" class="level1">
+<h1>Fecundity dataset (eggs per female per day) from Supplement Table A.3</h1>
+</section>
+<section id="source-el-moustaid-et-al.-2021-supplement" class="level1">
+<h1>Source: El Moustaid et al.&nbsp;2021 Supplement</h1>
+</section>
+<section id="original-experiment-lysyk-danyk-2007" class="level1">
+<h1>Original experiment: Lysyk &amp; Danyk 2007</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nimble)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>nimble version 1.3.0 is loaded.
+For more information on NIMBLE and a User Manual,
+please visit https://R-nimble.org.
+
+Note for advanced users who have written their own MCMC samplers:
+  As of version 0.13.0, NIMBLE's protocol for handling posterior
+  predictive nodes has changed in a way that could affect user-defined
+  samplers in some situations. Please see Section 15.5.1 of the User Manual.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'nimble'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    simulate</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:base':
+
+    declare</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesTPC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>bayesTPC requires loading the package NIMBLE to function.
+Please run 'library(nimble)` before using.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'coda'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:bayesTPC':
+
+    traceplot</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(HDInterval)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="build-the-fecundity-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="build-the-fecundity-dataset">1. Build the fecundity dataset</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fecundity <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">T =</span> <span class="fu">c</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">6</span>),   <span class="co"># 10 C</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="dv">15</span>, <span class="dv">6</span>),   <span class="co"># 15 C</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="dv">20</span>, <span class="dv">6</span>),   <span class="co"># 20 C</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="dv">25</span>, <span class="dv">7</span>),   <span class="co"># 25 C</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="dv">30</span>, <span class="dv">7</span>)    <span class="co"># 30 C</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">F =</span> <span class="fu">c</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fl">5.528</span>, <span class="fl">3.122</span>, <span class="fl">13.11</span>, <span class="fl">9.745</span>, <span class="fl">6.206</span>, <span class="fl">31.191</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="fl">19.034</span>, <span class="fl">16.0</span>, <span class="fl">1.361</span>, <span class="fl">1.242</span>, <span class="fl">11.08</span>, <span class="fl">13.961</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="fl">17.93</span>, <span class="fl">41.531</span>, <span class="fl">60.535</span>, <span class="fl">39.856</span>, <span class="fl">51.724</span>, <span class="fl">69.951</span>,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="fl">12.731</span>, <span class="fl">1.154</span>, <span class="fl">36.417</span>, <span class="fl">0.465</span>, <span class="fl">5.844</span>, <span class="fl">7.048</span>, <span class="fl">19.469</span>,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fl">31.938</span>, <span class="fl">21.195</span>, <span class="fl">12.255</span>, <span class="fl">22.332</span>, <span class="fl">0.365</span>, <span class="fl">1.703</span>, <span class="fl">1.536</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity checks</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>fecundity <span class="sc">%&gt;%</span> <span class="fu">count</span>(T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+      T     n
+  &lt;dbl&gt; &lt;int&gt;
+1    10     6
+2    15     6
+3    20     6
+4    25     7
+5    30     7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fecundity<span class="sc">$</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.365   4.926  12.921  18.361  24.547  69.951 </code></pre>
+</div>
+</div>
+</section>
+<section id="fit-the-fecundity-tpc-with-bayestpc" class="level2">
+<h2 class="anchored" data-anchor-id="fit-the-fecundity-tpc-with-bayestpc">2. Fit the fecundity TPC with bayesTPC</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Temperature grid for smooth curves</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>Tgrid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="fl">0.1</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data for bayesTPC</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Temp =</span> fecundity<span class="sc">$</span>T, <span class="at">Trait =</span> fecundity<span class="sc">$</span>F)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check default priors for briere model</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_priors</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              q           T_max           T_min        sigma.sq 
+      "dexp(1)" "dunif(25, 60)"  "dunif(0, 20)"       "dexp(1)" </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Brière model in bayesTPC with tighter priors to match paper's shape</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Model: F(T) = k * T * (T - Tmin) * sqrt(Tmax - T), truncated at 0 outside [Tmin, Tmax]</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>fit_fec <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> data_list,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"briere"</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">priors =</span> <span class="fu">list</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">T_min =</span> <span class="st">"dunif(5, 15)"</span>,    <span class="co"># Tighter range for Tmin</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">T_max =</span> <span class="st">"dunif(32, 36)"</span>,   <span class="co"># Key fix: tighter Tmax to force curve down ~28-30°C</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">q =</span> <span class="st">"dunif(0, 200)"</span>        <span class="co"># k parameter, Uniform(0, 200)</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">nchains =</span> <span class="dv">4</span>,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">burn =</span> <span class="dv">6000</span>,    <span class="co"># Increased burn-in</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">niter =</span> <span class="dv">18000</span>   <span class="co"># More iterations for better mixing</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  [Note] safeDeparse: truncating deparse output to 1 line</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check diagnostics</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit_fec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>bayesTPC MCMC of Type:
+  briere
+
+Formula:
+  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
+* (T_max &gt; Temp) * (Temp &gt; T_min) )
+
+Distribution:
+  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
+
+Parameters:
+
+Chain 1:
+            MAP   Mean Median        Priors
+T_max    32.005 32.314 32.201 dunif(32, 36)
+T_min     5.010  5.865  5.622  dunif(5, 15)
+q         0.018  0.019  0.018 dunif(0, 200)
+sigma.sq 66.572 68.551 68.274       dexp(1)
+
+Chain 2:
+            MAP   Mean Median        Priors
+T_max    32.005 32.272 32.175 dunif(32, 36)
+T_min     5.010  5.827  5.619  dunif(5, 15)
+q         0.018  0.019  0.019 dunif(0, 200)
+sigma.sq 66.572 68.495 68.275       dexp(1)
+
+Chain 3:
+            MAP   Mean Median        Priors
+T_max    32.005 32.277 32.185 dunif(32, 36)
+T_min     5.010  5.862  5.649  dunif(5, 15)
+q         0.018  0.019  0.019 dunif(0, 200)
+sigma.sq 66.572 68.522 68.259       dexp(1)
+
+Chain 4:
+            MAP   Mean Median        Priors
+T_max    32.005 32.285 32.181 dunif(32, 36)
+T_min     5.010  5.848  5.631  dunif(5, 15)
+q         0.018  0.019  0.019 dunif(0, 200)
+sigma.sq 66.572 68.501 68.271       dexp(1)</code></pre>
+</div>
+</div>
+</section>
+<section id="plot-fecundity-panel-using-bayestpcs-built-in-plotting" class="level2">
+<h2 class="anchored" data-anchor-id="plot-fecundity-panel-using-bayestpcs-built-in-plotting">3. Plot fecundity panel using bayesTPC’s built-in plotting</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use bayesTPC's built-in plot function</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_fec, </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">temp_interval =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="fl">0.1</span>),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">summaryType =</span> <span class="st">"hdi"</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">centralSummary =</span> <span class="st">"median"</span>, </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">prob =</span> <span class="fl">0.95</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Fecundity TPC (Brière Model)"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Eggs per Female per Day"</span>,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Temperature (°C)"</span>,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(fecundity<span class="sc">$</span>F) <span class="sc">*</span> <span class="fl">1.1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostics">4. Model diagnostics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the structure of the fit object</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(fit_fec<span class="sc">$</span>samples)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace plots using bayesTPC - try with samples directly</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">traceplot</span>(fit_fec<span class="sc">$</span>samples, <span class="at">burn =</span> <span class="dv">1000</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior predictive check using bayesTPC</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>ppc <span class="ot">&lt;-</span> <span class="fu">posterior_predictive</span>(fit_fec, <span class="at">burn =</span> <span class="dv">1000</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_prediction</span>(ppc, <span class="at">main =</span> <span class="st">"Posterior Predictive Check"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="save-results" class="level2">
+<h2 class="anchored" data-anchor-id="save-results">5. Save results</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create output directory</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(<span class="st">"fig"</span>)) <span class="fu">dir.create</span>(<span class="st">"fig"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the plot using base R graphics</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">"fig/fig5a_fecundity_bayesian.png"</span>, <span class="at">width =</span> <span class="dv">4</span>, <span class="at">height =</span> <span class="fl">3.5</span>, <span class="at">units =</span> <span class="st">"in"</span>, <span class="at">res =</span> <span class="dv">300</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit_fec, </span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">temp_interval =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="at">by =</span> <span class="fl">0.1</span>),</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">summaryType =</span> <span class="st">"hdi"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">centralSummary =</span> <span class="st">"median"</span>, </span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">prob =</span> <span class="fl">0.95</span>,</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Fecundity TPC (Brière Model)"</span>,</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Eggs per Female per Day"</span>,</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Temperature (°C)"</span>,</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(fecundity<span class="sc">$</span>F) <span class="sc">*</span> <span class="fl">1.1</span>))</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>quartz_off_screen 
+                2 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save fitted object</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(fit_fec, <span class="st">"fig/fit_fec_briere.rds"</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Save data</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(fecundity, <span class="st">"fig/fecundity_data_used.csv"</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="parameter-summary" class="level2">
+<h2 class="anchored" data-anchor-id="parameter-summary">6. Parameter summary</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract parameter summaries using bayesTPC</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>param_summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit_fec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>bayesTPC MCMC of Type:
+  briere
+
+Formula:
+  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
+* (T_max &gt; Temp) * (Temp &gt; T_min) )
+
+Distribution:
+  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
+
+Priors:
+  q ~ dunif(0, 200) 
+  T_max ~ dunif(32, 36) 
+  T_min ~ dunif(5, 15) 
+  sigma.sq ~ dexp(1)
+
+Max. A Post. Parameters: 
+    T_max     T_min         q  sigma.sq  log_prob 
+  32.0051    5.0101    0.0184   66.5715 -249.7617 
+
+MCMC Results:
+Iterations = 1:12000
+Thinning interval = 1 
+Number of chains = 4 
+Sample size per chain = 12000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean       SD  Naive SE Time-series SE
+T_max    32.28717 0.313422 1.431e-03      6.308e-03
+T_min     5.85043 0.762443 3.480e-03      1.126e-02
+q         0.01857 0.001904 8.690e-06      2.655e-05
+sigma.sq 68.51747 5.743078 2.621e-02      5.614e-02
+
+2. Quantiles for each variable:
+
+             2.5%     25%      50%      75%    97.5%
+T_max    32.00680 32.0761 32.18537 32.38196 33.16290
+T_min     5.02610  5.2674  5.63096  6.21703  7.80807
+q         0.01494  0.0173  0.01853  0.01983  0.02238
+sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(param_summary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Iterations = 1:12000
+Thinning interval = 1 
+Number of chains = 4 
+Sample size per chain = 12000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean       SD  Naive SE Time-series SE
+T_max    32.28717 0.313422 1.431e-03      6.308e-03
+T_min     5.85043 0.762443 3.480e-03      1.126e-02
+q         0.01857 0.001904 8.690e-06      2.655e-05
+sigma.sq 68.51747 5.743078 2.621e-02      5.614e-02
+
+2. Quantiles for each variable:
+
+             2.5%     25%      50%      75%    97.5%
+T_max    32.00680 32.0761 32.18537 32.38196 33.16290
+T_min     5.02610  5.2674  5.63096  6.21703  7.80807
+q         0.01494  0.0173  0.01853  0.01983  0.02238
+sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MAP estimates</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>map_estimates <span class="ot">&lt;-</span> <span class="fu">MAP_estimate</span>(fit_fec)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"MAP Estimates:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "MAP Estimates:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(map_estimates)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        T_max         T_min             q      sigma.sq      log_prob 
+  32.00506596    5.01013980    0.01835086   66.57154270 -249.76174430 </code></pre>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
