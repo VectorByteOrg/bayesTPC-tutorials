@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Bluetongue Virus: Midge Fecundity Analysis – bayesTPC Tutorials</title>
+<title>bt_temp – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -137,25 +137,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Bluetongue Virus: Midge Fecundity Analysis</h1>
-</div>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
-
-<div class="quarto-title-meta column-page">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
 
 
 <section id="bluetongue-virus-midge-fecundity-analysis" class="level1">
@@ -229,32 +213,26 @@ Configuring Output:
 </figure>
 </div>
 </div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="BT_temp_files/figure-html/plot-fecundity-2.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="BT_temp_files/figure-html/plot-fecundity-3.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="BT_temp_files/figure-html/plot-fecundity-4.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
 </div>
 </section>
 <section id="key-parameters" class="level3">
 <h3 class="anchored" data-anchor-id="key-parameters">Key Parameters</h3>
 <div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 5.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 32.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 0.018 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 66.5715 </code></pre>
+</div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC MCMC of Type:
   briere
@@ -300,7 +278,7 @@ q         0.01494  0.0173  0.01853  0.01983  0.02238
 sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>**Thermal Limits:**</code></pre>
+<pre><code>**Posterior Medians:**</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>• Lower limit (T_min):  °C</code></pre>
@@ -326,21 +304,20 @@ sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
 <section id="thermal-limits" class="level3">
 <h3 class="anchored" data-anchor-id="thermal-limits"><strong>Thermal Limits</strong></h3>
 <ul>
-<li><strong>Lower threshold (5-15°C):</strong> Midges require minimum temperatures above 5°C to begin reproduction</li>
-<li><strong>Upper threshold (32-36°C):</strong> Fecundity drops to zero above 32°C, indicating severe thermal stress</li>
+<li><strong>Lower limit (T_min):</strong> Below this temperature, midges cannot reproduce</li>
+<li><strong>Upper limit (T_max):</strong> Above this temperature, reproduction ceases due to heat stress</li>
 </ul>
 </section>
 <section id="optimal-range" class="level3">
 <h3 class="anchored" data-anchor-id="optimal-range"><strong>Optimal Range</strong></h3>
 <ul>
-<li><strong>Peak reproduction:</strong> Occurs around 20-25°C, matching the expected thermal optimum for midge biology</li>
-<li><strong>Sharp decline:</strong> The curve drops rapidly above 28-30°C, reflecting the biological reality that high temperatures severely impair reproduction</li>
+<li><strong>Peak performance:</strong> Maximum fecundity occurs around the midpoint of the thermal range</li>
+<li><strong>Temperature sensitivity:</strong> The curve shows how reproduction drops off rapidly at thermal extremes</li>
 </ul>
 </section>
-<section id="disease-transmission-implications" class="level3">
-<h3 class="anchored" data-anchor-id="disease-transmission-implications"><strong>Disease Transmission Implications</strong></h3>
-<p>This temperature-dependent fecundity pattern is crucial for understanding Bluetongue virus transmission dynamics: - <strong>Climate change impacts:</strong> Rising temperatures may reduce midge reproduction in some regions - <strong>Seasonal patterns:</strong> Transmission risk varies with temperature-dependent vector abundance - <strong>Geographic distribution:</strong> Disease spread is limited by thermal constraints on vector reproduction</p>
-<p>The tight constraint on the upper thermal limit (32-36°C) ensures the model accurately captures the biological reality that midge reproduction becomes severely impaired at high temperatures, providing reliable predictions for disease transmission modeling.</p>
+<section id="transmission-implications" class="level3">
+<h3 class="anchored" data-anchor-id="transmission-implications"><strong>Transmission Implications</strong></h3>
+<p>These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.</p>
 
 
 </section>
