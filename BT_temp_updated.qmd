@@ -1,0 +1,167 @@
+---
+format: html
+toc: false
+---
+
+```{r setup, include=FALSE}
+library(nimble)
+library(bayesTPC)
+library(dplyr)
+library(ggplot2)
+library(coda)
+library(HDInterval)
+library(patchwork)
+```
+
+# Bluetongue Virus: Midge Fecundity Analysis
+
+**Source:** El Moustaid et al. 2021 Supplement | **Original experiment:** Lysyk & Danyk 2007
+
+This analysis recreates the fecundity thermal performance curve from the Bluetongue virus transmission study, showing how midge reproduction varies with temperature.
+
+## Dataset
+
+We analyze 29 fecundity measurements (eggs per female per day) across 5 temperature groups:
+
+```{r fecundity-data, echo=FALSE, message=FALSE, warning=FALSE}
+fecundity <- tibble(
+  T = c(
+    rep(10, 6),   # 10 C
+    rep(15, 6),   # 15 C
+    rep(20, 6),   # 20 C
+    rep(25, 7),   # 25 C
+    rep(30, 7)    # 30 C
+  ),
+  F = c(
+    5.528, 3.122, 13.11, 9.745, 6.206, 31.191,
+    19.034, 16.0, 1.361, 1.242, 11.08, 13.961,
+    17.93, 41.531, 60.535, 39.856, 51.724, 69.951,
+    12.731, 1.154, 36.417, 0.465, 5.844, 7.048, 19.469,
+    31.938, 21.195, 12.255, 22.332, 0.365, 1.703, 1.536
+  )
+)
+
+# Display data summary
+cat("Temperature groups:\n")
+print(fecundity %>% count(T))
+cat("\nFecundity range:", round(min(fecundity$F), 1), "to", round(max(fecundity$F), 1), "eggs per female per day\n")
+```
+
+## Thermal Performance Curve
+
+We fit a Brière model to capture the temperature-dependent fecundity pattern:
+
+**Model:** F(T) = k × T × (T - T_min) × √(T_max - T)
+
+```{r fit-fecundity, echo=FALSE, message=FALSE, warning=FALSE}
+# Prepare data for bayesTPC
+data_list <- list(Temp = fecundity$T, Trait = fecundity$F)
+
+# Fit Brière model with biologically realistic priors
+set.seed(123)
+fit_fec <- b_TPC(
+  data = data_list,
+  model = "briere",
+  priors = list(
+    T_min = "dunif(5, 15)",    # Lower thermal limit
+    T_max = "dunif(32, 36)",   # Upper thermal limit
+    q = "dunif(0, 200)"        # Scaling parameter
+  ),
+  nchains = 4,
+  burn = 6000,
+  niter = 18000
+)
+```
+
+## Results
+
+### Fecundity Thermal Performance Curve
+
+```{r plot-fecundity, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Generate temperature grid for predictions
+temp_grid <- seq(0, 50, by = 0.1)
+
+# Get posterior samples
+samples <- as.matrix(fit_fec$samples[[1]])
+
+# Generate predictions for each sample
+predictions <- apply(samples, 1, function(params) {
+  T_min <- params["T_min"]
+  T_max <- params["T_max"] 
+  q <- params["q"]
+  
+  # Brière function
+  ifelse(temp_grid >= T_min & temp_grid <= T_max,
+         q * temp_grid * (temp_grid - T_min) * sqrt(pmax(T_max - temp_grid, 0)),
+         0)
+})
+
+# Calculate median and HPD intervals
+median_pred <- apply(predictions, 1, median)
+hpd_lower <- apply(predictions, 1, function(x) HPDinterval(as.mcmc(x), prob = 0.95)[1])
+hpd_upper <- apply(predictions, 1, function(x) HPDinterval(as.mcmc(x), prob = 0.95)[2])
+
+# Create single plot matching screenshot style
+par(mfrow = c(1, 1), mar = c(4, 4, 2, 1))
+plot(temp_grid, median_pred, 
+     type = "l", 
+     lwd = 2, 
+     col = "black",
+     xlab = "T (°C)", 
+     ylab = "Eggs per Female per Day",
+     main = "",
+     ylim = c(0, 80),
+     xlim = c(0, 50),
+     cex.lab = 1.1,
+     cex.axis = 1.0,
+     bty = "l")
+
+# Add HPD interval as dashed lines
+lines(temp_grid, hpd_lower, lty = 2, lwd = 1.5, col = "black")
+lines(temp_grid, hpd_upper, lty = 2, lwd = 1.5, col = "black")
+
+# Add data points as solid black circles
+points(fecundity$T, fecundity$F, pch = 16, col = "black", cex = 1.0)
+```
+
+### Key Parameters
+
+```{r param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# MAP Estimates (Maximum A Posteriori)
+map_params <- MAP_estimate(fit_fec)
+cat("**MAP Estimates:**\n")
+cat("• T_min =", round(map_params["T_min"], 2), "°C\n")
+cat("• T_max =", round(map_params["T_max"], 2), "°C\n") 
+cat("• q =", round(map_params["q"], 3), "\n")
+cat("• sigma.sq =", round(map_params["sigma.sq"], 4), "\n\n")
+
+# Extract key parameter estimates
+param_summary <- summary(fit_fec)
+key_params <- param_summary$parameters[c("T_min","T_max","q"), ]
+
+cat("**Posterior Medians:**\n")
+cat("• Lower limit (T_min):", round(as.numeric(key_params["T_min", "50%"]), 1), "°C\n")
+cat("• Upper limit (T_max):", round(as.numeric(key_params["T_max", "50%"]), 1), "°C\n")
+cat("• Scaling factor (q):", round(as.numeric(key_params["q", "50%"]), 1), "\n\n")
+
+cat("**Optimal Temperature:**\n")
+# Calculate optimal temperature (where fecundity peaks)
+T_opt <- (as.numeric(key_params["T_min", "50%"]) + as.numeric(key_params["T_max", "50%"])) / 2
+cat("• Peak fecundity at:", round(T_opt, 1), "°C\n")
+```
+
+## Biological Interpretation
+
+The thermal performance curve reveals critical insights about midge reproduction:
+
+### **Thermal Limits**
+- **Lower limit (T_min):** Below this temperature, midges cannot reproduce
+- **Upper limit (T_max):** Above this temperature, reproduction ceases due to heat stress
+
+### **Optimal Range**
+- **Peak performance:** Maximum fecundity occurs around the midpoint of the thermal range
+- **Temperature sensitivity:** The curve shows how reproduction drops off rapidly at thermal extremes
+
+### **Transmission Implications**
+These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.
+
