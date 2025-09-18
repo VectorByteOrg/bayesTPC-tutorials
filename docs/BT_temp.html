@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Bluetongue data reanalysis – bayesTPC Tutorials</title>
+<title>bt_temp – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,50 +135,11 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#bluetongue-virus-midge-fecundity-analysis" id="toc-bluetongue-virus-midge-fecundity-analysis" class="nav-link active" data-scroll-target="#bluetongue-virus-midge-fecundity-analysis">Bluetongue Virus: Midge Fecundity Analysis</a>
-  <ul class="collapse">
-  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
-  <li><a href="#thermal-performance-curve" id="toc-thermal-performance-curve" class="nav-link" data-scroll-target="#thermal-performance-curve">Thermal Performance Curve</a></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
-  <ul class="collapse">
-  <li><a href="#fecundity-thermal-performance-curve" id="toc-fecundity-thermal-performance-curve" class="nav-link" data-scroll-target="#fecundity-thermal-performance-curve">Fecundity Thermal Performance Curve</a></li>
-  <li><a href="#key-parameters" id="toc-key-parameters" class="nav-link" data-scroll-target="#key-parameters">Key Parameters</a></li>
-  </ul></li>
-  <li><a href="#biological-interpretation" id="toc-biological-interpretation" class="nav-link" data-scroll-target="#biological-interpretation">Biological Interpretation</a>
-  <ul class="collapse">
-  <li><a href="#thermal-limits" id="toc-thermal-limits" class="nav-link" data-scroll-target="#thermal-limits"><strong>Thermal Limits</strong></a></li>
-  <li><a href="#optimal-range" id="toc-optimal-range" class="nav-link" data-scroll-target="#optimal-range"><strong>Optimal Range</strong></a></li>
-  <li><a href="#transmission-implications" id="toc-transmission-implications" class="nav-link" data-scroll-target="#transmission-implications"><strong>Transmission Implications</strong></a></li>
-  </ul></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Bluetongue data reanalysis</h1>
-</div>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
-
-<div class="quarto-title-meta column-page-left">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
 
 
 <section id="bluetongue-virus-midge-fecundity-analysis" class="level1">
@@ -193,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
 <pre><code>Temperature groups:</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 2
+<pre><code># A tibble: 5 x 2
       T     n
   &lt;dbl&gt; &lt;int&gt;
 1    10     6
@@ -261,16 +222,16 @@ Configuring Output:
 <pre><code>**MAP Estimates:**</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• T_min = 5.01 °C</code></pre>
+<pre><code>&lt;U+2022&gt; T_min = 5.01 &lt;U+00B0&gt;C</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• T_max = 32.01 °C</code></pre>
+<pre><code>&lt;U+2022&gt; T_max = 32.01 &lt;U+00B0&gt;C</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• q = 0.018 </code></pre>
+<pre><code>&lt;U+2022&gt; q = 0.018 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• sigma.sq = 66.5715 </code></pre>
+<pre><code>&lt;U+2022&gt; sigma.sq = 66.5715 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC MCMC of Type:
@@ -320,19 +281,19 @@ sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
 <pre><code>**Posterior Medians:**</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• Lower limit (T_min):  °C</code></pre>
+<pre><code>&lt;U+2022&gt; Lower limit (T_min):  &lt;U+00B0&gt;C</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• Upper limit (T_max):  °C</code></pre>
+<pre><code>&lt;U+2022&gt; Upper limit (T_max):  &lt;U+00B0&gt;C</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• Scaling factor (q):  </code></pre>
+<pre><code>&lt;U+2022&gt; Scaling factor (q):  </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>**Optimal Temperature:**</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>• Peak fecundity at:  °C</code></pre>
+<pre><code>&lt;U+2022&gt; Peak fecundity at:  &lt;U+00B0&gt;C</code></pre>
 </div>
 </div>
 </section>
