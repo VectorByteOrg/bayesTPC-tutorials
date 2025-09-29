@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: docs
+  
 website:
   title: "bayesTPC Tutorials"
   navbar:
@@ -37,4 +38,4 @@ format:
     fig-format: png
     fig-cap-location: bottom
 
-editor: source
+editor: source 

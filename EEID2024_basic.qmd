@@ -1,6 +1,22 @@
 ---
-title: "Introduction to Bayesian Methods"
-subtitle: 'Activity: Fitting TPCs using `bayesTPC`'
+title: "Introduction to Fitting TPCs using `bayesTPC`"
+author:
+  - name: 
+      given: Leah R.
+      family: Johnson
+    url: https://lrjohnson0.github.io/QEDLab/leahJ.html
+    affiliation: Virginia Tech and VectorByte
+  - name: 
+      given: Sean
+      family: Sorek
+    affiliation: Virginia Tech, VectorByte, Columbia Univeristy
+  - name: 
+      given: Yusi
+      family: Yao
+    affiliation: Virginia Tech and VectorByte
+citation: true
+date: 2025-09-01
+date-format: long
 format:
   html:
     toc: true
@@ -12,7 +28,7 @@ format:
 # Introduction
 
 ```{r, echo=FALSE}
-set.seed(1234)
+set.seed(12345)
 ```
 
 This section is focused on using the `bayesTPC` package to fit TPCs to data using the methods we've explored in the Bayesian lectures and the first two activities. Here we won't be talking much about the implementation, but instead will rely on the `bayesTPC` package and it's functions to allow us to specify, fit, and analyze the data.
@@ -53,13 +69,17 @@ These three trait sets allow us to explore a full range of models and functional
 
 ## Data from VecTraits
 
-The data we want to fit is available on the VecTraits database. We can use the helper function included as part of `bayesTPC` that isdesigned to interact with this database, `get_datasets()`, along with the appropriate data set id numbers to retrieve and load them into `R`.
+The data we want to fit is available on the VecTraits database. We can use the helper function included as part of `bayesTPC` that is designed to interact with this database, `get_VB_datasets()`, along with the appropriate data set id numbers to retrieve and load them into `R`.
 
 ```{r, results = F}
 #| cache: true
 
-##aedes_data <- get_VB_datasets(577:579) # updated get_datasets to get_VB_datasets
+aedes_data <- get_VB_datasets(577:579) 
 
+```
+
+Alternatively, if pulling the data isn't working, or you prefer to work with locally saved data, you can read from a csv or similar:
+```{r, eval=FALSE}
 aedes_data<-list()
 
 aedes_data[[1]]<-read.csv("data/VByte_577.csv")
@@ -98,7 +118,7 @@ juv_survival <- list(Trait = aedes_data[[1]]$OriginalTraitValue,
 Notice that we follow a convention here treating the development rate as 1/development time. This is a common assumption (although it is formally only valid if we believe that development times are exponentially distributed). Often mathematical models assume exponentially distributed traits, and so this is why the data are modeled in this fashion. We will show this approach here, as it is common, but do not advocate for this in general. 
 
 
-```{r, echo=FALSE, fig.width=8, fig.height=3.5}
+```{r, echo=FALSE, fig.width=8, fig.height=4}
 #| label: fig-plotData
 #| fig-cap: "Three example datasets from @huxley2022competition: Development Rate, Adult Longevity, and Juvenile Survival. Temperatures for the juvenile survival data are jittered for visibility"
 
@@ -132,8 +152,7 @@ q T (T-T_0) \sqrt{T_m-T} & \text {if } T_0 < T <T_m \\
 $$
 In both models, $T_0$ is the lower thermal limit, $T_m$ is the upper thermal limit (i.e., where the trait value goes to zero on either end), and $q>0$ determines the curvature, and so with the other parameters determines the height of the curve (i.e., value of the trait at the optimum temperature). Note that above we're assuming that the quadratic must be concave down (hence the negative sign), and that the performance goes to zero outside of the thermal limits. In some cases we instead use a concave-up quadratic, although it must be parameterized differently. 
 
-We include eight common TPC models (listed with `get_models()`) in the package (@Tbl-TPCs). Users can obtain the default specification and priors for these models with `get_default_model_specification()`. The package also includes linear and quadratic formulations for Bernoulli, binomial, and Poisson GLMs, assuming canonical link functions
-.
+We include eight common TPC models (listed with `get_models()`) in the package (@Tbl-TPCs). Users can obtain the default specification and priors for these models with `get_default_model_specification()`. The package also includes linear and quadratic formulations for Bernoulli, binomial, and Poisson GLMs, assuming canonical link functions.
 
 ::: {#tbl-TPCs}
 ```{=latex}
@@ -171,7 +190,7 @@ We can view the form of the implemented TPC using the `get_formula` function:
 get_formula("briere")
 ```
 
-Currently, the default likelihood for all TPCs a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using "get_default_priors":
+Currently, the default likelihood for all TPCs a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using `get_default_priors`:
 
 ```{r}
 get_default_priors("briere")
@@ -253,6 +272,9 @@ This is much better! All of the chains now have the desired "fuzzy caterpillar" 
 We can examine the ACF of the chains as well (one for each parameter), similarly to a time series, to again check for autocorrelation within the chain (we want the autocorrelation to be fairly low):
 
 ```{r, fig.align='center', fig.width=8, fig.height=6}
+#| label: fig-plotACF1
+#| fig-cap: "ACF plots of the MCMC chains for the three parameters of the Briere TPC  and the observation parameter for model fitted to the Adult Longevity data. Here the burn-in portion of the MCMC chains has been dropped."
+
 s1<-as.data.frame(adult_life_fit$samples[myburn:10000,])
 par(mfrow=c(2,2), bty="n", mar=c(4,4,3,1)+.1)
 for(i in 1:4) {
@@ -264,8 +286,7 @@ for(i in 1:4) {
 There is still autocorrelation, especially for two of the quadratic parameters. The chain for $\sigma$ is mixing best (the ACF falls off the most quickly). We could reduce the autocorrelation even further by thinning the chain **(i.e., change the `nt` parameter to 5 or 10)**, or changing the type of sampler.
 
 
-A second important diagnostic step is to compare the marginal priors and posteriors of our model parameters. This enables us to confirm that (unless we've purposefully specified an informative prior) that our posterior distributions have been informed by the data.
-`bayesTPC` includes a built in function, `ppo_plot()`, that creates posterior/prior overlap plots for all model parameters (note that the priors are smoothed because the algorithm uses kernel smoothing instead of the exact distribution).
+A second important diagnostic step is to compare the marginal priors and posteriors of our model parameters. This enables us to confirm that (unless we've purposefully specified an informative prior) that our posterior distributions have been informed by the data. `bayesTPC` includes a built in function, `ppo_plot()`, that creates posterior/prior overlap plots for all model parameters (note that the priors are smoothed because the algorithm uses kernel smoothing instead of the exact distribution).
 
 
 ```{r, fig.width=8, fig.height=6}
