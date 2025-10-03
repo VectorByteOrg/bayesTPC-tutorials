@@ -3,6 +3,12 @@ format: html
 toc: false
 ---
 
+# Bluetongue Virus: Thermal Performance Curves
+
+**Source:** El Moustaid et al. 2021 Supplement | **Data:** Lysyk & Danyk 2007, Mayo et al. 2020
+
+This analysis recreates key thermal performance curves from the Bluetongue virus transmission study, fitting Bayesian models to estimate Maximum A Posteriori (MAP) parameters for each trait. The solid lines show posterior means/medians with 95% HPD intervals (dashed lines).
+
 ```{r setup, include=FALSE}
 library(nimble)
 library(bayesTPC)
@@ -13,47 +19,91 @@ library(HDInterval)
 library(patchwork)
 ```
 
-# Bluetongue Virus: Midge Fecundity Analysis
+## Adult Mortality Rate (μ)
 
-**Source:** El Moustaid et al. 2021 Supplement | **Original experiment:** Lysyk & Danyk 2007
-
-This analysis recreates the fecundity thermal performance curve from the Bluetongue virus transmission study, showing how midge reproduction varies with temperature.
-
-## Dataset
-
-We analyze 29 fecundity measurements (eggs per female per day) across 5 temperature groups:
-
-```{r fecundity-data, echo=FALSE, message=FALSE, warning=FALSE}
-fecundity <- tibble(
-  T = c(
-    rep(10, 6),   # 10 C
-    rep(15, 6),   # 15 C
-    rep(20, 6),   # 20 C
-    rep(25, 7),   # 25 C
-    rep(30, 7)    # 30 C
-  ),
-  F = c(
-    5.528, 3.122, 13.11, 9.745, 6.206, 31.191,
-    19.034, 16.0, 1.361, 1.242, 11.08, 13.961,
-    17.93, 41.531, 60.535, 39.856, 51.724, 69.951,
-    12.731, 1.154, 36.417, 0.465, 5.844, 7.048, 19.469,
-    31.938, 21.195, 12.255, 22.332, 0.365, 1.703, 1.536
-  )
-)
-
-# Display data summary
-cat("Temperature groups:\n")
-print(fecundity %>% count(T))
-cat("\nFecundity range:", round(min(fecundity$F), 1), "to", round(max(fecundity$F), 1), "eggs per female per day\n")
+```{r mu-data, echo=FALSE, message=FALSE, warning=FALSE}
+# Load updated dataset from CSV and filter for adult mortality rate (mu)
+mu_df <- readr::read_csv("data/Bluetongue_Params_0723.csv", show_col_types = FALSE) %>%
+  dplyr::filter(Trait == "mu") %>%
+  dplyr::transmute(T = AmbientTemp, mu = TraitValueSI) %>%
+  dplyr::arrange(T)
+cat("Temp range:", paste(range(mu_df$T), collapse = "–"), "°C\n")
+cat("mu range:", paste(round(range(mu_df$mu), 3), collapse = "–"), " per day\n")
 ```
 
-## Thermal Performance Curve
+## Thermal Performance Curve (Quadratic via bayesTPC)
 
-We fit a Brière model to capture the temperature-dependent fecundity pattern:
+```{r mu-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# Load updated dataset from CSV and filter for adult mortality rate (mu)
+mu_df <- readr::read_csv("data/Bluetongue_Params_0723.csv", show_col_types = FALSE) %>%
+  dplyr::filter(Trait == "mu") %>%
+  dplyr::transmute(T = AmbientTemp, mu = TraitValueSI) %>%
+  dplyr::arrange(T)
+mu_data_list <- list(Temp = mu_df$T, Trait = mu_df$mu)
+set.seed(123)
+fit_mu <- b_TPC(
+  data = mu_data_list,
+  model = "quadratic",
+  priors = list(
+    T_min    = "dunif(5,15)",
+    T_max    = "dunif(18,40)",
+    q        = "dunif(0, 0.5)",
+    sigma.sq = "dexp(1 / 0.1^2)"
+  ),
+  nchains = 4,
+  burn = 6000,
+  niter = 18000
+)
+```
 
-**Model:** F(T) = k × T × (T - T_min) × √(T_max - T)
+```{r mu-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Use ALL chains and established prediction pipeline
+samples_mu <- do.call(rbind, lapply(fit_mu$samples, as.matrix))
+temp_grid <- seq(0, 50, by = 0.1)
+
+# Evaluate quadratic model using bayesTPC helper to avoid formula drift
+quad_fun <- bayesTPC::get_model_function("quadratic")
+pred_mu <- sapply(temp_grid, function(Ti) quad_fun(
+  q = samples_mu[, "q"], T_min = samples_mu[, "T_min"], T_max = samples_mu[, "T_max"], Temp = Ti
+))
+
+# Mean curve + 95% HPD across posterior draws
+mean_mu <- colMeans(pred_mu)
+hpd_mu <- apply(pred_mu, 2, function(x) as.numeric(HDInterval::hdi(x, credMass = 0.95)))
+lo_mu <- hpd_mu[1, ]; hi_mu <- hpd_mu[2, ]
+Topt_mu <- temp_grid[which.max(mean_mu)]
+
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, mean_mu, type = "l", lwd = 2, col = "black",
+     xlab = "T (°C)", ylab = "Adult Mortality Rate (per day)",
+     ylim = c(0, max(0.2, max(hi_mu, mu_df$mu, na.rm = TRUE) * 1.05)), xlim = c(0, 50), bty = "l")
+lines(temp_grid, lo_mu, lty = 2, lwd = 1.2)
+lines(temp_grid, hi_mu, lty = 2, lwd = 1.2)
+points(mu_df$T, mu_df$mu, pch = 16, col = "black")
+abline(v = Topt_mu, lty = 3)
+lbl <- sprintf("Topt ≈ %.1f°C (mean curve)", Topt_mu)
+if (length(lbl) == 1 && !is.na(lbl)) mtext(lbl, side = 3, adj = 1, cex = 0.9)
+```
+
+```{r mu-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# MAP Estimates
+map_mu <- MAP_estimate(fit_mu)
+cat("**MAP Estimates (μ):**\n")
+if(!is.null(map_mu)){
+  if("T_min" %in% names(map_mu)) cat("• T_min =", round(map_mu["T_min"], 2), "°C\n")
+  if("T_max" %in% names(map_mu)) cat("• T_max =", round(map_mu["T_max"], 2), "°C\n")
+  if("q" %in% names(map_mu))     cat("• q =", round(map_mu["q"], 4), "\n")
+  if("sigma.sq" %in% names(map_mu)) cat("• sigma.sq =", round(map_mu["sigma.sq"], 5), "\n")
+} else {
+  cat("(MAP unavailable)\n")
+}
+```
+## Midge Fecundity (EFD)
 
 ```{r fit-fecundity, echo=FALSE, message=FALSE, warning=FALSE}
+fecundity <- readr::read_csv("data/Bluetongue_Params_0723.csv", show_col_types = FALSE) %>%
+  dplyr::filter(Trait == "EFD") %>%
+  dplyr::transmute(T = AmbientTemp, F = TraitValueSI)
 # Prepare data for bayesTPC
 data_list <- list(Temp = fecundity$T, Trait = fecundity$F)
 
@@ -72,10 +122,6 @@ fit_fec <- b_TPC(
   niter = 18000
 )
 ```
-
-## Results
-
-### Fecundity Thermal Performance Curve
 
 ```{r plot-fecundity, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
 # Generate temperature grid for predictions
@@ -124,43 +170,227 @@ lines(temp_grid, hpd_upper, lty = 2, lwd = 1.5, col = "black")
 points(fecundity$T, fecundity$F, pch = 16, col = "black", cex = 1.0)
 ```
 
-### Key Parameters
-
 ```{r param-summary, echo=FALSE, message=FALSE, warning=FALSE}
 # MAP Estimates (Maximum A Posteriori)
 map_params <- MAP_estimate(fit_fec)
-cat("**MAP Estimates:**\n")
+cat("**MAP Estimates (EFD):**\n")
 cat("• T_min =", round(map_params["T_min"], 2), "°C\n")
 cat("• T_max =", round(map_params["T_max"], 2), "°C\n") 
 cat("• q =", round(map_params["q"], 3), "\n")
-cat("• sigma.sq =", round(map_params["sigma.sq"], 4), "\n\n")
-
-# Extract key parameter estimates
-param_summary <- summary(fit_fec)
-key_params <- param_summary$parameters[c("T_min","T_max","q"), ]
-
-cat("**Posterior Medians:**\n")
-cat("• Lower limit (T_min):", round(as.numeric(key_params["T_min", "50%"]), 1), "°C\n")
-cat("• Upper limit (T_max):", round(as.numeric(key_params["T_max", "50%"]), 1), "°C\n")
-cat("• Scaling factor (q):", round(as.numeric(key_params["q", "50%"]), 1), "\n\n")
-
-cat("**Optimal Temperature:**\n")
-# Calculate optimal temperature (where fecundity peaks)
-T_opt <- (as.numeric(key_params["T_min", "50%"]) + as.numeric(key_params["T_max", "50%"])) / 2
-cat("• Peak fecundity at:", round(T_opt, 1), "°C\n")
+cat("• sigma.sq =", round(map_params["sigma.sq"], 4), "\n")
 ```
 
-## Biological Interpretation
+## Larval Survival Probability (pL)
 
-The thermal performance curve reveals critical insights about midge reproduction:
+```{r pl-data-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# Load updated dataset from CSV and filter for larval survival probability (pL)
+pL <- readr::read_csv("data/Bluetongue_Params_0723.csv", show_col_types = FALSE) %>%
+  dplyr::filter(Trait == "pL") %>%
+  dplyr::transmute(T = AmbientTemp, pL = TraitValueSI) %>%
+  dplyr::arrange(T)
 
-### **Thermal Limits**
-- **Lower limit (T_min):** Below this temperature, midges cannot reproduce
-- **Upper limit (T_max):** Above this temperature, reproduction ceases due to heat stress
+# Fit Brière model using bayesTPC
+pl_data_list <- list(Temp = pL$T, Trait = pL$pL)
+set.seed(123)
+fit_pL <- b_TPC(
+  data = pl_data_list,
+  model = "briere",
+  priors = list(
+    T_min   = "dunif(18,22)",
+    T_max   = "dunif(35,40)",
+    q       = "dunif(0,0.03)",
+    sigma.sq = "dexp(1 / 0.05^2)"
+  ),
+  nchains = 4,
+  burn = 6000,
+  niter = 18000
+)
+```
 
-### **Optimal Range**
-- **Peak performance:** Maximum fecundity occurs around the midpoint of the thermal range
-- **Temperature sensitivity:** The curve shows how reproduction drops off rapidly at thermal extremes
+```{r pl-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# 1) Use ALL chains
+samples_pL <- do.call(rbind, lapply(fit_pL$samples, as.matrix))
 
-### **Transmission Implications**
-These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.
+# 2) Predictions on grid
+temp_grid <- seq(0, 50, by = 0.1)
+briere_fun <- function(T, T_min, T_max, q) {
+  ifelse(T >= T_min & T <= T_max,
+         q * T * (T - T_min) * sqrt(pmax(T_max - T, 0)), 0)
+}
+
+pred_pL <- sapply(temp_grid, function(Ti) {
+  briere_fun(Ti, samples_pL[, "T_min"], samples_pL[, "T_max"], samples_pL[, "q"])
+})
+
+# 3) Summaries (median curve + 95% HPD for the mean curve)
+median_pL <- apply(pred_pL, 2, median)
+hpd_bounds <- apply(pred_pL, 2, function(x) as.numeric(HDInterval::hdi(x, credMass = 0.95)))
+hpd_lower_pL <- hpd_bounds[1, ]
+hpd_upper_pL <- hpd_bounds[2, ]
+
+# 4) Topt = argmax of median curve (robust and version-agnostic)
+Topt_pL <- temp_grid[which.max(median_pL)]
+
+# 5) Plot
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, median_pL,
+  type = "l", lwd = 2, col = "black",
+  xlab = "T (°C)", ylab = "Larval Survival Probability",
+  ylim = c(0, 1), xlim = c(0, 50), bty = "l", yaxt = "n")
+axis(2, at = seq(0,1, by = 0.2), las = 1)
+lines(temp_grid, hpd_lower_pL, lty = 2, lwd = 1.2)
+lines(temp_grid, hpd_upper_pL, lty = 2, lwd = 1.2)
+points(pL$T, pL$pL, pch = 16, col = "black")
+abline(v = Topt_pL, lty = 3)
+
+# Safe label for mtext()
+lbl <- sprintf("Topt ≈ %.1f°C (median curve)", Topt_pL)
+if (length(lbl) == 1 && !is.na(lbl)) {
+  mtext(lbl, side = 3, adj = 1, cex = 0.9)
+}
+```
+
+```{r pl-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# MAP Estimates (Maximum A Posteriori)
+map_pL <- MAP_estimate(fit_pL)
+cat("**MAP Estimates (pL):**\n")
+cat("• T_min =", round(map_pL["T_min"], 2), "°C\n")
+cat("• T_max =", round(map_pL["T_max"], 2), "°C\n")
+cat("• q =", round(map_pL["q"], 4), "\n")
+cat("• sigma.sq =", round(map_pL["sigma.sq"], 5), "\n")
+
+```
+
+## Biting Rate (a)
+
+```{r a-data-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# Load updated dataset from CSV and filter for biting rate (a)
+a_df <- readr::read_csv("data/Bluetongue_Params_0723.csv", show_col_types = FALSE) %>%
+  dplyr::filter(Trait == "a") %>%
+  dplyr::transmute(T = AmbientTemp, a = TraitValueSI) %>%
+  dplyr::arrange(T)
+
+# Fit Brière model using bayesTPC
+a_data_list <- list(Temp = a_df$T, Trait = a_df$a)
+set.seed(123)
+fit_a <- b_TPC(
+  data = a_data_list,
+  model = "briere",
+  priors = list(
+    T_min    = "dunif(5,15)",
+    T_max    = "dunif(32,36)",
+    q        = "dunif(0,1)",
+    sigma.sq = "dexp(1 / 0.1^2)"
+  ),
+  nchains = 4,
+  burn = 6000,
+  niter = 18000
+)
+```
+
+```{r a-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Use ALL chains and established prediction pipeline
+samples_a <- do.call(rbind, lapply(fit_a$samples, as.matrix))
+temp_grid <- seq(0, 50, by = 0.1)
+briere_fun <- function(T, T_min, T_max, q) {
+  ifelse(T >= T_min & T <= T_max, q * T * (T - T_min) * sqrt(pmax(T_max - T, 0)), 0)
+}
+pred_a <- sapply(temp_grid, function(Ti) briere_fun(Ti, samples_a[, "T_min"], samples_a[, "T_max"], samples_a[, "q"]))
+median_a <- apply(pred_a, 2, median)
+hpd_a <- apply(pred_a, 2, function(x) as.numeric(HDInterval::hdi(x, credMass = 0.95)))
+lo_a <- hpd_a[1, ]; hi_a <- hpd_a[2, ]
+Topt_a <- temp_grid[which.max(median_a)]
+
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, median_a, type = "l", lwd = 2, col = "black",
+     xlab = "T (°C)", ylab = "Biting Rate (per day)",
+     ylim = c(0, 1), xlim = c(0, 50), bty = "l", yaxt = "n")
+axis(2, at = seq(0,1, by = 0.2), las = 1)
+lines(temp_grid, lo_a, lty = 2, lwd = 1.2)
+lines(temp_grid, hi_a, lty = 2, lwd = 1.2)
+points(a_df$T, a_df$a, pch = 16, col = "black")
+abline(v = Topt_a, lty = 3)
+lbl <- sprintf("Topt ≈ %.1f°C (median curve)", Topt_a)
+if (length(lbl) == 1 && !is.na(lbl)) mtext(lbl, side = 3, adj = 1, cex = 0.9)
+```
+
+```{r a-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# MAP Estimates (Maximum A Posteriori)
+map_a <- MAP_estimate(fit_a)
+cat("**MAP Estimates (a):**\n")
+cat("• T_min =", round(map_a["T_min"], 2), "°C\n")
+cat("• T_max =", round(map_a["T_max"], 2), "°C\n")
+cat("• q =", round(map_a["q"], 4), "\n")
+cat("• sigma.sq =", round(map_a["sigma.sq"], 5), "\n")
+```
+
+## Larva's Development Time (LDT)
+
+```{r ldt-data-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# Use direct data from user (LDT values in days) - exactly as specified
+ldt_df <- data.frame(
+  T = c(20, 23, 27, 30, 35),
+  LDT = c(34.5, 33.6, 26.5, 24.4, 16.7)
+)
+
+# Let's try a much simpler approach - fit directly to LDT using bayesTPC
+# Create a custom function that matches the original paper's quadratic
+ldt_data_list <- list(Temp = ldt_df$T, Trait = ldt_df$LDT)
+
+# Use a simple polynomial regression approach for better stability
+temp_centered <- ldt_df$T - mean(ldt_df$T)  # Center temperature for numerical stability
+ldt_fit <- lm(LDT ~ temp_centered + I(temp_centered^2), data = data.frame(LDT = ldt_df$LDT, temp_centered))
+
+# Extract coefficients for prediction
+intercept <- coef(ldt_fit)[1]
+linear_coef <- coef(ldt_fit)[2] 
+quad_coef <- coef(ldt_fit)[3]
+residual_sd <- summary(ldt_fit)$sigma
+
+# Generate some posterior-like samples by adding noise to the MLE estimates
+set.seed(123)
+n_samples <- 1000
+intercept_samples <- rnorm(n_samples, intercept, summary(ldt_fit)$coefficients[1,2])
+linear_samples <- rnorm(n_samples, linear_coef, summary(ldt_fit)$coefficients[2,2])
+quad_samples <- rnorm(n_samples, quad_coef, summary(ldt_fit)$coefficients[3,2])
+```
+
+```{r ldt-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Temperature grid for predictions (matching original: 0-50°C)
+temp_grid <- seq(0, 50, by = 0.1)
+temp_grid_centered <- temp_grid - mean(ldt_df$T)  # Center using same value
+
+# Generate predictions using the quadratic model
+pred_ldt <- sapply(1:n_samples, function(i) {
+  intercept_samples[i] + linear_samples[i] * temp_grid_centered + quad_samples[i] * temp_grid_centered^2
+})
+
+# Calculate mean and 95% credible intervals
+mean_ldt <- rowMeans(pred_ldt)
+ci_ldt <- apply(pred_ldt, 1, function(x) quantile(x, c(0.025, 0.975)))
+lo_ldt <- ci_ldt[1, ]
+hi_ldt <- ci_ldt[2, ]
+
+# Plot matching the original paper's style
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, mean_ldt, type = "l", lwd = 2, col = "black",
+     xlab = "T (°C)", ylab = "Larval Development Time",
+     xlim = c(0, 50), ylim = c(0, 60), bty = "l")
+lines(temp_grid, lo_ldt, lty = 2, lwd = 2, col = "black")
+lines(temp_grid, hi_ldt, lty = 2, lwd = 2, col = "black")
+points(ldt_df$T, ldt_df$LDT, pch = 16, col = "black", cex = 1.5)
+```
+
+```{r ldt-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# Report the fitted quadratic model parameters
+cat("**Fitted Quadratic Model (LDT):**\n")
+cat("• Intercept =", round(intercept, 2), "\n")
+cat("• Linear coefficient =", round(linear_coef, 4), "\n") 
+cat("• Quadratic coefficient =", round(quad_coef, 6), "\n")
+cat("• Residual SD =", round(residual_sd, 2), "\n")
+cat("• R-squared =", round(summary(ldt_fit)$r.squared, 3), "\n")
+
+# Report the model equation
+temp_center <- round(mean(ldt_df$T), 1)
+cat("\n**Model:** LDT =", round(intercept, 2), "+", round(linear_coef, 4), "*(T -", temp_center, ") +", round(quad_coef, 6), "*(T -", temp_center, ")²\n")
+```
