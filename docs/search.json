@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "BT_temp.html",
+    "href": "BT_temp.html",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Source: El Moustaid et al. 2021 Supplement | Data: Lysyk & Danyk 2007, Mayo et al. 2020\nThis analysis recreates key thermal performance curves from the Bluetongue virus transmission study, fitting Bayesian models to estimate Maximum A Posteriori (MAP) parameters for each trait. The solid lines show posterior means/medians with 95% HPD intervals (dashed lines).\n\n\n\n\nTemp range: 10.3–30.9 °C\n\n\nmu range: 0.037–0.138  per day\n\n\n\n\n\n\n\nCreating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (μ):**\n\n\n• T_min = 6.03 °C\n• T_max = 39.97 °C\n• q = 3e-04 \n• sigma.sq = 4e-04 \n\n\n\n\n\n\n\nCreating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (EFD):**\n\n\n• T_min = 12.9 °C\n\n\n• T_max = 36 °C\n\n\n• q = 0.023 \n\n\n• sigma.sq = 55.7955 \n\n\n\n\n\n\n\nCreating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (pL):**\n\n\n• T_min = 18.01 °C\n\n\n• T_max = 37.24 °C\n\n\n• q = 2e-04 \n\n\n• sigma.sq = 0.00302 \n\n\n\n\n\n\n\nCreating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (a):**\n\n\n• T_min = 11.4 °C\n\n\n• T_max = 36 °C\n\n\n• q = 4e-04 \n\n\n• sigma.sq = 0.008 \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n**Fitted Quadratic Model (LDT):**\n\n\n• Intercept = 27.78 \n\n\n• Linear coefficient = -1.2032 \n\n\n• Quadratic coefficient = -0.023137 \n\n\n• Residual SD = 1.42 \n\n\n• R-squared = 0.981 \n\n\n\n**Model:** LDT = 27.78 + -1.2032 *(T - 27 ) + -0.023137 *(T - 27 )²"
+  },
+  {
+    "objectID": "BT_temp.html#adult-mortality-rate-μ",
+    "href": "BT_temp.html#adult-mortality-rate-μ",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Temp range: 10.3–30.9 °C\n\n\nmu range: 0.037–0.138  per day"
+  },
+  {
+    "objectID": "BT_temp.html#thermal-performance-curve-quadratic-via-bayestpc",
+    "href": "BT_temp.html#thermal-performance-curve-quadratic-via-bayestpc",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Creating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (μ):**\n\n\n• T_min = 6.03 °C\n• T_max = 39.97 °C\n• q = 3e-04 \n• sigma.sq = 4e-04"
+  },
+  {
+    "objectID": "BT_temp.html#midge-fecundity-efd",
+    "href": "BT_temp.html#midge-fecundity-efd",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Creating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (EFD):**\n\n\n• T_min = 12.9 °C\n\n\n• T_max = 36 °C\n\n\n• q = 0.023 \n\n\n• sigma.sq = 55.7955"
+  },
+  {
+    "objectID": "BT_temp.html#larval-survival-probability-pl",
+    "href": "BT_temp.html#larval-survival-probability-pl",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Creating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (pL):**\n\n\n• T_min = 18.01 °C\n\n\n• T_max = 37.24 °C\n\n\n• q = 2e-04 \n\n\n• sigma.sq = 0.00302"
+  },
+  {
+    "objectID": "BT_temp.html#biting-rate-a",
+    "href": "BT_temp.html#biting-rate-a",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "Creating NIMBLE model:\n - Configuring model.\n\n\n - Compiling model.\n\nCreating MCMC:\n - Configuring MCMC.\n - Compiling MCMC.\n - Running MCMC.\n\nProgress:\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n|-------------|-------------|-------------|-------------|\n|-------------------------------------------------------|\n\nConfiguring Output:\n - Finding Max. a Post. parameters.\n\n\n\n\n\n\n\n\n\n\n\n\n\n**MAP Estimates (a):**\n\n\n• T_min = 11.4 °C\n\n\n• T_max = 36 °C\n\n\n• q = 4e-04 \n\n\n• sigma.sq = 0.008"
+  },
+  {
+    "objectID": "BT_temp.html#larvas-development-time-ldt",
+    "href": "BT_temp.html#larvas-development-time-ldt",
+    "title": "Bluetongue Virus: Thermal Performance Curves",
+    "section": "",
+    "text": "**Fitted Quadratic Model (LDT):**\n\n\n• Intercept = 27.78 \n\n\n• Linear coefficient = -1.2032 \n\n\n• Quadratic coefficient = -0.023137 \n\n\n• Residual SD = 1.42 \n\n\n• R-squared = 0.981 \n\n\n\n**Model:** LDT = 27.78 + -1.2032 *(T - 27 ) + -0.023137 *(T - 27 )²"
+  }
+]
