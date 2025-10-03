@@ -7,165 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Dr.&nbsp;Leah R. Johnson – bayesTPC Tutorials</title>
+<title>bt_temp – bayesTPC Tutorials</title>
 <style>
-html {
-  color: #1a1a1a;
-  background-color: #fdfdfd;
-}
-body {
-  margin: 0 auto;
-  max-width: 36em;
-  padding-left: 50px;
-  padding-right: 50px;
-  padding-top: 50px;
-  padding-bottom: 50px;
-  hyphens: auto;
-  overflow-wrap: break-word;
-  text-rendering: optimizeLegibility;
-  font-kerning: normal;
-}
-@media (max-width: 600px) {
-  body {
-    font-size: 0.9em;
-    padding: 12px;
-  }
-  h1 {
-    font-size: 1.8em;
-  }
-}
-@media print {
-  html {
-    background-color: white;
-  }
-  body {
-    background-color: transparent;
-    color: black;
-    font-size: 12pt;
-  }
-  p, h2, h3 {
-    orphans: 3;
-    widows: 3;
-  }
-  h2, h3, h4 {
-    page-break-after: avoid;
-  }
-}
-p {
-  margin: 1em 0;
-}
-a {
-  color: #1a1a1a;
-}
-a:visited {
-  color: #1a1a1a;
-}
-img {
-  max-width: 100%;
-}
-svg {
-  height; auto;
-  max-width: 100%;
-}
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 1.4em;
-}
-h5, h6 {
-  font-size: 1em;
-  font-style: italic;
-}
-h6 {
-  font-weight: normal;
-}
-ol, ul {
-  padding-left: 1.7em;
-  margin-top: 1em;
-}
-li > ol, li > ul {
-  margin-top: 0;
-}
-ul > li:not(:has(> p)) > ul,
-ol > li:not(:has(> p)) > ul,
-ul > li:not(:has(> p)) > ol,
-ol > li:not(:has(> p)) > ol {
-  margin-bottom: 0;
-}
-ul > li:not(:has(> p)) > ul > li:has(> p),
-ol > li:not(:has(> p)) > ul > li:has(> p),
-ul > li:not(:has(> p)) > ol > li:has(> p),
-ol > li:not(:has(> p)) > ol > li:has(> p) {
-  margin-top: 1rem;
-}
-blockquote {
-  margin: 1em 0 1em 1.7em;
-  padding-left: 1em;
-  border-left: 2px solid #e6e6e6;
-  color: #606060;
-}
-code {
-  font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-  font-size: 85%;
-  margin: 0;
-  hyphens: manual;
-}
-pre {
-  margin: 1em 0;
-  overflow: auto;
-}
-pre code {
-  padding: 0;
-  overflow: visible;
-  overflow-wrap: normal;
-}
-.sourceCode {
- background-color: transparent;
- overflow: visible;
-}
-hr {
-  border: none;
-  border-top: 1px solid #1a1a1a;
-  height: 1px;
-  margin: 1em 0;
-}
-table {
-  margin: 1em 0;
-  border-collapse: collapse;
-  width: 100%;
-  overflow-x: auto;
-  display: block;
-  font-variant-numeric: lining-nums tabular-nums;
-}
-table caption {
-  margin-bottom: 0.75em;
-}
-tbody {
-  margin-top: 0.5em;
-  border-top: 1px solid #1a1a1a;
-  border-bottom: 1px solid #1a1a1a;
-}
-th {
-  border-top: 1px solid #1a1a1a;
-  padding: 0.25em 0.5em 0.25em 0.5em;
-}
-td {
-  padding: 0.125em 0.5em 0.25em 0.5em;
-}
-header {
-  margin-bottom: 4em;
-  text-align: center;
-}
-#TOC li {
-  list-style: none;
-}
-#TOC ul {
-  padding-left: 1.3em;
-}
-#TOC > ul {
-  padding-left: 0;
-}
-#TOC a:not(:hover) {
-  text-decoration: none;
-}
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -191,6 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7b4406b7675125bc2ba204020e191172.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -258,31 +102,16 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./intro.html"> 
-<span class="menu-text">Materials</span></a>
+<span class="menu-text">Tutorials</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./materials.html"> 
-<span class="menu-text">More Examples</span></a>
+    <a class="nav-link active" href="./BT_temp.html" aria-current="page"> 
+<span class="menu-text">Bluetongue Refit</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-team" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Team</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-team">    
-        <li>
-    <a class="dropdown-item" href="./leahJ.html">
- <span class="dropdown-text">PI: Dr.&nbsp;LR Johnson</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="./team.html"> 
+<span class="menu-text">Team</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="./people_current.html">
- <span class="dropdown-text">Current Members</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./people_alumni.html">
- <span class="dropdown-text">Lab Alumni</span></a>
-  </li>  
-    </ul>
-  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -308,65 +137,203 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<div class="quarto-about-trestles column-page">
-  <div class="about-entity">
-    <img src="images/leah.jpg" class="about-image
-  rounded " style="width: 20em;">
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Dr.&nbsp;Leah R. Johnson</h1>
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="bluetongue-virus-midge-fecundity-analysis" class="level1">
+<h1>Bluetongue Virus: Midge Fecundity Analysis</h1>
+<p><strong>Source:</strong> El Moustaid et al.&nbsp;2021 Supplement | <strong>Original experiment:</strong> Lysyk &amp; Danyk 2007</p>
+<p>This analysis recreates the fecundity thermal performance curve from the Bluetongue virus transmission study, showing how midge reproduction varies with temperature.</p>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>We analyze 29 fecundity measurements (eggs per female per day) across 5 temperature groups:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Temperature groups:</code></pre>
 </div>
-<div class="quarto-title-meta column-page">
-  </div>
-</header>
-    <div class="about-links">
-  <a href="https://scholar.google.com/citations?user=1CkxVtEAAAAJ&amp;hl=en" class="about-link" rel="" target="">
-    <i class="bi bi-google"></i>
-     <span class="about-link-text">Google Scholar</span>
-  </a>
-  <a href="https://lrjohnson0.github.io/QEDLab/lrjohnsonCV.pdf" class="about-link" rel="" target="">
-    <i class="bi bi-card-text"></i>
-     <span class="about-link-text">CV</span>
-  </a>
-  <a href="https://twitter.com/Lrjohnson0" class="about-link" rel="" target="">
-    <i class="bi bi-twitter"></i>
-     <span class="about-link-text">Twitter</span>
-  </a>
-  <a href="mailto:lrjohn@vt.edu" class="about-link" rel="" target="">
-    <i class="bi bi-email"></i>
-     <span class="about-link-text">Email</span>
-  </a>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+      T     n
+  &lt;dbl&gt; &lt;int&gt;
+1    10     6
+2    15     6
+3    20     6
+4    25     7
+5    30     7</code></pre>
 </div>
-  </div>
-  <div class="about-contents"><main class="content column-page" id="quarto-document-content">
-<section id="bio" class="level2">
-<h2 data-anchor-id="bio">Bio</h2>
-<p>Dr.&nbsp;Johnson is an Associate Professor of Statistics at Virginia Tech. Her research interests are in statistical and mathematical biology, ecology, and epidemiology. In particular, she is interested in how individual behavior and local interactions between individuals in a population influence population level patterns, and statistical methodologies for inference of mechanistic models of biological systems. Dr.&nbsp;Johnson is also moving into ecological forecasting.</p>
-<p><br></p>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Fecundity range: 0.4 to 70 eggs per female per day</code></pre>
+</div>
+</div>
 </section>
-<section id="education" class="level2">
-<h2 data-anchor-id="education">Education</h2>
-<p><strong>University of California Santa Cruz</strong> | Santa Cruz, CA</p>
-<p>Ph.D.&nbsp;in Physics/Applied Math and Statistics | 2006</p>
-<p><strong>University of California Santa Cruz</strong> | Santa Cruz, CA</p>
-<p>M.S. in Physics | 2003</p>
-<p><strong>College of William and Mary</strong> | Williamsburg, VA</p>
-<p>B.S. in Physics | 2001</p>
-<p><br></p>
+<section id="thermal-performance-curve" class="level2">
+<h2 class="anchored" data-anchor-id="thermal-performance-curve">Thermal Performance Curve</h2>
+<p>We fit a Brière model to capture the temperature-dependent fecundity pattern:</p>
+<p><strong>Model:</strong> F(T) = k × T × (T - T_min) × √(T_max - T)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
 </section>
-<section id="major-projects" class="level2">
-<h2 data-anchor-id="major-projects">Major Projects</h2>
-<p><a href="http://vectorbite.org/"><strong>VectorBiTE RCN</strong></a> | US PI</p>
-<p><a href="https://www.vectorbyte.org/"><strong>VectorByte Initiative</strong></a> | PI</p>
-<p><a href="https://ecoforecast.org/rcn/"><strong>Ecological Forecasting Initiative RCN</strong></a> | Steering Committee</p>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="fecundity-thermal-performance-curve" class="level3">
+<h3 class="anchored" data-anchor-id="fecundity-thermal-performance-curve">Fecundity Thermal Performance Curve</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="key-parameters">Key Parameters</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 5.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 32.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 0.018 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 66.5715 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>bayesTPC MCMC of Type:
+  briere
+
+Formula:
+  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
+* (T_max &gt; Temp) * (Temp &gt; T_min) )
+
+Distribution:
+  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
+
+Priors:
+  q ~ dunif(0, 200) 
+  T_max ~ dunif(32, 36) 
+  T_min ~ dunif(5, 15) 
+  sigma.sq ~ dexp(1)
+
+Max. A Post. Parameters: 
+    T_max     T_min         q  sigma.sq  log_prob 
+  32.0051    5.0101    0.0184   66.5715 -249.7617 
+
+MCMC Results:
+Iterations = 1:12000
+Thinning interval = 1 
+Number of chains = 4 
+Sample size per chain = 12000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean       SD  Naive SE Time-series SE
+T_max    32.28717 0.313422 1.431e-03      6.308e-03
+T_min     5.85043 0.762443 3.480e-03      1.126e-02
+q         0.01857 0.001904 8.690e-06      2.655e-05
+sigma.sq 68.51747 5.743078 2.621e-02      5.614e-02
+
+2. Quantiles for each variable:
+
+             2.5%     25%      50%      75%    97.5%
+T_max    32.00680 32.0761 32.18537 32.38196 33.16290
+T_min     5.02610  5.2674  5.63096  6.21703  7.80807
+q         0.01494  0.0173  0.01853  0.01983  0.02238
+sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Posterior Medians:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Lower limit (T_min):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Upper limit (T_max):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Scaling factor (q):  </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Optimal Temperature:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Peak fecundity at:  °C</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="biological-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="biological-interpretation">Biological Interpretation</h2>
+<p>The thermal performance curve reveals critical insights about midge reproduction:</p>
+<section id="thermal-limits" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-limits"><strong>Thermal Limits</strong></h3>
+<ul>
+<li><strong>Lower limit (T_min):</strong> Below this temperature, midges cannot reproduce</li>
+<li><strong>Upper limit (T_max):</strong> Above this temperature, reproduction ceases due to heat stress</li>
+</ul>
+</section>
+<section id="optimal-range" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-range"><strong>Optimal Range</strong></h3>
+<ul>
+<li><strong>Peak performance:</strong> Maximum fecundity occurs around the midpoint of the thermal range</li>
+<li><strong>Temperature sensitivity:</strong> The curve shows how reproduction drops off rapidly at thermal extremes</li>
+</ul>
+</section>
+<section id="transmission-implications" class="level3">
+<h3 class="anchored" data-anchor-id="transmission-implications"><strong>Transmission Implications</strong></h3>
+<p>These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.</p>
 
 
 </section>
-</main></div>
-</div>
- <!-- /main -->
+</section>
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     

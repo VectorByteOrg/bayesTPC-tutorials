@@ -6,8 +6,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Leah R. Johnson">
+<meta name="author" content="Sean Sorek">
+<meta name="author" content="Yusi Yao">
+<meta name="dcterms.date" content="2025-09-01">
 
-<title>Introduction to Bayesian Methods – bayesTPC Tutorials</title>
+<title>Introduction to Fitting TPCs using bayesTPC – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -180,31 +184,16 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./intro.html"> 
-<span class="menu-text">Materials</span></a>
+<span class="menu-text">Tutorials</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./materials.html"> 
-<span class="menu-text">More Examples</span></a>
+    <a class="nav-link" href="./BT_temp.html"> 
+<span class="menu-text">Bluetongue Refit</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-team" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Team</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-team">    
-        <li>
-    <a class="dropdown-item" href="./leahJ.html">
- <span class="dropdown-text">PI: Dr.&nbsp;LR Johnson</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="./team.html"> 
+<span class="menu-text">Team</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="./people_current.html">
- <span class="dropdown-text">Current Members</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./people_alumni.html">
- <span class="dropdown-text">Lab Alumni</span></a>
-  </li>  
-    </ul>
-  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -271,15 +260,49 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Introduction to Bayesian Methods</h1>
-<p class="subtitle lead">Activity: Fitting TPCs using <code>bayesTPC</code></p>
+<h1 class="title">Introduction to Fitting TPCs using <code>bayesTPC</code></h1>
 </div>
 
 
+<div class="quarto-title-meta-author column-page-right">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliations</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author"><a href="https://lrjohnson0.github.io/QEDLab/leahJ.html">Leah R. Johnson</a> </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Virginia Tech and VectorByte
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Sean Sorek </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Virginia Tech, VectorByte, Columbia Univeristy
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Yusi Yao </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Virginia Tech and VectorByte
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta column-page-right">
 
-    
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 1, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -324,51 +347,53 @@ window.Quarto = {
 <p>These three trait sets allow us to explore a full range of models and functionality in <code>bayesTPC</code>.</p>
 <section id="data-from-vectraits" class="level2">
 <h2 class="anchored" data-anchor-id="data-from-vectraits">Data from VecTraits</h2>
-<p>The data we want to fit is available on the VecTraits database. We can use the helper function included as part of <code>bayesTPC</code> that isdesigned to interact with this database, <code>get_datasets()</code>, along with the appropriate data set id numbers to retrieve and load them into <code>R</code>.</p>
+<p>The data we want to fit is available on the VecTraits database. We can use the helper function included as part of <code>bayesTPC</code> that is designed to interact with this database, <code>get_VB_datasets()</code>, along with the appropriate data set id numbers to retrieve and load them into <code>R</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">##aedes_data &lt;- get_VB_datasets(577:579) # updated get_datasets to get_VB_datasets</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>aedes_data<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">1</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_577.csv"</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">2</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_578.csv"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">3</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_579.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>aedes_data <span class="ot">&lt;-</span> <span class="fu">get_VB_datasets</span>(<span class="dv">577</span><span class="sc">:</span><span class="dv">579</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternatively, if pulling the data isn’t working, or you prefer to work with locally saved data, you can read from a csv or similar:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>aedes_data<span class="ot">&lt;-</span><span class="fu">list</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">1</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_577.csv"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">2</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_578.csv"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>aedes_data[[<span class="dv">3</span>]]<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"data/VByte_579.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We have downloaded all three datasets. As always, first we have a look at the data (just looking at a few columns, since the VecTraits format is large so it can hold a lot of different types of information):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cols<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">30</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>aedes1<span class="ot">&lt;-</span>aedes_data[[<span class="dv">3</span>]]</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(aedes1[,cols])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cols<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">30</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>aedes1<span class="ot">&lt;-</span>aedes_data[[<span class="dv">3</span>]]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(aedes1[,cols])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  DatasetID OriginalTraitName                        OriginalTraitDef
-1       579         longevity individual-level duration of life stage
-2       579         longevity individual-level duration of life stage
-3       579         longevity individual-level duration of life stage
-4       579         longevity individual-level duration of life stage
-5       579         longevity individual-level duration of life stage
-6       579         longevity individual-level duration of life stage
-  OriginalTraitValue Interactor1Temp
-1                 10              22
-2                  9              22
-3                  7              22
-4                 11              22
-5                 10              22
-6                  6              22</code></pre>
+<pre><code>  DatasetID OriginalID OriginalTraitName
+1       579                    longevity
+2       579                    longevity
+3       579                    longevity
+4       579                    longevity
+5       579                    longevity
+6       579                    longevity
+                         OriginalTraitDef AmbientLightUnit
+1 individual-level duration of life stage               NA
+2 individual-level duration of life stage               NA
+3 individual-level duration of life stage               NA
+4 individual-level duration of life stage               NA
+5 individual-level duration of life stage               NA
+6 individual-level duration of life stage               NA</code></pre>
 </div>
 </div>
 <p>Trait data need to be in a particular format before being passed into the fitting routine. Specifically, the data must be stored as a list with names <code>Trait</code> for the modeled response and <code>Temp</code> for the corresponding temperature settings (in <span class="math inline">^\circ</span>C, as this is necessary for some of the TPC functions). We format the three datasets here:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># development rate</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dev_rate <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> <span class="dv">1</span><span class="sc">/</span>aedes_data[[<span class="dv">2</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Temp =</span> aedes_data[[<span class="dv">2</span>]]<span class="sc">$</span>Interactor1Temp)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># adult longevity</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>adult_life <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> aedes_data[[<span class="dv">3</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Temp =</span> aedes_data[[<span class="dv">3</span>]]<span class="sc">$</span>Interactor1Temp)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># juvenile survival data</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>juv_survival <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> aedes_data[[<span class="dv">1</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Temp =</span> aedes_data[[<span class="dv">1</span>]]<span class="sc">$</span>Interactor1Temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># development rate</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dev_rate <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> <span class="dv">1</span><span class="sc">/</span>aedes_data[[<span class="dv">2</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">Temp =</span> aedes_data[[<span class="dv">2</span>]]<span class="sc">$</span>Interactor1Temp)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># adult longevity</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>adult_life <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> aedes_data[[<span class="dv">3</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">Temp =</span> aedes_data[[<span class="dv">3</span>]]<span class="sc">$</span>Interactor1Temp)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># juvenile survival data</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>juv_survival <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> aedes_data[[<span class="dv">1</span>]]<span class="sc">$</span>OriginalTraitValue,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">Temp =</span> aedes_data[[<span class="dv">1</span>]]<span class="sc">$</span>Interactor1Temp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Notice that we follow a convention here treating the development rate as 1/development time. This is a common assumption (although it is formally only valid if we believe that development times are exponentially distributed). Often mathematical models assume exponentially distributed traits, and so this is why the data are modeled in this fashion. We will show this approach here, as it is common, but do not advocate for this in general.</p>
 <div class="cell">
@@ -400,7 +425,7 @@ f_2(T) = \begin{cases} 0 &amp;\text {if } T \leq T_0 \\
 q T (T-T_0) \sqrt{T_m-T} &amp; \text {if } T_0 &lt; T &lt;T_m \\
 0 &amp;\text{if } T \geq T_m . \end{cases}
 </span> In both models, <span class="math inline">T_0</span> is the lower thermal limit, <span class="math inline">T_m</span> is the upper thermal limit (i.e., where the trait value goes to zero on either end), and <span class="math inline">q&gt;0</span> determines the curvature, and so with the other parameters determines the height of the curve (i.e., value of the trait at the optimum temperature). Note that above we’re assuming that the quadratic must be concave down (hence the negative sign), and that the performance goes to zero outside of the thermal limits. In some cases we instead use a concave-up quadratic, although it must be parameterized differently.</p>
-<p>We include eight common TPC models (listed with <code>get_models()</code>) in the package (<a href="#tbl-TPCs" class="quarto-xref">Table&nbsp;1</a>). Users can obtain the default specification and priors for these models with <code>get_default_model_specification()</code>. The package also includes linear and quadratic formulations for Bernoulli, binomial, and Poisson GLMs, assuming canonical link functions .</p>
+<p>We include eight common TPC models (listed with <code>get_models()</code>) in the package (<a href="#tbl-TPCs" class="quarto-xref">Table&nbsp;1</a>). Users can obtain the default specification and priors for these models with <code>get_default_model_specification()</code>. The package also includes linear and quadratic formulations for Bernoulli, binomial, and Poisson GLMs, assuming canonical link functions.</p>
 <div id="tbl-TPCs" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-TPCs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -413,7 +438,7 @@ Table&nbsp;1: Thermal performance curves included in <code>bayesTPC</code>.
 </div>
 <p>For example, if you want to see all of the TPCs you run:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_models</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_models</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "poisson_glm_lin"    "poisson_glm_quad"   "binomial_glm_lin"  
  [4] "binomial_glm_quad"  "bernoulli_glm_lin"  "bernoulli_glm_quad"
@@ -424,15 +449,15 @@ Table&nbsp;1: Thermal performance curves included in <code>bayesTPC</code>.
 </div>
 <p>We can view the form of the implemented TPC using the <code>get_formula</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_formula</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_formula</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>expression(q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * 
     abs(T_max - Temp)) * (T_max &gt; Temp) * (Temp &gt; T_min))</code></pre>
 </div>
 </div>
-<p>Currently, the default likelihood for all TPCs a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using “get_default_priors”:</p>
+<p>Currently, the default likelihood for all TPCs a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using <code>get_default_priors</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_priors</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_priors</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              q           T_max           T_min        sigma.sq 
       "dexp(1)" "dunif(25, 60)"  "dunif(0, 20)"       "dexp(1)" </code></pre>
@@ -448,7 +473,7 @@ Table&nbsp;1: Thermal performance curves included in <code>bayesTPC</code>.
 <h1>Example 1: Adult Mosquito Lifespan</h1>
 <p>Let’s first explore the basic functionality of <code>bayesTPC</code> through an example on adult mosquito lifespan (the VecTraits dataset 579 downloaded above). We already formatted the dataset appropriately above for the <code>b_TPC()</code> function:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(adult_life)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(adult_life)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Trait Temp
 1    10   22
@@ -462,7 +487,7 @@ Table&nbsp;1: Thermal performance curves included in <code>bayesTPC</code>.
 <h2 class="anchored" data-anchor-id="inference-with-default-settings">Inference with default settings</h2>
 <p>Once we have the data formatted as required by <code>b_TPC()</code>, we can fit each of the datasets with a single call, using the default settings. As we saw in the plot above, adult lifespan are numeric data where a concave down unimodal response is likely appropriate. For adult lifespan, we chose to fit a Briere function with the default specification:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC Model Specification of Type:
   briere
@@ -484,14 +509,14 @@ Model Parameters and Priors:
 <p>To fit the model then requires a single line of code with the first argument being the name of the formatted data object and the second being the name of the TPC that we want to use for fitting. By default we take 10000 samples, no burn-in, using a random walk sampler.</p>
 <p><strong>Noted (Jun 28, 2025):</strong> Downgraded nimble to v0.13.2 using remotes::install_version() to fix b_TPC() error caused by missing getNimbleOption().</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>adult_life_fit <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(adult_life, <span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>adult_life_fit <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(adult_life, <span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>  [Note] safeDeparse: truncating deparse output to 1 line</code></pre>
 </div>
 </div>
 <p>Once the fitting process has completed (which can take a few minutes), we can have a gander at the fitted model object using <code>print</code>. This command provides details about the model fit, the priors, and some simple summaries of the fitted model.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC MCMC of Type:
   briere
@@ -507,15 +532,15 @@ Parameters:
 
 Chain 1:
             MAP   Mean Median        Priors
-T_max    34.425 30.627 28.939 dunif(25, 60)
-T_min     0.010  8.930  5.807  dunif(0, 20)
-q         0.005  0.026  0.008       dexp(1)
-sigma.sq 16.867 28.524 35.283       dexp(1)</code></pre>
+T_max    34.428 34.323 34.412 dunif(25, 60)
+T_min     0.015  3.336  1.534  dunif(0, 20)
+q         0.005  0.007  0.005       dexp(1)
+sigma.sq 16.821 17.712 16.987       dexp(1)</code></pre>
 </div>
 </div>
 <p>We can also see what is in the object:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "samples"        "mcmc"           "data"           "model_spec"    
 [5] "priors"         "constants"      "uncomp_model"   "comp_model"    
@@ -528,8 +553,8 @@ sigma.sq 16.867 28.524 35.283       dexp(1)</code></pre>
 <h2 class="anchored" data-anchor-id="mcmc-diagnotic-plots">MCMC Diagnotic Plots</h2>
 <p><code>b_TPC()</code> returns an object of class <code>btpc_MCMC</code> which contains (along with model specification information and data) the MCMC samples as an <code>mcmc</code> object from the package <code>coda</code>. As mentioned in the previous portion of the training, it is important to check the MCMC traceplot before using or interpreting a fitted model to ensure the chains have converged. An MCMC traceplot shows each sample for a parameter in the order that the samples were taken. If the model has converged, the traceplot will eventually start varying around a single point, resembling a “fuzzy caterpillar”.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">traceplot</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">traceplot</span>(adult_life_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plotTrace1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -545,9 +570,9 @@ Figure&nbsp;2: Traceplots for the three parameters of the Briere TPC and the obs
 </div>
 <p>We notice that it takes a while for the chains to converge. Thus we need to specify a burn-in period and only consider samples obtained after the burn-in. For this example, a burn-in of around 3000 should give us a good result. We can re-visualize with this burn-in (by adding burn=3000 as an argument to traceplot):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>myburn<span class="ot">&lt;-</span><span class="dv">3000</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">traceplot</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>myburn<span class="ot">&lt;-</span><span class="dv">3000</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">traceplot</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plotTraceBurn1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -564,16 +589,21 @@ Figure&nbsp;3: Traceplots for the three parameters of the Briere TPC and the obs
 <p>This is much better! All of the chains now have the desired “fuzzy caterpillar” look. Typically one would at this point go back to the original fitting function, and specify the burn-in time, along with potentially increasing the total sample size in order to ensure sufficient samples. This approach drops the burnin samples from the returned object. For brevity herewe will simply specify the value of <code>burn</code> as an argument for the remaining plotting functions.</p>
 <p>We can examine the ACF of the chains as well (one for each parameter), similarly to a time series, to again check for autocorrelation within the chain (we want the autocorrelation to be fairly low):</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>s1<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(adult_life_fit<span class="sc">$</span>samples[myburn<span class="sc">:</span><span class="dv">10000</span>,])</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">bty=</span><span class="st">"n"</span>, <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">acf</span>(s1[,i], <span class="at">lag.max=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">""</span>,</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="fu">paste</span>(<span class="st">"ACF: "</span>, <span class="fu">names</span>(s1)[i], <span class="at">sep=</span><span class="st">""</span>))</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>s1<span class="ot">&lt;-</span><span class="fu">as.data.frame</span>(adult_life_fit<span class="sc">$</span>samples[myburn<span class="sc">:</span><span class="dv">10000</span>,])</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">bty=</span><span class="st">"n"</span>, <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">acf</span>(s1[,i], <span class="at">lag.max=</span><span class="dv">50</span>, <span class="at">main=</span><span class="st">""</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylab =</span> <span class="fu">paste</span>(<span class="st">"ACF: "</span>, <span class="fu">names</span>(s1)[i], <span class="at">sep=</span><span class="st">""</span>))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="EEID2024_basic_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<div id="fig-plotACF1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plotACF1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="EEID2024_basic_files/figure-html/fig-plotACF1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotACF1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: ACF plots of the MCMC chains for the three parameters of the Briere TPC and the observation parameter for model fitted to the Adult Longevity data. Here the burn-in portion of the MCMC chains has been dropped.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -581,8 +611,8 @@ Figure&nbsp;3: Traceplots for the three parameters of the Briere TPC and the obs
 <p>There is still autocorrelation, especially for two of the quadratic parameters. The chain for <span class="math inline">\sigma</span> is mixing best (the ACF falls off the most quickly). We could reduce the autocorrelation even further by thinning the chain <strong>(i.e., change the <code>nt</code> parameter to 5 or 10)</strong>, or changing the type of sampler.</p>
 <p>A second important diagnostic step is to compare the marginal priors and posteriors of our model parameters. This enables us to confirm that (unless we’ve purposefully specified an informative prior) that our posterior distributions have been informed by the data. <code>bayesTPC</code> includes a built in function, <code>ppo_plot()</code>, that creates posterior/prior overlap plots for all model parameters (note that the priors are smoothed because the algorithm uses kernel smoothing instead of the exact distribution).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ppo_plot</span>(adult_life_fit, <span class="at">burn=</span>myburn, <span class="at">legend_position =</span> <span class="st">"topright"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ppo_plot</span>(adult_life_fit, <span class="at">burn=</span>myburn, <span class="at">legend_position =</span> <span class="st">"topright"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plotPP1" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -590,7 +620,7 @@ Figure&nbsp;3: Traceplots for the three parameters of the Briere TPC and the obs
 <img src="EEID2024_basic_files/figure-html/fig-plotPP1-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotPP1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for these plots using the <code>burn</code> argument.
+Figure&nbsp;5: Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for these plots using the <code>burn</code> argument.
 </figcaption>
 </figure>
 </div>
@@ -600,7 +630,7 @@ Figure&nbsp;4: Marginal prior/posterior for the three parameters of the Briere T
 </section>
 <section id="additional-plotting" class="level2">
 <h2 class="anchored" data-anchor-id="additional-plotting">Additional plotting</h2>
-<p>After we have established appropriate burn-in values, we can use <code>plot()</code>, <code>posterior_predictive()</code>, and <code>plot_prediction()</code> to examine the fit of the model in two ways. The defaults for the <code>plot()</code> function plots the median and 95% Highest Posterior Density (HPD) interval of the <em>fitted function</em> (i.e., plugging the samples into the TPC function, and calculating the median and HPD interval at all evaluated temperatures). In contrast, the <code>posterior_predictive()</code> function uses simulation to draw points from the posterior predictive distribution, and so it includes both the samples describing the TPC function and the observational model. It then uses these samples to calculate the mean/median and the HPD interval of those simulated points. Both kinds of plots are shown in <a href="#fig-plotFit1" class="quarto-xref">Figure&nbsp;5</a> for comparison.</p>
+<p>After we have established appropriate burn-in values, we can use <code>plot()</code>, <code>posterior_predictive()</code>, and <code>plot_prediction()</code> to examine the fit of the model in two ways. The defaults for the <code>plot()</code> function plots the median and 95% Highest Posterior Density (HPD) interval of the <em>fitted function</em> (i.e., plugging the samples into the TPC function, and calculating the median and HPD interval at all evaluated temperatures). In contrast, the <code>posterior_predictive()</code> function uses simulation to draw points from the posterior predictive distribution, and so it includes both the samples describing the TPC function and the observational model. It then uses these samples to calculate the mean/median and the HPD interval of those simulated points. Both kinds of plots are shown in <a href="#fig-plotFit1" class="quarto-xref">Figure&nbsp;6</a> for comparison.</p>
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in posterior_predictive(adult_life_fit, temp_interval = Ts, burn =
@@ -619,7 +649,7 @@ plot may be provided.</code></pre>
 <img src="EEID2024_basic_files/figure-html/fig-plotFit1-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotFit1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Comparison of the plots produced by the <code>plot()</code> function (LEFT) and the combination of the <code>posterior_predictive()</code>, and <code>plot_prediction()</code> functions (RIGHT). By default both functions would only make plots/predictions within the range of temperatures included in the fitted data. However here we show the use of the temp_interval argument to enable plotting of predictions across a broader temperature range.
+Figure&nbsp;6: Comparison of the plots produced by the <code>plot()</code> function (LEFT) and the combination of the <code>posterior_predictive()</code>, and <code>plot_prediction()</code> functions (RIGHT). By default both functions would only make plots/predictions within the range of temperatures included in the fitted data. However here we show the use of the temp_interval argument to enable plotting of predictions across a broader temperature range.
 </figcaption>
 </figure>
 </div>
@@ -629,7 +659,7 @@ Figure&nbsp;5: Comparison of the plots produced by the <code>plot()</code> funct
 <p>Now that we’ve confirmed that things are working well, it’s often useful to also look at the joint distribution of all of your parameters together to understand how estimates are related to each other. Of course, if you have a high dimensional posterior, rendering a 2-D representation can be difficult. The standard is to examine the pair-wise posterior distribution. We can do this using the function <code>bayesTPC_ipairs()</code>:</p>
 <p><strong>Noted (Jun 26, 2025): </strong> The function `<code>bayesTPC_ipairs()</code> has been renamed to <code>ipairs()</code></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ipairs</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ipairs</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plotJoint1" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -637,7 +667,7 @@ Figure&nbsp;5: Comparison of the plots produced by the <code>plot()</code> funct
 <img src="EEID2024_basic_files/figure-html/fig-plotJoint1-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotJoint1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: Pairwise visualization of the joint posterior distribution of parameters for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for this plot using the <code>burn</code> argument.
+Figure&nbsp;7: Pairwise visualization of the joint posterior distribution of parameters for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for this plot using the <code>burn</code> argument.
 </figcaption>
 </figure>
 </div>
@@ -649,7 +679,7 @@ Figure&nbsp;6: Pairwise visualization of the joint posterior distribution of par
 <h2 class="anchored" data-anchor-id="summaries">Summaries</h2>
 <p>If we are satisfied with the traceplots, fits, and prior/posterior plots, users may want to examine additional summary output (for example to make tables) or to save summaries. Numerical summaries are available through the <code>print()</code> function shown above, but we can see more details using <code>summary()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(adult_life_fit, <span class="at">burn=</span>myburn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC MCMC of Type:
   briere
@@ -669,7 +699,7 @@ Priors:
 
 Max. A Post. Parameters: 
      T_max      T_min          q   sigma.sq   log_prob 
-   34.4249     0.0105     0.0048    16.8668 -1925.6408 
+   34.4284     0.0147     0.0048    16.8210 -1925.6316 
 
 MCMC Results:
 Iterations = 1:10000
@@ -680,59 +710,59 @@ Sample size per chain = 10000
 1. Empirical mean and standard deviation for each variable,
    plus standard error of the mean:
 
-             Mean       SD  Naive SE Time-series SE
-T_max    30.62707  3.83150 0.0383150       1.459191
-T_min     8.92963  7.75936 0.0775936       4.572044
-q         0.02603  0.04334 0.0004334       0.004937
-sigma.sq 28.52449 11.30917 0.1130917       6.568526
+              Mean      SD  Naive SE Time-series SE
+T_max    34.323064 0.73442 0.0073442      0.0670156
+T_min     3.336282 4.95781 0.0495781      1.6988056
+q         0.006988 0.01117 0.0001117      0.0008527
+sigma.sq 17.711662 2.99684 0.0299684      0.6130730
 
 2. Quantiles for each variable:
 
-              2.5%       25%      50%      75%    97.5%
-T_max    26.227349 26.665473 28.93924 34.42287 34.65589
-T_min     0.130033  1.435688  5.80715 18.05060 19.87969
-q         0.004713  0.005112  0.00831  0.04444  0.09058
-sigma.sq 15.288158 16.980482 35.28255 39.32911 43.25610</code></pre>
+              2.5%       25%       50%       75%    97.5%
+T_max    32.625783 34.329433 34.412181 34.495444 34.66917
+T_min     0.055016  0.637570  1.533638  3.139649 19.18953
+q         0.004712  0.004948  0.005135  0.005522  0.02505
+sigma.sq 14.962460 16.232562 16.986799 17.942822 27.86349</code></pre>
 </div>
 </div>
 <p>We may want to store some of the sample statistics for later use. The sample-based Maximum <em>a posteriori</em> (MAP) estimator is calculated and saved as part of our fitting process, and can be obtained directly from the fit object.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MAP estimator</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>adult_life_fit<span class="sc">$</span>MAP_parameters <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MAP estimator</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>adult_life_fit<span class="sc">$</span>MAP_parameters <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      T_max       T_min           q    sigma.sq    log_prob 
-   34.42491     0.01048     0.00482    16.86677 -1925.64076 </code></pre>
+   34.42843     0.01474     0.00482    16.82103 -1925.63161 </code></pre>
 </div>
 </div>
 <p>The other sample statistics for each parameter can be obtained by saving the summary of the <em>samples</em> in the fitted model object. Then the various statistics may be extracted directly:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">summary</span>(adult_life_fit<span class="sc">$</span>samples)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>estimates<span class="sc">$</span>statistics[,<span class="st">"Mean"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">summary</span>(adult_life_fit<span class="sc">$</span>samples)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>estimates<span class="sc">$</span>statistics[,<span class="st">"Mean"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      T_max       T_min           q    sigma.sq 
-30.62707444  8.92962503  0.02602978 28.52449400 </code></pre>
+<pre><code>       T_max        T_min            q     sigma.sq 
+34.323064314  3.336282125  0.006987533 17.711662305 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Median and 95% CI bounds</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>estimates<span class="sc">$</span>quantiles[,<span class="fu">c</span>(<span class="st">"2.5%"</span>, <span class="st">"50%"</span>, <span class="st">"97.5%"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Median and 95% CI bounds</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>estimates<span class="sc">$</span>quantiles[,<span class="fu">c</span>(<span class="st">"2.5%"</span>, <span class="st">"50%"</span>, <span class="st">"97.5%"</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                 2.5%          50%       97.5%
-T_max    26.227348520 28.939237979 34.65588797
-T_min     0.130032986  5.807145306 19.87969129
-q         0.004712554  0.008310401  0.09058492
-sigma.sq 15.288158499 35.282551213 43.25609596</code></pre>
+T_max    32.625782673 34.412181072 34.66916950
+T_min     0.055015795  1.533637686 19.18952864
+q         0.004712159  0.005135211  0.02505222
+sigma.sq 14.962459695 16.986799214 27.86348769</code></pre>
 </div>
 </div>
 <p>If one instead would like the Highest Posterior Density bounds (instead of the quantile based summaries) the <code>HPDinterval</code> function from <code>coda</code> may be used.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">HPDinterval</span>(adult_life_fit<span class="sc">$</span>samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">HPDinterval</span>(adult_life_fit<span class="sc">$</span>samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                lower       upper
-T_max    26.187141922 34.59972900
-T_min     0.129196054 19.86801648
-q         0.004601605  0.08134151
-sigma.sq 15.016773127 42.66189156
+T_max    32.641988851 34.67181912
+T_min     0.001422875 17.86770349
+q         0.004569952  0.01891703
+sigma.sq 14.585087043 26.62340646
 attr(,"Probability")
 [1] 0.95</code></pre>
 </div>
@@ -746,12 +776,12 @@ attr(,"Probability")
 <h2 class="anchored" data-anchor-id="fitting-with-default-settings">Fitting with default settings</h2>
 <p>The default priors chosen in <code>bayesTPC</code> are generally as non-restrictive as possible, which can lead to inappropriate fits when the response trait is very close to zero. In this case it may be necessary to modify the priors. It is also possible that mixing may be poor with the default sampler, and so we may need to update the sampling method. We briefly show these issues using the development rate data as an example. These data are also numeric and we assume, again, a Briere functional response:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(dev_rate, <span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(dev_rate, <span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>  [Note] safeDeparse: truncating deparse output to 1 line</code></pre>
 </div>
 </div>
-<p>However in this case, although the traceplots look ok (after a burnin) the fits are very poor (<a href="#fig-plotDevRate1" class="quarto-xref">Figure&nbsp;7</a>)</p>
+<p>However in this case, although the traceplots look ok (after a burnin) the fits are very poor (<a href="#fig-plotDevRate1" class="quarto-xref">Figure&nbsp;8</a>)</p>
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in plot.btpc_MCMC(dev_rate_fit, burn = myburn): Using default title for
@@ -764,7 +794,7 @@ plots. Either one title or individual titles for each plot may be provided.</cod
 <img src="EEID2024_basic_files/figure-html/fig-plotDevRate1-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotDevRate1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: Traceplots for the three parameters of the Briere TPC and the observation parameter for model fitted to the juvenile development data. (top 4 panels) with the data (bottom left) and corresponding posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped.
+Figure&nbsp;8: Traceplots for the three parameters of the Briere TPC and the observation parameter for model fitted to the juvenile development data. (top 4 panels) with the data (bottom left) and corresponding posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped.
 </figcaption>
 </figure>
 </div>
@@ -772,8 +802,8 @@ Figure&nbsp;7: Traceplots for the three parameters of the Briere TPC and the obs
 </div>
 <p>We can see a bit of what is going on by looking at the marginal prior/posterior plots:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ppo_plot</span>(dev_rate_fit, <span class="at">burn=</span>myburn, <span class="at">legend_position =</span> <span class="st">"topright"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>,<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>)<span class="sc">+</span>.<span class="dv">1</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ppo_plot</span>(dev_rate_fit, <span class="at">burn=</span>myburn, <span class="at">legend_position =</span> <span class="st">"topright"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plotPP2" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -781,7 +811,7 @@ Figure&nbsp;7: Traceplots for the three parameters of the Briere TPC and the obs
 <img src="EEID2024_basic_files/figure-html/fig-plotPP2-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotPP2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Juvenile development rate data. Note that the burn-in is dropped for these plots using the <code>burn</code> argument.
+Figure&nbsp;9: Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Juvenile development rate data. Note that the burn-in is dropped for these plots using the <code>burn</code> argument.
 </figcaption>
 </figure>
 </div>
@@ -791,13 +821,13 @@ Figure&nbsp;8: Marginal prior/posterior for the three parameters of the Briere T
 </section>
 <section id="changing-fitting-arguments" class="level2">
 <h2 class="anchored" data-anchor-id="changing-fitting-arguments">Changing Fitting arguments</h2>
-<p>In order to try to improve the fitting, we will modify the priors and the sampler. We notice from the plot of the data that the rate seems to increase across the observed range of the data. Thus it is likely that the <span class="math inline">T_{\mathrm{max}}</span> parameter is at or above the temperature manipulated in the experiment and <span class="math inline">T_{\mathrm{min}}</span> is below. We can pass this information in as new priors through the <code>priors</code> argument as shown. Further, we can switch to a sampler that has a better chance of converging by modifying the <code>samplerType</code> parameter. Here, we use automated factor slice sampling. Although this sampler is often more effective (especially when parameters are highly correlated, as they are for most TPCs), it is slower and so is not used by default. These changes result in much better fits (see <a href="#fig-plotDevRate2" class="quarto-xref">Figure&nbsp;9</a>).</p>
+<p>In order to try to improve the fitting, we will modify the priors and the sampler. We notice from the plot of the data that the rate seems to increase across the observed range of the data. Thus it is likely that the <span class="math inline">T_{\mathrm{max}}</span> parameter is at or above the temperature manipulated in the experiment and <span class="math inline">T_{\mathrm{min}}</span> is below. We can pass this information in as new priors through the <code>priors</code> argument as shown. Further, we can switch to a sampler that has a better chance of converging by modifying the <code>samplerType</code> parameter. Here, we use automated factor slice sampling. Although this sampler is often more effective (especially when parameters are highly correlated, as they are for most TPCs), it is slower and so is not used by default. These changes result in much better fits (see <a href="#fig-plotDevRate2" class="quarto-xref">Figure&nbsp;10</a>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit2 <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(dev_rate, <span class="st">"briere"</span>,</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">T_min =</span> <span class="st">"dunif(0,22)"</span>,</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">T_max =</span> <span class="st">"dunif(34,50)"</span>),</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">burn=</span>myburn,</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">samplerType =</span> <span class="st">"AF_slice"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit2 <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(dev_rate, <span class="st">"briere"</span>,</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">T_min =</span> <span class="st">"dunif(0,22)"</span>,</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">T_max =</span> <span class="st">"dunif(34,50)"</span>),</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">burn=</span>myburn,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">samplerType =</span> <span class="st">"AF_slice"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>  [Note] safeDeparse: truncating deparse output to 1 line</code></pre>
 </div>
@@ -820,7 +850,7 @@ plot may be provided.</code></pre>
 <img src="EEID2024_basic_files/figure-html/fig-plotDevRate2-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotDevRate2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9: Traceplots for the three parameters of the Briere TPC and the observation parameter for the model fitted to the juvenile development data (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped as part of the fitting.
+Figure&nbsp;10: Traceplots for the three parameters of the Briere TPC and the observation parameter for the model fitted to the juvenile development data (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped as part of the fitting.
 </figcaption>
 </figure>
 </div>
@@ -832,14 +862,14 @@ Figure&nbsp;9: Traceplots for the three parameters of the Briere TPC and the obs
 <h2 class="anchored" data-anchor-id="model-selection">Model Selection</h2>
 <p>What if we didn’t know that the Briere was the preferred model for these development rate data? We can fit with another function, check all of the diagnostics, and then compare via WAIC (Widely Applicable Information Criterion) to choose between them. For the juvenile development rate, let’s try a quadratic. Let’s look at the implementation details:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_formula</span>(<span class="st">"quadratic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_formula</span>(<span class="st">"quadratic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>expression(-1 * q * (Temp - T_min) * (Temp - T_max) * (T_max &gt; 
     Temp) * (Temp &gt; T_min))</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_priors</span>(<span class="st">"quadratic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_priors</span>(<span class="st">"quadratic"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               q            T_max            T_min         sigma.sq 
        "dexp(1)"  "dunif(25, 60)" "dunif(-10, 20)"        "dexp(1)" </code></pre>
@@ -847,13 +877,13 @@ Figure&nbsp;9: Traceplots for the three parameters of the Briere TPC and the obs
 </div>
 <p>I will refit using the default priors, except for the prior for <span class="math inline">q</span> (so you can see an option):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit_Quad <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(<span class="at">data =</span> dev_rate, <span class="do">## data</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">model =</span> <span class="st">'quadratic'</span>, <span class="do">## model to fit</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">niter =</span> <span class="dv">10000</span>, <span class="do">## total iterations</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">burn =</span> <span class="dv">3000</span>, <span class="do">## number of burn in samples</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">samplerType =</span> <span class="st">'AF_slice'</span>, <span class="do">## slice sampler</span></span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">q =</span> <span class="st">'dexp(1)'</span>) <span class="do">## priors</span></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>                    ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>dev_rate_fit_Quad <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(<span class="at">data =</span> dev_rate, <span class="do">## data</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">model =</span> <span class="st">'quadratic'</span>, <span class="do">## model to fit</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">niter =</span> <span class="dv">10000</span>, <span class="do">## total iterations</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">burn =</span> <span class="dv">3000</span>, <span class="do">## number of burn in samples</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">samplerType =</span> <span class="st">'AF_slice'</span>, <span class="do">## slice sampler</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                           <span class="at">priors =</span> <span class="fu">list</span>(<span class="at">q =</span> <span class="st">'dexp(1)'</span>) <span class="do">## priors</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>                    ) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Creating NIMBLE model:
  - Configuring model.</code></pre>
@@ -878,7 +908,7 @@ Configuring Output:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dev_rate_fit_Quad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(dev_rate_fit_Quad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC MCMC of Type:
   quadratic
@@ -944,7 +974,7 @@ may be provided.</code></pre>
 <img src="EEID2024_basic_files/figure-html/fig-plotDevRate3-1.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plotDevRate3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10: Traceplots for the three parameters of the quadratic TPC and the observation parameter for the model fitted to the juvenile development data (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped.
+Figure&nbsp;11: Traceplots for the three parameters of the quadratic TPC and the observation parameter for the model fitted to the juvenile development data (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped.
 </figcaption>
 </figure>
 </div>
@@ -952,12 +982,12 @@ Figure&nbsp;10: Traceplots for the three parameters of the quadratic TPC and the
 </div>
 <p>Once fitted, we want to be able to choose which of these models is best for these data. Although, <em>a priori</em> we would expect the Briere fit to be best development rates, both fits seem visually reasonable. We can extract the the values of the wAIC <span class="citation" data-cites="watanabe2009algebraic">[@watanabe2009algebraic]</span> to compare the performance of our models using <code>get_WAIC()</code> (which wraps <code>nimble</code>’s <code>getWAIC()</code> function and produces a tidier format). The preferred model will be the one with the lowest wAIC value. <em>Note that because this is based on samples, you want to have the same number of samples in the chains for each of the models you are comparing.</em></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(dev_rate_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(dev_rate_fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        WAIC         lppd        pWAIC 
 -3731.888925  1870.426197     4.481735 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(dev_rate_fit_Quad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(dev_rate_fit_Quad)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        WAIC         lppd        pWAIC 
 -3717.300192  1862.630993     3.980897 </code></pre>
@@ -980,8 +1010,8 @@ Figure&nbsp;10: Traceplots for the three parameters of the quadratic TPC and the
 <h2 class="anchored" data-anchor-id="practice-option-3">Practice Option 3</h2>
 <p>In addition to the two datasets that we explored here, we downloaded data on juvenile survival. These data are encoded as zeros and ones, and are more appropriately modeled using a Bernoulli/Binomial distribution – that is as GLMs. <code>bayesTPC</code> has implemented two options for fitting these models, either a linear or quadratic:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear:</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"bernoulli_glm_lin"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Linear:</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"bernoulli_glm_lin"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC Model Specification of Type:
   bernoulli_glm_lin
@@ -998,8 +1028,8 @@ Model Parameters and Priors:
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Quadratic:</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"bernoulli_glm_quad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Quadratic:</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_default_model_specification</span>(<span class="st">"bernoulli_glm_quad"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>bayesTPC Model Specification of Type:
   bernoulli_glm_quad
@@ -1022,7 +1052,17 @@ Model Parameters and Priors:
 </section>
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{johnson2025,
+  author = {Johnson, Leah R. and Sorek, Sean and Yao, Yusi},
+  title = {Introduction to {Fitting} {TPCs} Using {`bayesTPC`}},
+  date = {2025-09-01},
+  url = {https://VectorByteOrg.github.io/bayesTPC-tutorials/EEID2024_basic.html},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-johnson2025" class="csl-entry quarto-appendix-citeas" role="listitem">
+Johnson, Leah R., Sean Sorek, and Yusi Yao. 2025. <span>“Introduction to
+Fitting TPCs Using `bayesTPC`.”</span> September 1, 2025. <a href="https://VectorByteOrg.github.io/bayesTPC-tutorials/EEID2024_basic.html">https://VectorByteOrg.github.io/bayesTPC-tutorials/EEID2024_basic.html</a>.
+</div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

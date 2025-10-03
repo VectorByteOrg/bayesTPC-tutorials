@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Current QED Lab Members – bayesTPC Tutorials</title>
+<title>bt_temp_updated – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -102,31 +102,16 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./intro.html"> 
-<span class="menu-text">Materials</span></a>
+<span class="menu-text">Tutorials</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./materials.html"> 
-<span class="menu-text">More Examples</span></a>
+    <a class="nav-link" href="./BT_temp.html"> 
+<span class="menu-text">Bluetongue Refit</span></a>
   </li>  
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-team" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Team</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-team">    
-        <li>
-    <a class="dropdown-item" href="./leahJ.html">
- <span class="dropdown-text">PI: Dr.&nbsp;LR Johnson</span></a>
+  <li class="nav-item">
+    <a class="nav-link" href="./team.html"> 
+<span class="menu-text">Team</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="./people_current.html">
- <span class="dropdown-text">Current Members</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="./people_alumni.html">
- <span class="dropdown-text">Lab Alumni</span></a>
-  </li>  
-    </ul>
-  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
@@ -150,90 +135,193 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#postdoctoral-researchers" id="toc-postdoctoral-researchers" class="nav-link active" data-scroll-target="#postdoctoral-researchers">Postdoctoral Researchers</a></li>
-  <li><a href="#graduate-students" id="toc-graduate-students" class="nav-link" data-scroll-target="#graduate-students">Graduate Students</a></li>
-  <li><a href="#undergraduate-student-researchers" id="toc-undergraduate-student-researchers" class="nav-link" data-scroll-target="#undergraduate-student-researchers">Undergraduate Student Researchers</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Current QED Lab Members</h1>
+
+
+
+<section id="bluetongue-virus-midge-fecundity-analysis" class="level1">
+<h1>Bluetongue Virus: Midge Fecundity Analysis</h1>
+<p><strong>Source:</strong> El Moustaid et al.&nbsp;2021 Supplement | <strong>Original experiment:</strong> Lysyk &amp; Danyk 2007</p>
+<p>This analysis recreates the fecundity thermal performance curve from the Bluetongue virus transmission study, showing how midge reproduction varies with temperature.</p>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<p>We analyze 29 fecundity measurements (eggs per female per day) across 5 temperature groups:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Temperature groups:</code></pre>
 </div>
-
-
-
-<div class="quarto-title-meta column-page-left">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p><br></p>
-<center>
-<img src="images/lab_W2024.jpeg" class="img-fluid" style="width:75.0%">
-</center>
-<p><br> ## Principal Investigator</p>
-<section id="dr.-leah-r.-johnson" class="level4">
-<h4 class="anchored" data-anchor-id="dr.-leah-r.-johnson"><a href="leahJ.html">Dr.&nbsp;Leah R. Johnson</a></h4>
-<p><br></p>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+      T     n
+  &lt;dbl&gt; &lt;int&gt;
+1    10     6
+2    15     6
+3    20     6
+4    25     7
+5    30     7</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Fecundity range: 0.4 to 70 eggs per female per day</code></pre>
+</div>
+</div>
 </section>
-<section id="postdoctoral-researchers" class="level2">
-<h2 class="anchored" data-anchor-id="postdoctoral-researchers">Postdoctoral Researchers</h2>
-<section id="dr.-cat-lippi" class="level4">
-<h4 class="anchored" data-anchor-id="dr.-cat-lippi">Dr.&nbsp;Cat Lippi</h4>
-<p><br></p>
+<section id="thermal-performance-curve" class="level2">
+<h2 class="anchored" data-anchor-id="thermal-performance-curve">Thermal Performance Curve</h2>
+<p>We fit a Brière model to capture the temperature-dependent fecundity pattern:</p>
+<p><strong>Model:</strong> F(T) = k × T × (T - T_min) × √(T_max - T)</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="fecundity-thermal-performance-curve" class="level3">
+<h3 class="anchored" data-anchor-id="fecundity-thermal-performance-curve">Fecundity Thermal Performance Curve</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_updated_files/figure-html/plot-fecundity-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="key-parameters">Key Parameters</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 5.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 32.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 0.018 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 66.5715 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>bayesTPC MCMC of Type:
+  briere
+
+Formula:
+  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
+* (T_max &gt; Temp) * (Temp &gt; T_min) )
+
+Distribution:
+  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
+
+Priors:
+  q ~ dunif(0, 200) 
+  T_max ~ dunif(32, 36) 
+  T_min ~ dunif(5, 15) 
+  sigma.sq ~ dexp(1)
+
+Max. A Post. Parameters: 
+    T_max     T_min         q  sigma.sq  log_prob 
+  32.0051    5.0101    0.0184   66.5715 -249.7617 
+
+MCMC Results:
+Iterations = 1:12000
+Thinning interval = 1 
+Number of chains = 4 
+Sample size per chain = 12000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean       SD  Naive SE Time-series SE
+T_max    32.28717 0.313422 1.431e-03      6.308e-03
+T_min     5.85043 0.762443 3.480e-03      1.126e-02
+q         0.01857 0.001904 8.690e-06      2.655e-05
+sigma.sq 68.51747 5.743078 2.621e-02      5.614e-02
+
+2. Quantiles for each variable:
+
+             2.5%     25%      50%      75%    97.5%
+T_max    32.00680 32.0761 32.18537 32.38196 33.16290
+T_min     5.02610  5.2674  5.63096  6.21703  7.80807
+q         0.01494  0.0173  0.01853  0.01983  0.02238
+sigma.sq 58.00772 64.5654 68.27074 72.25270 80.47774</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Posterior Medians:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Lower limit (T_min):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Upper limit (T_max):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Scaling factor (q):  </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Optimal Temperature:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Peak fecundity at:  °C</code></pre>
+</div>
+</div>
 </section>
 </section>
-<section id="graduate-students" class="level2">
-<h2 class="anchored" data-anchor-id="graduate-students">Graduate Students</h2>
-<section id="alicia-arneson-biology" class="level4">
-<h4 class="anchored" data-anchor-id="alicia-arneson-biology">Alicia Arneson (Biology)</h4>
-</section>
-<section id="piper-zimmerman-stats" class="level4">
-<h4 class="anchored" data-anchor-id="piper-zimmerman-stats">Piper Zimmerman (Stats)</h4>
-</section>
-<section id="parul-patil-stats" class="level4">
-<h4 class="anchored" data-anchor-id="parul-patil-stats">Parul Patil (Stats)</h4>
-<p><br></p>
-</section>
-</section>
-<section id="undergraduate-student-researchers" class="level2">
-<h2 class="anchored" data-anchor-id="undergraduate-student-researchers">Undergraduate Student Researchers</h2>
+<section id="biological-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="biological-interpretation">Biological Interpretation</h2>
+<p>The thermal performance curve reveals critical insights about midge reproduction:</p>
+<section id="thermal-limits" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-limits"><strong>Thermal Limits</strong></h3>
 <ul>
-<li>Yusi Yao</li>
-<li>Sana Sahwney</li>
+<li><strong>Lower limit (T_min):</strong> Below this temperature, midges cannot reproduce</li>
+<li><strong>Upper limit (T_max):</strong> Above this temperature, reproduction ceases due to heat stress</li>
 </ul>
-<!-- Default Statcounter code for QED
-http://leah.johnson-gramacy.com/QED/ -->
-<script type="text/javascript">
-var sc_project=10740637; 
-var sc_invisible=1; 
-var sc_security="092cf49e"; 
-</script>
-<script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async=""></script>
-<noscript>
-<div class="statcounter">
-<p><a title="web statistics" href="https://statcounter.com/" target="_blank"><img src="https://c.statcounter.com/10740637/0/092cf49e/1/" alt="web statistics" class="statcounter"></a></p>
-</div>
-</noscript>
-<!-- End of Statcounter Code -->
+</section>
+<section id="optimal-range" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-range"><strong>Optimal Range</strong></h3>
+<ul>
+<li><strong>Peak performance:</strong> Maximum fecundity occurs around the midpoint of the thermal range</li>
+<li><strong>Temperature sensitivity:</strong> The curve shows how reproduction drops off rapidly at thermal extremes</li>
+</ul>
+</section>
+<section id="transmission-implications" class="level3">
+<h3 class="anchored" data-anchor-id="transmission-implications"><strong>Transmission Implications</strong></h3>
+<p>These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

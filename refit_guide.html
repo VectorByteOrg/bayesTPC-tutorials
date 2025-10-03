@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Getting Started with bayesTPC – bayesTPC Tutorials</title>
+<title>Replicating Published Research with bayesTPC – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -136,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Getting Started</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./intro.html" aria-current="page"> 
+    <a class="nav-link" href="./intro.html"> 
 <span class="menu-text">Tutorials</span></a>
   </li>  
   <li class="nav-item">
@@ -170,54 +170,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#welcome-to-bayestpc" id="toc-welcome-to-bayestpc" class="nav-link active" data-scroll-target="#welcome-to-bayestpc">Welcome to bayesTPC</a>
-  <ul class="collapse">
-  <li><a href="#quick-start-5-minutes" id="toc-quick-start-5-minutes" class="nav-link" data-scroll-target="#quick-start-5-minutes">Quick Start (5 minutes)</a>
-  <ul class="collapse">
-  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
-  <li><a href="#your-first-tpc-fit" id="toc-your-first-tpc-fit" class="nav-link" data-scroll-target="#your-first-tpc-fit">Your First TPC Fit</a></li>
-  </ul></li>
-  <li><a href="#tutorial-series" id="toc-tutorial-series" class="nav-link" data-scroll-target="#tutorial-series">Tutorial Series</a>
-  <ul class="collapse">
-  <li><a href="#for-beginners-complete-workflow" id="toc-for-beginners-complete-workflow" class="nav-link" data-scroll-target="#for-beginners-complete-workflow">For Beginners: Complete Workflow</a></li>
-  <li><a href="#for-advanced-users-custom-models" id="toc-for-advanced-users-custom-models" class="nav-link" data-scroll-target="#for-advanced-users-custom-models">For Advanced Users: Custom Models</a></li>
-  <li><a href="#hands-on-practice" id="toc-hands-on-practice" class="nav-link" data-scroll-target="#hands-on-practice">Hands-on Practice</a></li>
-  </ul></li>
-  <li><a href="#learning-paths" id="toc-learning-paths" class="nav-link" data-scroll-target="#learning-paths">Learning Paths</a>
-  <ul class="collapse">
-  <li><a href="#new-to-bayestpc" id="toc-new-to-bayestpc" class="nav-link" data-scroll-target="#new-to-bayestpc"><strong>New to bayesTPC?</strong></a></li>
-  <li><a href="#experienced-user" id="toc-experienced-user" class="nav-link" data-scroll-target="#experienced-user"><strong>Experienced user?</strong></a></li>
-  </ul></li>
-  <li><a href="#available-datasets" id="toc-available-datasets" class="nav-link" data-scroll-target="#available-datasets">Available Datasets</a></li>
-  <li><a href="#common-issues-solutions" id="toc-common-issues-solutions" class="nav-link" data-scroll-target="#common-issues-solutions">Common Issues &amp; Solutions</a>
-  <ul class="collapse">
-  <li><a href="#poor-convergence" id="toc-poor-convergence" class="nav-link" data-scroll-target="#poor-convergence">Poor convergence?</a></li>
-  <li><a href="#model-selection" id="toc-model-selection" class="nav-link" data-scroll-target="#model-selection">Model selection?</a></li>
-  <li><a href="#custom-models" id="toc-custom-models" class="nav-link" data-scroll-target="#custom-models">Custom models?</a></li>
-  </ul></li>
-  <li><a href="#need-help" id="toc-need-help" class="nav-link" data-scroll-target="#need-help">Need Help?</a></li>
-  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s Next?</a></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Getting Started with bayesTPC</h1>
-<p class="subtitle lead">Learn to fit thermal performance curves in minutes</p>
+<h1 class="title">Replicating Published Research with bayesTPC</h1>
+<p class="subtitle lead">A step-by-step guide to refitting thermal performance curves from El Moustaid et al.&nbsp;(2021)</p>
 </div>
 
 
 
-<div class="quarto-title-meta column-page-left">
+<div class="quarto-title-meta column-page">
 
     
   
@@ -229,230 +194,236 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="welcome-to-bayestpc" class="level1">
-<h1>Welcome to bayesTPC</h1>
-<p>This guide will get you fitting thermal performance curves (TPCs) with <code>bayesTPC</code> quickly and efficiently. Whether you’re new to Bayesian methods or an experienced user, we have tutorials designed for your skill level.</p>
-<section id="quick-start-5-minutes" class="level2">
-<h2 class="anchored" data-anchor-id="quick-start-5-minutes">Quick Start (5 minutes)</h2>
-<section id="installation" class="level3">
-<h3 class="anchored" data-anchor-id="installation">Installation</h3>
-<p>First, install the required packages:</p>
+<p>This guide demonstrates how to use <code>bayesTPC</code> to replicate thermal performance curve analyses from <a href="https://doi.org/10.1186/s13071-021-04826-y">El Moustaid et al.&nbsp;(2021)</a>.</p>
+<section id="the-paper" class="level2">
+<h2 class="anchored" data-anchor-id="the-paper">The Paper</h2>
+<p><strong>Title</strong>: “Predicting temperature-dependent transmission suitability of bluetongue virus in livestock”<br>
+<strong>Journal</strong>: Parasites &amp; Vectors (2021)<br>
+<strong>DOI</strong>: <a href="https://doi.org/10.1186/s13071-021-04826-y">10.1186/s13071-021-04826-y</a></p>
+<hr>
+</section>
+<section id="quick-example-figure-3-replication" class="level2">
+<h2 class="anchored" data-anchor-id="quick-example-figure-3-replication">Quick Example: Figure 3 Replication</h2>
+<section id="the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem">The Problem</h3>
+<p>The survival probability <strong>f</strong> depends on two traits: - <strong>μ</strong> (mu): Adult mortality rate - <strong>ν</strong> (nu): Parasite development rate (ν = 1/EIP)</p>
+<p>The paper compares three functional forms:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install nimble first</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"nimble"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install bayesTPC from GitHub</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"johnwilliamsmithjr/bayesTPC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three formulas for survival probability</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>f_dietz <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, nu) <span class="fu">exp</span>(<span class="sc">-</span>mu<span class="sc">/</span>nu)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>f_gubbins <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, nu) nu <span class="sc">/</span> (nu <span class="sc">+</span> mu)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>f_turner <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, nu) (<span class="dv">3</span><span class="sc">*</span>nu <span class="sc">/</span> (<span class="dv">3</span><span class="sc">*</span>nu <span class="sc">+</span> mu))<span class="sc">^</span><span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="your-first-tpc-fit" class="level3">
-<h3 class="anchored" data-anchor-id="your-first-tpc-fit">Your First TPC Fit</h3>
+<section id="implementation" class="level3">
+<h3 class="anchored" data-anchor-id="implementation">Implementation</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nimble)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>nimble version 1.3.0 is loaded.
-For more information on NIMBLE and a User Manual,
-please visit https://R-nimble.org.
-
-Note for advanced users who have written their own MCMC samplers:
-  As of version 0.13.0, NIMBLE's protocol for handling posterior
-  predictive nodes has changed in a way that could affect user-defined
-  samplers in some situations. Please see Section 15.5.1 of the User Manual.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'nimble'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:stats':
-
-    simulate</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:base':
-
-    declare</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayesTPC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>bayesTPC requires loading the package NIMBLE to function.
-Please run 'library(nimble)` before using.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load example data</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/AeaegyptiTraitData.csv"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Trait =</span> data<span class="sc">$</span>trait, <span class="at">Temp =</span> data<span class="sc">$</span>Temp)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick plot</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(data_list<span class="sc">$</span>Trait <span class="sc">~</span> data_list<span class="sc">$</span>Temp, <span class="at">ylab =</span> <span class="st">"Development Rate"</span>, <span class="at">xlab =</span> <span class="st">"Temperature (°C)"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Left: mortality vs survival (ν fixed at 0.061)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mu_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.2</span>, <span class="fl">0.5</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>nu_fixed <span class="ot">&lt;-</span> <span class="fl">0.061</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mu_range, <span class="fu">f_dietz</span>(mu_range, nu_fixed), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Mortality rate μ"</span>, <span class="at">ylab =</span> <span class="st">"Survival probability f"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"f vs μ (ν = 0.061)"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(mu_range, <span class="fu">f_gubbins</span>(mu_range, nu_fixed), <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(mu_range, <span class="fu">f_turner</span>(mu_range, nu_fixed), <span class="at">col =</span> <span class="st">"purple"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Dietz (1993)"</span>, <span class="st">"Gubbins et al. (2008)"</span>, <span class="st">"Turner et al. (2013)"</span>),</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"purple"</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Right: parasite development vs survival (μ fixed at 0.15)</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>nu_range <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.7</span>, <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>mu_fixed <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nu_range, <span class="fu">f_dietz</span>(mu_fixed, nu_range), <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Parasite development rate ν"</span>, <span class="at">ylab =</span> <span class="st">"Survival probability f"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"f vs ν (μ = 0.15)"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(nu_range, <span class="fu">f_gubbins</span>(mu_fixed, nu_range), <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(nu_range, <span class="fu">f_turner</span>(mu_fixed, nu_range), <span class="at">col =</span> <span class="st">"purple"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Dietz (1993)"</span>, <span class="st">"Gubbins et al. (2008)"</span>, <span class="st">"Turner et al. (2013)"</span>),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"black"</span>, <span class="st">"blue"</span>, <span class="st">"purple"</span>), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img"></p>
+<p><img src="refit_guide_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img"></p>
+<figcaption>Figure 3: Latent period survival probability f as a function of mortality rate μ (left) and parasite development rate ν (right)</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<hr>
+</section>
+</section>
+<section id="main-challenge-appendix-a.4-refitting-with-bayestpc" class="level2">
+<h2 class="anchored" data-anchor-id="main-challenge-appendix-a.4-refitting-with-bayestpc">Main Challenge: Appendix A.4 Refitting with bayesTPC</h2>
+<section id="the-problem-1" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem-1">The Problem</h3>
+<p>The paper’s parameter notation doesn’t match <code>bayesTPC</code>’s expectations:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Paper Notation</th>
+<th>bayesTPC Expects</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Tmin</code>, <code>Tmax</code>, <code>k</code>, <code>tau</code></td>
+<td><code>T_min</code>, <code>T_max</code>, <code>q</code>, <code>sigma.sq</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="solution-prior-translation-system" class="level3">
+<h3 class="anchored" data-anchor-id="solution-prior-translation-system">Solution: Prior Translation System</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose a model and fit</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(<span class="at">data =</span> data_list, <span class="at">model =</span> <span class="st">"briere"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in check_data(data): Unusual (Temp&gt;50) temperature values detected (are
-Temps given in Celcius?)</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the translation system</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"projects/btv-refit/R/priors_translate.R"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Paper-style priors</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>paper_priors <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tmin =</span> <span class="fu">list</span>(<span class="at">dist =</span> <span class="st">"uniform"</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">8</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Tmax =</span> <span class="fu">list</span>(<span class="at">dist =</span> <span class="st">"uniform"</span>, <span class="at">min =</span> <span class="dv">30</span>, <span class="at">max =</span> <span class="dv">40</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">k =</span> <span class="fu">list</span>(<span class="at">dist =</span> <span class="st">"gamma"</span>, <span class="at">shape =</span> <span class="dv">1</span>, <span class="at">rate =</span> <span class="dv">20</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau =</span> <span class="fu">list</span>(<span class="at">dist =</span> <span class="st">"gamma"</span>, <span class="at">shape =</span> <span class="fl">1.5</span>, <span class="at">rate =</span> <span class="fl">0.001</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Translate to bayesTPC format</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>model_key <span class="ot">&lt;-</span> <span class="fu">model_key_of</span>(<span class="st">"briere"</span>, <span class="st">"normal"</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>pri_trans <span class="ot">&lt;-</span> <span class="fu">translate_priors_to_bayesTPC</span>(paper_priors, model_key)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Creating NIMBLE model:
- - Configuring model.</code></pre>
+</section>
+<section id="data-processing" class="level3">
+<h3 class="anchored" data-anchor-id="data-processing">Data Processing</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and process data from Appendix A.6</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"projects/btv-refit/R/01_load_tidy.R"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>btv <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"projects/btv-refit/outputs/tidy_btv.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  [Note] safeDeparse: truncating deparse output to 1 line</code></pre>
+<p><strong>Key transformations:</strong> - Convert percentages to probabilities [0,1] - Calculate <code>ν = 1/EIP</code> (development rate) - Handle edge cases (EIP = 0 → ν = 0)</p>
+</section>
+<section id="model-fitting" class="level3">
+<h3 class="anchored" data-anchor-id="model-fitting">Model Fitting</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the complete pipeline</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"projects/btv-refit/R/04_run_all.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code> - Compiling model.
-
-Creating MCMC:
- - Configuring MCMC.
- - Compiling MCMC.
- - Running MCMC.
-
-Progress:
-|-------------|-------------|-------------|-------------|
-|-------------------------------------------------------|
-
-Configuring Output:
- - Finding Max. a Post. parameters.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check results</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>bayesTPC MCMC of Type:
-  briere
-
-Formula:
-  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
-* (T_max &gt; Temp) * (Temp &gt; T_min) )
-
-Distribution:
-  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
-
-Parameters:
-
-Chain 1:
-            MAP   Mean Median        Priors
-T_max    25.016 28.948 28.192 dunif(25, 60)
-T_min    19.977 12.828 14.216  dunif(0, 20)
-q         0.057  0.010  0.005       dexp(1)
-sigma.sq 60.460 61.131 61.175       dexp(1)</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit, <span class="at">temp_interval =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">35</span>, <span class="at">length.out =</span> <span class="dv">1000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in plot.btpc_MCMC(fit, temp_interval = seq(0, 35, length.out = 1000)):
-Using default title for plots. Either one title or individual titles for each
-plot may be provided.</code></pre>
-</div>
+<p><strong>MCMC Settings:</strong> - <strong>Chains</strong>: 5 - <strong>Iterations</strong>: 25,000 - <strong>Burn-in</strong>: 5,000 - <strong>Thinning</strong>: 2</p>
+<hr>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<section id="thermal-performance-curves" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-performance-curves">Thermal Performance Curves</h3>
+<div class="cell">
 <div class="cell-output-display">
-<div>
+<div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img"></p>
+<p><img src="projects/btv-refit/outputs/trait_comparison.png" class="img-fluid figure-img" width="1200"></p>
+<figcaption>Fitted thermal performance curves for all traits in C. sonorensis</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>That’s it! You’ve successfully fit a thermal performance curve.</p>
+</section>
+<section id="parameter-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="parameter-estimates">Parameter Estimates</h3>
+<p>For larval survival (p) in C. sonorensis:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Mean</th>
+<th>SD</th>
+<th>2.5%</th>
+<th>97.5%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T_max</td>
+<td>30.19</td>
+<td>0.12</td>
+<td>30.03</td>
+<td>30.48</td>
+</tr>
+<tr class="even">
+<td>T_min</td>
+<td>6.94</td>
+<td>1.03</td>
+<td>4.15</td>
+<td>7.97</td>
+</tr>
+<tr class="odd">
+<td>q</td>
+<td>0.0053</td>
+<td>0.0004</td>
+<td>0.0043</td>
+<td>0.0061</td>
+</tr>
+<tr class="even">
+<td>σ²</td>
+<td>9.94</td>
+<td>0.10</td>
+<td>9.74</td>
+<td>10.13</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Optimal temperature range</strong>: 7-30°C, peak around 25-30°C</p>
+</section>
+<section id="uncertainty-attribution-supplement-fig.-a.2" class="level3">
+<h3 class="anchored" data-anchor-id="uncertainty-attribution-supplement-fig.-a.2">Uncertainty Attribution (Supplement Fig. A.2)</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="projects/btv-refit/outputs/supplement_fig_a2/supplement_fig_a2_robust.png" class="img-fluid figure-img" width="1200"></p>
+<figcaption>Relative width of 95% credible intervals for traits and derived quantities</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key findings:</strong> - <strong>Development rate (ν)</strong>: Most uncertain (0.298) - <strong>Vector competence (b)</strong>: Least uncertain (0.227) - <strong>Survival (p)</strong>: Moderate uncertainty (0.266)</p>
+<hr>
 </section>
 </section>
-<section id="tutorial-series" class="level2">
-<h2 class="anchored" data-anchor-id="tutorial-series">Tutorial Series</h2>
-<section id="for-beginners-complete-workflow" class="level3">
-<h3 class="anchored" data-anchor-id="for-beginners-complete-workflow">For Beginners: Complete Workflow</h3>
-<p><strong><a href="./EEID2024_basic.html">EEID 2024 Basic Tutorial</a></strong> - Perfect for new users - <strong>Dataset</strong>: <em>Aedes aegypti</em> mosquito traits (development rate, adult longevity, juvenile survival) - <strong>What you’ll learn</strong>: Data formatting, model fitting, diagnostics, model comparison - <strong>Time</strong>: 30-45 minutes - <strong>Jump to</strong>: <a href="./EEID2024_basic.html#basic-packages">Packages</a> | <a href="./EEID2024_basic.html#basic-aedes-data">Data setup</a> | <a href="./EEID2024_basic.html#basic-example1">Examples</a> | <a href="./EEID2024_basic.html#basic-practice">Practice</a></p>
+<section id="quality-control" class="level2">
+<h2 class="anchored" data-anchor-id="quality-control">Quality Control</h2>
+<section id="convergence-diagnostics" class="level3">
+<h3 class="anchored" data-anchor-id="convergence-diagnostics">Convergence Diagnostics</h3>
+<p>All fits achieved: - <strong>R-hat &lt; 1.1</strong> for all parameters - <strong>Effective sample size &gt; 1000</strong> for all parameters - <strong>Parameter constraints satisfied</strong> (T_min &lt; T_max, q &gt; 0)</p>
 </section>
-<section id="for-advanced-users-custom-models" class="level3">
-<h3 class="anchored" data-anchor-id="for-advanced-users-custom-models">For Advanced Users: Custom Models</h3>
-<p><strong><a href="./EEID2024_advanced.html">EEID 2024 Advanced Tutorial</a></strong> - For experienced users - <strong>Dataset</strong>: <em>E. coli</em> growth under antibiotics - <strong>What you’ll learn</strong>: Custom model creation, posterior transformations, advanced analysis - <strong>Time</strong>: 45-60 minutes - <strong>Jump to</strong>: <a href="./EEID2024_advanced.html#adv-flexTPC">Custom models</a> | <a href="./EEID2024_advanced.html#adv-fitting">Fitting</a> | <a href="./EEID2024_advanced.html#adv-transformations">Transformations</a></p>
-</section>
-<section id="hands-on-practice" class="level3">
-<h3 class="anchored" data-anchor-id="hands-on-practice">Hands-on Practice</h3>
-<p><strong><a href="./VB_Bayes_activity2B.html">VectorByte Workshop</a></strong> - Interactive activity - <strong>Focus</strong>: Mosquito trait modeling - <strong>Format</strong>: Self-contained exercise - <strong>Time</strong>: 20-30 minutes</p>
-</section>
-</section>
-<section id="learning-paths" class="level2">
-<h2 class="anchored" data-anchor-id="learning-paths">Learning Paths</h2>
-<section id="new-to-bayestpc" class="level3">
-<h3 class="anchored" data-anchor-id="new-to-bayestpc"><strong>New to bayesTPC?</strong></h3>
-<ol type="1">
-<li><strong>Quick Start</strong> (above) - 5 minutes</li>
-<li><strong><a href="./EEID2024_basic.html#basic-packages">Basic Tutorial</a></strong> - Complete workflow</li>
-<li><strong><a href="./VB_Bayes_activity2B.html">VectorByte Workshop</a></strong> - Hands-on practice</li>
-<li><strong><a href="./EEID2024_advanced.html#adv-flexTPC">Advanced Tutorial</a></strong> - Custom models</li>
-</ol>
-</section>
-<section id="experienced-user" class="level3">
-<h3 class="anchored" data-anchor-id="experienced-user"><strong>Experienced user?</strong></h3>
+<section id="data-validation" class="level3">
+<h3 class="anchored" data-anchor-id="data-validation">Data Validation</h3>
 <ul>
-<li>Jump directly to <strong><a href="./EEID2024_advanced.html#adv-flexTPC">Advanced Tutorial</a></strong> for custom model creation</li>
-<li>Check <strong><a href="./EEID2024_advanced.html#adv-model-comparison">Model comparison</a></strong> for WAIC analysis</li>
-<li>Explore <strong><a href="./EEID2024_advanced.html#adv-transformations">Posterior transformations</a></strong> for advanced analysis</li>
+<li><strong>Probability traits</strong>: All values in [0,1]</li>
+<li><strong>Rate traits</strong>: All values ≥ 0</li>
+<li><strong>Temperature range</strong>: Consistent (12-35°C)</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="files-and-resources" class="level2">
+<h2 class="anchored" data-anchor-id="files-and-resources">Files and Resources</h2>
+<section id="pipeline-scripts" class="level3">
+<h3 class="anchored" data-anchor-id="pipeline-scripts">Pipeline Scripts</h3>
+<ul>
+<li><strong>Prior Translation</strong>: <a href="projects/btv-refit/R/priors_translate.R"><code>projects/btv-refit/R/priors_translate.R</code></a></li>
+<li><strong>Main Pipeline</strong>: <a href="projects/btv-refit/R/04_run_all.R"><code>projects/btv-refit/R/04_run_all.R</code></a></li>
+<li><strong>Supplement Analysis</strong>: <a href="projects/btv-refit/R/supplement_fig_a2_robust.R"><code>projects/btv-refit/R/supplement_fig_a2_robust.R</code></a></li>
 </ul>
 </section>
-</section>
-<section id="available-datasets" class="level2">
-<h2 class="anchored" data-anchor-id="available-datasets">Available Datasets</h2>
-<p>All tutorials use real biological datasets:</p>
+<section id="outputs" class="level3">
+<h3 class="anchored" data-anchor-id="outputs">Outputs</h3>
 <ul>
-<li><strong><a href="https://vectorbyte.crc.nd.edu/vectraits-explorer">VecTraits Database</a></strong>: Access thousands of vector trait datasets</li>
-<li><strong><a href="data/ab_data.csv">Antibiotic resistance data</a></strong>: <em>E. coli</em> growth under various antibiotics</li>
-<li><strong><a href="data/AeaegyptiTraitData.csv">Mosquito trait data</a></strong>: Development, survival, and longevity data</li>
+<li><strong>Trait Results</strong>: <a href="projects/btv-refit/outputs/traits/"><code>projects/btv-refit/outputs/traits/</code></a></li>
+<li><strong>Visualization Gallery</strong>: <a href="projects/btv-refit/visualization_gallery.html"><code>projects/btv-refit/visualization_gallery.html</code></a></li>
+<li><strong>Configuration</strong>: <a href="projects/btv-refit/data/priors_tableA2.yaml"><code>projects/btv-refit/data/priors_tableA2.yaml</code></a></li>
 </ul>
-</section>
-<section id="common-issues-solutions" class="level2">
-<h2 class="anchored" data-anchor-id="common-issues-solutions">Common Issues &amp; Solutions</h2>
-<section id="poor-convergence" class="level3">
-<h3 class="anchored" data-anchor-id="poor-convergence">Poor convergence?</h3>
-<p>Try these adjustments:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust priors</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">=</span> <span class="fu">list</span>(<span class="at">T_min =</span> <span class="st">"dunif(-5,10)"</span>, <span class="at">T_max =</span> <span class="st">"dunif(30,40)"</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Use different sampler</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>samplerType <span class="ot">=</span> <span class="st">"AF_slice"</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add initial values</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>inits <span class="ot">=</span> <span class="fu">list</span>(<span class="at">T_min =</span> <span class="dv">10</span>, <span class="at">T_max =</span> <span class="dv">32</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="model-selection" class="level3">
-<h3 class="anchored" data-anchor-id="model-selection">Model selection?</h3>
-<p>Compare models using WAIC:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(data_list, <span class="st">"briere"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">b_TPC</span>(data_list, <span class="st">"quadratic"</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(fit1)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>bayesTPC<span class="sc">::</span><span class="fu">get_WAIC</span>(fit2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="custom-models" class="level3">
-<h3 class="anchored" data-anchor-id="custom-models">Custom models?</h3>
-<p>Create your own TPC function:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>my_model <span class="ot">&lt;-</span> <span class="fu">specify_normal_model</span>(<span class="st">"my_model"</span>, </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                                <span class="at">parameters =</span> <span class="fu">c</span>(<span class="at">q =</span> <span class="st">"dunif(0,1)"</span>, <span class="at">T_max =</span> <span class="st">"dunif(30,50)"</span>),</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">formula =</span> <span class="fu">expression</span>(q <span class="sc">*</span> Temp <span class="sc">*</span> (T_max <span class="sc">-</span> Temp)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="need-help" class="level2">
-<h2 class="anchored" data-anchor-id="need-help">Need Help?</h2>
-<ul>
-<li><strong>Diagnostics</strong>: See <a href="./EEID2024_basic.html#basic-example1">troubleshooting section</a> in Basic Tutorial</li>
-<li><strong>Convergence</strong>: Check <a href="./EEID2024_advanced.html#adv-fitting">convergence tips</a> in Advanced Tutorial</li>
-<li><strong>Package issues</strong>: Ensure you’re using <code>nimble</code> version 0.13.2 (see <a href="README.md">README</a>)</li>
-</ul>
-</section>
-<section id="whats-next" class="level2">
-<h2 class="anchored" data-anchor-id="whats-next">What’s Next?</h2>
-<p>Once you’re comfortable with the basics, explore: - <strong>Different TPC models</strong>: <code>get_models()</code> shows all available options - <strong>Custom likelihoods</strong>: Beyond normal distributions - <strong>Model comparison</strong>: Using WAIC and other criteria - <strong>Real data</strong>: Apply to your own research questions</p>
-<p>Ready to dive deeper? Start with the <strong><a href="./EEID2024_basic.html#basic-packages">Basic Tutorial</a></strong> for a comprehensive workflow!</p>
+<hr>
 
 
 </section>
