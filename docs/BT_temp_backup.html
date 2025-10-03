@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Tutorials for bayesTPC – bayesTPC Tutorials</title>
+<title>bt_temp_backup – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,34 +135,219 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Tutorials for bayesTPC</h1>
+
+
+
+<section id="bluetongue-virus-thermal-performance-curves" class="level1">
+<h1>Bluetongue Virus: Thermal Performance Curves</h1>
+<p><strong>Source:</strong> El Moustaid et al.&nbsp;2021 Supplement | <strong>Data:</strong> Lysyk &amp; Danyk 2007, Mayo et al.&nbsp;2020</p>
+<p>This analysis recreates key thermal performance curves from the Bluetongue virus transmission study, fitting Bayesian models to estimate Maximum A Posteriori (MAP) parameters for each trait. The solid lines show posterior means/medians with 95% HPD intervals (dashed lines).</p>
+<section id="adult-mortality-rate-μ" class="level2">
+<h2 class="anchored" data-anchor-id="adult-mortality-rate-μ">Adult Mortality Rate (μ)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_backup_files/figure-html/mu-plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates (μ):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 6.03 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 39.97 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 3e-04 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 4e-04 </code></pre>
+</div>
+</div>
+</section>
+<section id="midge-fecundity-efd" class="level2">
+<h2 class="anchored" data-anchor-id="midge-fecundity-efd">Midge Fecundity (EFD)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_backup_files/figure-html/plot-fecundity-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="key-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="key-parameters">Key Parameters</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 12.9 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 36 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 0.023 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 55.7955 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>bayesTPC MCMC of Type:
+  briere
+
+Formula:
+  m[i] &lt;- ( q * Temp * (Temp - T_min) * sqrt((T_max &gt; Temp) * abs(T_max - Temp))
+* (T_max &gt; Temp) * (Temp &gt; T_min) )
+
+Distribution:
+  Trait[i] ~ T(dnorm(mean = m[i], tau = 1/sigma.sq), 0, )
+
+Priors:
+  q ~ dunif(0, 200) 
+  T_max ~ dunif(32, 36) 
+  T_min ~ dunif(5, 15) 
+  sigma.sq ~ dexp(1)
+
+Max. A Post. Parameters: 
+    T_max     T_min         q  sigma.sq  log_prob 
+  35.9988   12.9022    0.0234   55.7955 -221.2674 
+
+MCMC Results:
+Iterations = 1:12000
+Thinning interval = 1 
+Number of chains = 4 
+Sample size per chain = 12000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+             Mean      SD  Naive SE Time-series SE
+T_max    35.06909 0.72066 3.289e-03      0.0121477
+T_min    12.57793 1.75448 8.008e-03      0.0536760
+q         0.02497 0.00396 1.807e-05      0.0001168
+sigma.sq 56.82065 5.04067 2.301e-02      0.0487544
+
+2. Quantiles for each variable:
+
+             2.5%      25%      50%      75%    97.5%
+T_max    33.37946 34.62146 35.23310 35.65737 35.97170
+T_min     8.27446 11.54325 12.90486 13.96040 14.87675
+q         0.01742  0.02225  0.02489  0.02762  0.03309
+sigma.sq 47.51864 53.32313 56.57851 60.13034 67.25977</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Posterior Medians:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Lower limit (T_min):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Upper limit (T_max):  °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Scaling factor (q):  </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>**Optimal Temperature:**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Peak fecundity at:  °C</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="biological-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="biological-interpretation">Biological Interpretation</h2>
+<p>The thermal performance curve reveals critical insights about midge reproduction:</p>
+<section id="thermal-limits" class="level3">
+<h3 class="anchored" data-anchor-id="thermal-limits"><strong>Thermal Limits</strong></h3>
+<ul>
+<li><strong>Lower limit (T_min):</strong> Below this temperature, midges cannot reproduce</li>
+<li><strong>Upper limit (T_max):</strong> Above this temperature, reproduction ceases due to heat stress</li>
+</ul>
+</section>
+<section id="optimal-range" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-range"><strong>Optimal Range</strong></h3>
+<ul>
+<li><strong>Peak performance:</strong> Maximum fecundity occurs around the midpoint of the thermal range</li>
+<li><strong>Temperature sensitivity:</strong> The curve shows how reproduction drops off rapidly at thermal extremes</li>
+</ul>
+</section>
+<section id="transmission-implications" class="level3">
+<h3 class="anchored" data-anchor-id="transmission-implications"><strong>Transmission Implications</strong></h3>
+<p>These results inform disease transmission models by quantifying how temperature affects vector population growth and disease spread potential.</p>
 
 
-
-<div class="quarto-title-meta column-page">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>This webpage is designed to be an evolving document with up-to-date tutorials on the R <a href="./about.html">package bayesTPC</a>. These tutorials have been developed over a number of years with content by the <a href="./team.html">bayesTPC team</a>. Portions of these materials have appeared else where (such as in a <a href="https://vectorbyteorg.github.io/vectorbyte-training4/materials.html#bayestpc">VectorByte Training workshop</a>, an <a href="https://vectorbyteorg.github.io/EEID2024-training/materials.html#fitting-tpcs-using-bayestpc">EEID training workshop</a>, and the published <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.70004">paper describing the package</a>). However, we felt that it was important to have a central location where we could aggregate these materials and update them as new functionality is added to the package.</p>
-
-
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

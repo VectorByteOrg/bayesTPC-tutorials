@@ -333,11 +333,8 @@ ldt_df <- data.frame(
   LDT = c(34.5, 33.6, 26.5, 24.4, 16.7)
 )
 
-# Let's try a much simpler approach - fit directly to LDT using bayesTPC
-# Create a custom function that matches the original paper's quadratic
-ldt_data_list <- list(Temp = ldt_df$T, Trait = ldt_df$LDT)
-
 # Use a simple polynomial regression approach for better stability
+# This captures the biological relationship: development time decreases with temperature
 temp_centered <- ldt_df$T - mean(ldt_df$T)  # Center temperature for numerical stability
 ldt_fit <- lm(LDT ~ temp_centered + I(temp_centered^2), data = data.frame(LDT = ldt_df$LDT, temp_centered))
 
@@ -347,7 +344,7 @@ linear_coef <- coef(ldt_fit)[2]
 quad_coef <- coef(ldt_fit)[3]
 residual_sd <- summary(ldt_fit)$sigma
 
-# Generate some posterior-like samples by adding noise to the MLE estimates
+# Generate posterior-like samples for uncertainty quantification
 set.seed(123)
 n_samples <- 1000
 intercept_samples <- rnorm(n_samples, intercept, summary(ldt_fit)$coefficients[1,2])
@@ -371,18 +368,24 @@ ci_ldt <- apply(pred_ldt, 1, function(x) quantile(x, c(0.025, 0.975)))
 lo_ldt <- ci_ldt[1, ]
 hi_ldt <- ci_ldt[2, ]
 
+# Find optimal temperature (minimum development time)
+Topt_ldt <- temp_grid[which.min(mean_ldt)]
+
 # Plot matching the original paper's style
 par(mfrow = c(1,1), mar = c(4,4,2,1))
 plot(temp_grid, mean_ldt, type = "l", lwd = 2, col = "black",
-     xlab = "T (°C)", ylab = "Larval Development Time",
-     xlim = c(0, 50), ylim = c(0, 60), bty = "l")
-lines(temp_grid, lo_ldt, lty = 2, lwd = 2, col = "black")
-lines(temp_grid, hi_ldt, lty = 2, lwd = 2, col = "black")
+     xlab = "T (°C)", ylab = "Larval Development Time (days)",
+     xlim = c(0, 50), ylim = c(0, max(60, max(hi_ldt, ldt_df$LDT, na.rm = TRUE) * 1.05)), bty = "l")
+lines(temp_grid, lo_ldt, lty = 2, lwd = 1.2)
+lines(temp_grid, hi_ldt, lty = 2, lwd = 1.2)
 points(ldt_df$T, ldt_df$LDT, pch = 16, col = "black", cex = 1.5)
+abline(v = Topt_ldt, lty = 3)
+lbl <- sprintf("Topt ≈ %.1f°C (min dev. time)", Topt_ldt)
+if (length(lbl) == 1 && !is.na(lbl)) mtext(lbl, side = 3, adj = 1, cex = 0.9)
 ```
 
 ```{r ldt-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
-# Report the fitted quadratic model parameters
+# Report the fitted quadratic model parameters (Maximum Likelihood Estimates)
 cat("**Fitted Quadratic Model (LDT):**\n")
 cat("• Intercept =", round(intercept, 2), "\n")
 cat("• Linear coefficient =", round(linear_coef, 4), "\n") 
@@ -393,4 +396,155 @@ cat("• R-squared =", round(summary(ldt_fit)$r.squared, 3), "\n")
 # Report the model equation
 temp_center <- round(mean(ldt_df$T), 1)
 cat("\n**Model:** LDT =", round(intercept, 2), "+", round(linear_coef, 4), "*(T -", temp_center, ") +", round(quad_coef, 6), "*(T -", temp_center, ")²\n")
+cat("\n**Note:** Development time decreases with temperature (faster development at higher T).\n")
+```
+
+## Egg Development Time (EDT)
+
+```{r edt-data-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# EDT data from user (Egg Development Time in days)
+edt_df <- data.frame(
+  T = c(20, 23, 27, 30, 35),
+  EDT = c(63.6, 64.7, 61.4, 50.9, 57.1)
+)
+
+# Use a simple polynomial regression approach for stability
+# Development time decreases with temperature (similar to LDT)
+temp_centered_edt <- edt_df$T - mean(edt_df$T)  # Center temperature for numerical stability
+edt_fit <- lm(EDT ~ temp_centered_edt + I(temp_centered_edt^2), data = data.frame(EDT = edt_df$EDT, temp_centered_edt))
+
+# Extract coefficients for prediction
+intercept_edt <- coef(edt_fit)[1]
+linear_coef_edt <- coef(edt_fit)[2] 
+quad_coef_edt <- coef(edt_fit)[3]
+residual_sd_edt <- summary(edt_fit)$sigma
+
+# Generate posterior-like samples for uncertainty quantification
+set.seed(123)
+n_samples_edt <- 1000
+intercept_samples_edt <- rnorm(n_samples_edt, intercept_edt, summary(edt_fit)$coefficients[1,2])
+linear_samples_edt <- rnorm(n_samples_edt, linear_coef_edt, summary(edt_fit)$coefficients[2,2])
+quad_samples_edt <- rnorm(n_samples_edt, quad_coef_edt, summary(edt_fit)$coefficients[3,2])
+```
+
+```{r edt-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Temperature grid for predictions
+temp_grid <- seq(0, 50, by = 0.1)
+temp_grid_centered_edt <- temp_grid - mean(edt_df$T)  # Center using same value
+
+# Generate predictions using the quadratic model
+pred_edt <- sapply(1:n_samples_edt, function(i) {
+  intercept_samples_edt[i] + linear_samples_edt[i] * temp_grid_centered_edt + quad_samples_edt[i] * temp_grid_centered_edt^2
+})
+
+# Calculate mean and 95% credible intervals
+mean_edt <- rowMeans(pred_edt)
+ci_edt <- apply(pred_edt, 1, function(x) quantile(x, c(0.025, 0.975)))
+lo_edt <- ci_edt[1, ]
+hi_edt <- ci_edt[2, ]
+
+# Find optimal temperature (minimum development time)
+Topt_edt <- temp_grid[which.min(mean_edt)]
+
+# Plot matching the original paper's style
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, mean_edt, type = "l", lwd = 2, col = "black",
+     xlab = "T (°C)", ylab = "Egg Development Time (days)",
+     xlim = c(0, 50), ylim = c(0, max(80, max(hi_edt, edt_df$EDT, na.rm = TRUE) * 1.05)), bty = "l")
+lines(temp_grid, lo_edt, lty = 2, lwd = 1.2)
+lines(temp_grid, hi_edt, lty = 2, lwd = 1.2)
+points(edt_df$T, edt_df$EDT, pch = 16, col = "black", cex = 1.5)
+abline(v = Topt_edt, lty = 3)
+lbl <- sprintf("Topt ≈ %.1f°C (min dev. time)", Topt_edt)
+if (length(lbl) == 1 && !is.na(lbl)) mtext(lbl, side = 3, adj = 1, cex = 0.9)
+```
+
+```{r edt-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# Report the fitted quadratic model parameters (Maximum Likelihood Estimates)
+cat("**Fitted Quadratic Model (EDT):**\n")
+cat("• Intercept =", round(intercept_edt, 2), "\n")
+cat("• Linear coefficient =", round(linear_coef_edt, 4), "\n") 
+cat("• Quadratic coefficient =", round(quad_coef_edt, 6), "\n")
+cat("• Residual SD =", round(residual_sd_edt, 2), "\n")
+cat("• R-squared =", round(summary(edt_fit)$r.squared, 3), "\n")
+
+# Report the model equation
+temp_center_edt <- round(mean(edt_df$T), 1)
+cat("\n**Model:** EDT =", round(intercept_edt, 2), "+", round(linear_coef_edt, 4), "*(T -", temp_center_edt, ") +", round(quad_coef_edt, 6), "*(T -", temp_center_edt, ")²\n")
+cat("\n**Note:** Egg development time varies with temperature following quadratic relationship.\n")
+```
+
+## Pupal Development Time (PuDT)
+
+```{r pudt-data-fit, echo=FALSE, message=FALSE, warning=FALSE}
+# PuDT data from user (Pupal Development Time in days)
+pudt_df <- data.frame(
+  T = c(20, 23, 27, 30, 35),
+  PuDT = c(89.7, 65.5, 50.6, 39.1, 38.8)
+)
+
+# Use a simple polynomial regression approach for stability
+# Development time decreases with temperature (similar to LDT and EDT)
+temp_centered_pudt <- pudt_df$T - mean(pudt_df$T)  # Center temperature for numerical stability
+pudt_fit <- lm(PuDT ~ temp_centered_pudt + I(temp_centered_pudt^2), data = data.frame(PuDT = pudt_df$PuDT, temp_centered_pudt))
+
+# Extract coefficients for prediction
+intercept_pudt <- coef(pudt_fit)[1]
+linear_coef_pudt <- coef(pudt_fit)[2] 
+quad_coef_pudt <- coef(pudt_fit)[3]
+residual_sd_pudt <- summary(pudt_fit)$sigma
+
+# Generate posterior-like samples for uncertainty quantification
+set.seed(123)
+n_samples_pudt <- 1000
+intercept_samples_pudt <- rnorm(n_samples_pudt, intercept_pudt, summary(pudt_fit)$coefficients[1,2])
+linear_samples_pudt <- rnorm(n_samples_pudt, linear_coef_pudt, summary(pudt_fit)$coefficients[2,2])
+quad_samples_pudt <- rnorm(n_samples_pudt, quad_coef_pudt, summary(pudt_fit)$coefficients[3,2])
+```
+
+```{r pudt-plot, echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=5}
+# Temperature grid for predictions
+temp_grid <- seq(0, 50, by = 0.1)
+temp_grid_centered_pudt <- temp_grid - mean(pudt_df$T)  # Center using same value
+
+# Generate predictions using the quadratic model
+pred_pudt <- sapply(1:n_samples_pudt, function(i) {
+  intercept_samples_pudt[i] + linear_samples_pudt[i] * temp_grid_centered_pudt + quad_samples_pudt[i] * temp_grid_centered_pudt^2
+})
+
+# Calculate mean and 95% credible intervals
+mean_pudt <- rowMeans(pred_pudt)
+ci_pudt <- apply(pred_pudt, 1, function(x) quantile(x, c(0.025, 0.975)))
+lo_pudt <- ci_pudt[1, ]
+hi_pudt <- ci_pudt[2, ]
+
+# Find optimal temperature (minimum development time)
+Topt_pudt <- temp_grid[which.min(mean_pudt)]
+
+# Plot matching the reference image scaling
+par(mfrow = c(1,1), mar = c(4,4,2,1))
+plot(temp_grid, mean_pudt, type = "l", lwd = 2, col = "black",
+     xlab = "T (°C)", ylab = "Pupal Development Time",
+     xlim = c(0, 50), ylim = c(0, 150), bty = "l")
+lines(temp_grid, lo_pudt, lty = 2, lwd = 2, col = "black")
+lines(temp_grid, hi_pudt, lty = 2, lwd = 2, col = "black")
+points(pudt_df$T, pudt_df$PuDT, pch = 16, col = "black", cex = 1.5)
+abline(v = Topt_pudt, lty = 3)
+lbl <- sprintf("Topt ≈ %.1f°C (min dev. time)", Topt_pudt)
+if (length(lbl) == 1 && !is.na(lbl)) mtext(lbl, side = 3, adj = 1, cex = 0.9)
+```
+
+```{r pudt-param-summary, echo=FALSE, message=FALSE, warning=FALSE}
+# Report the fitted quadratic model parameters (Maximum Likelihood Estimates)
+cat("**Fitted Quadratic Model (PuDT):**\n")
+cat("• Intercept =", round(intercept_pudt, 2), "\n")
+cat("• Linear coefficient =", round(linear_coef_pudt, 4), "\n") 
+cat("• Quadratic coefficient =", round(quad_coef_pudt, 6), "\n")
+cat("• Residual SD =", round(residual_sd_pudt, 2), "\n")
+cat("• R-squared =", round(summary(pudt_fit)$r.squared, 3), "\n")
+
+# Report the model equation
+temp_center_pudt <- round(mean(pudt_df$T), 1)
+cat("\n**Model:** PuDT =", round(intercept_pudt, 2), "+", round(linear_coef_pudt, 4), "*(T -", temp_center_pudt, ") +", round(quad_coef_pudt, 6), "*(T -", temp_center_pudt, ")²\n")
+cat("\n**Note:** Pupal development time decreases with temperature (faster development at higher T).\n")
 ```

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Tutorials for bayesTPC – bayesTPC Tutorials</title>
+<title>bt_temp.knit – bayesTPC Tutorials</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -135,34 +135,285 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content column-page" id="quarto-document-content">
+<main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Tutorials for bayesTPC</h1>
+
+
+
+<section id="bluetongue-virus-thermal-performance-curves" class="level1">
+<h1>Bluetongue Virus: Thermal Performance Curves</h1>
+<p><strong>Source:</strong> El Moustaid et al.&nbsp;2021 Supplement | <strong>Data:</strong> Lysyk &amp; Danyk 2007, Mayo et al.&nbsp;2020</p>
+<p>This analysis recreates key thermal performance curves from the Bluetongue virus transmission study, fitting Bayesian models to estimate Maximum A Posteriori (MAP) parameters for each trait. The solid lines show posterior means/medians with 95% HPD intervals (dashed lines).</p>
+<section id="adult-mortality-rate-μ" class="level2">
+<h2 class="anchored" data-anchor-id="adult-mortality-rate-μ">Adult Mortality Rate (μ)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Temp range: 10.3–30.9 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>mu range: 0.037–0.138  per day</code></pre>
+</div>
+</div>
+</section>
+<section id="thermal-performance-curve-quadratic-via-bayestpc" class="level2">
+<h2 class="anchored" data-anchor-id="thermal-performance-curve-quadratic-via-bayestpc">Thermal Performance Curve (Quadratic via bayesTPC)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/mu-plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates (μ):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 6.03 °C
+• T_max = 39.97 °C
+• q = 3e-04 
+• sigma.sq = 4e-04 </code></pre>
+</div>
+</div>
+</section>
+<section id="midge-fecundity-efd" class="level2">
+<h2 class="anchored" data-anchor-id="midge-fecundity-efd">Midge Fecundity (EFD)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/plot-fecundity-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates (EFD):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 12.9 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 36 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 0.023 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 55.7955 </code></pre>
+</div>
+</div>
+</section>
+<section id="larval-survival-probability-pl" class="level2">
+<h2 class="anchored" data-anchor-id="larval-survival-probability-pl">Larval Survival Probability (pL)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/pl-plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates (pL):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 18.01 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 37.24 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 2e-04 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 0.00302 </code></pre>
+</div>
+</div>
+</section>
+<section id="biting-rate-a" class="level2">
+<h2 class="anchored" data-anchor-id="biting-rate-a">Biting Rate (a)</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating NIMBLE model:
+ - Configuring model.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+
+Configuring Output:
+ - Finding Max. a Post. parameters.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/a-plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**MAP Estimates (a):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_min = 11.4 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• T_max = 36 °C</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• q = 4e-04 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• sigma.sq = 0.008 </code></pre>
+</div>
+</div>
+</section>
+<section id="larvas-development-time-ldt" class="level2">
+<h2 class="anchored" data-anchor-id="larvas-development-time-ldt">Larva’s Development Time (LDT)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="BT_temp_files/figure-html/ldt-plot-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>**Fitted Quadratic Model (LDT):**</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Intercept = 27.78 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Linear coefficient = -1.2032 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Quadratic coefficient = -0.023137 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• Residual SD = 1.42 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>• R-squared = 0.981 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+**Model:** LDT = 27.78 + -1.2032 *(T - 27 ) + -0.023137 *(T - 27 )²</code></pre>
+</div>
 </div>
 
 
-
-<div class="quarto-title-meta column-page">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>This webpage is designed to be an evolving document with up-to-date tutorials on the R <a href="./about.html">package bayesTPC</a>. These tutorials have been developed over a number of years with content by the <a href="./team.html">bayesTPC team</a>. Portions of these materials have appeared else where (such as in a <a href="https://vectorbyteorg.github.io/vectorbyte-training4/materials.html#bayestpc">VectorByte Training workshop</a>, an <a href="https://vectorbyteorg.github.io/EEID2024-training/materials.html#fitting-tpcs-using-bayestpc">EEID training workshop</a>, and the published <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.70004">paper describing the package</a>). However, we felt that it was important to have a central location where we could aggregate these materials and update them as new functionality is added to the package.</p>
-
-
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
