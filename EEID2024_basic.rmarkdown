@@ -1,0 +1,529 @@
+---
+title: "Introduction to Fitting TPCs using `bayesTPC`"
+author:
+  - name: 
+      given: Leah R.
+      family: Johnson
+    url: https://lrjohnson0.github.io/QEDLab/leahJ.html
+    affiliation: Virginia Tech and VectorByte
+  - name: 
+      given: Sean
+      family: Sorek
+    affiliation: Virginia Tech, VectorByte, Columbia Univeristy
+  - name: 
+      given: Yusi
+      family: Yao
+    affiliation: Virginia Tech and VectorByte
+citation: true
+date: 2025-09-01
+date-format: long
+format:
+  html:
+    toc: true
+    toc-location: left
+    html-math-method: katex
+    css: styles.css
+---
+
+# Introduction
+
+```{r, echo=FALSE}
+set.seed(12345)
+```
+
+This section is focused on using the `bayesTPC` package to fit TPCs to data using the methods we've explored in the Bayesian lectures and the first two activities. Here we won't be talking much about the implementation, but instead will rely on the `bayesTPC` package and it's functions to allow us to specify, fit, and analyze the data.
+
+# Packages and tools
+
+For this practical you will need to first install [nimble](), then be sure to install the following packages:
+
+```{r, results="hide", warning=FALSE, message=FALSE}
+# Load libraries
+library(nimble)
+library(HDInterval)
+library(MCMCvis)
+library(coda) # makes diagnostic plots
+library(matrixStats)
+library(truncnorm)
+```
+
+<br> We are also introducing our new, in development, package `bayesTPC`. It is currently available through github.
+
+```{r, message=FALSE}
+# install.packages("devtools")
+# remotes::install_github("johnwilliamsmithjr/bayesTPC") # changed from devtool:: to remotes::
+library(bayesTPC)
+```
+
+# Fitting thermal trait data for *Aedes* mosquitoes
+
+We demonstrate the basic workflow of `bayesTPC` by fitting TPC curves to *Aedes aegypti* trait data from @huxley2022competition. We use individual level data on three traits: 
+
+- juvenile survival (proportions -- number of juveniles that become adults/total number of eggs)
+- development rate (1/time for a mosquito to develop)
+- adult longevity. 
+
+Note that some of the traits/data are related to others, such as mortatlity rate $=$1/lifespan or development rate $=$ 1/development time if we're assuming lifespan and development time, respectively, are exponentially distributed -- a common modeling assumption.
+
+These three trait sets allow us to explore a full range of models and functionality in `bayesTPC`.
+
+## Data from VecTraits
+
+The data we want to fit is available on the VecTraits database. We can use the helper function included as part of `bayesTPC` that is designed to interact with this database, `get_VB_datasets()`, along with the appropriate data set id numbers to retrieve and load them into `R`.
+
+```{r, results = F}
+#| cache: true
+
+aedes_data <- get_VB_datasets(577:579) 
+
+```
+
+Alternatively, if pulling the data isn't working, or you prefer to work with locally saved data, you can read from a csv or similar:
+```{r, eval=FALSE}
+aedes_data<-list()
+
+aedes_data[[1]]<-read.csv("data/VByte_577.csv")
+aedes_data[[2]]<-read.csv("data/VByte_578.csv")
+aedes_data[[3]]<-read.csv("data/VByte_579.csv")
+
+```
+
+
+We have downloaded all three datasets. As always, first we have a look at the data (just looking at a few columns, since the VecTraits format is large so it can hold a lot of different types of information):
+
+```{r}
+cols<-c(2,4,5,6,30)
+aedes1<-aedes_data[[3]]
+head(aedes1[,cols])
+```
+
+
+Trait data need to be in a particular format before being passed into the fitting routine. Specifically, the data must be stored as a list with names `Trait` for the modeled response and `Temp` for the corresponding temperature settings (in $^\circ$C, as this is necessary for some of the TPC functions). We format the three datasets here:
+
+```{r, results=F}
+# development rate
+dev_rate <- list(Trait = 1/aedes_data[[2]]$OriginalTraitValue,
+                 Temp = aedes_data[[2]]$Interactor1Temp)
+
+# adult longevity
+adult_life <- list(Trait = aedes_data[[3]]$OriginalTraitValue,
+                   Temp = aedes_data[[3]]$Interactor1Temp)
+
+# juvenile survival data
+juv_survival <- list(Trait = aedes_data[[1]]$OriginalTraitValue,
+                     Temp = aedes_data[[1]]$Interactor1Temp)
+
+```
+
+Notice that we follow a convention here treating the development rate as 1/development time. This is a common assumption (although it is formally only valid if we believe that development times are exponentially distributed). Often mathematical models assume exponentially distributed traits, and so this is why the data are modeled in this fashion. We will show this approach here, as it is common, but do not advocate for this in general. 
+
+
+```{r, echo=FALSE, fig.width=8, fig.height=4}
+#| label: fig-plotData
+#| fig-cap: "Three example datasets from @huxley2022competition: Development Rate, Adult Longevity, and Juvenile Survival. Temperatures for the juvenile survival data are jittered for visibility"
+
+par(mfrow = c(1,3), bty="n")
+plot(adult_life$Temp, adult_life$Trait, 
+     xlab="Temperature", ylab="Trait", main="Adult Lifespan")
+plot(dev_rate$Temp, dev_rate$Trait, 
+     xlab="Temperature", ylab="Trait", main="Development Rate")
+plot(jitter(juv_survival$Temp, factor=0.5), juv_survival$Trait, 
+     xlab="Temperature", ylab="Trait", main="Juvenile Survival")
+
+```
+
+We will first go through a case where the default settings give reasonable output out of the box (adult lifespan) in order to show basic functions in action. We then approach a case where the defaults need to be modified (development rate). As part of your independent practice, you can fit data (juvenile survival) where we would use a glm model for the data.
+
+
+# Thermal performance curve models in `bayesTPC`
+
+There are many functional forms that can be used to describe TPCs.  Two of the more common (and easy to fit) functions are quadratic and Briere. Traits that respond unimodally but symmetrically to temperature (often the case for compound traits) can be fit with a quadratic function: 
+$$
+f_1(T) = \begin{cases} 0 &\text {if } T \leq T_0 \\
+-q (T-T_0) (T-T_m) & \text {if } T_0 < T <T_m \\
+ 0 &\text{if } T \geq T_m . \end{cases}
+$$
+
+Traits that respond unimodally but asymetrically can be fitted with a Briere function: 
+$$
+f_2(T) = \begin{cases} 0 &\text {if } T \leq T_0 \\
+q T (T-T_0) \sqrt{T_m-T} & \text {if } T_0 < T <T_m \\
+ 0 &\text{if } T \geq T_m . \end{cases}
+$$
+In both models, $T_0$ is the lower thermal limit, $T_m$ is the upper thermal limit (i.e., where the trait value goes to zero on either end), and $q>0$ determines the curvature, and so with the other parameters determines the height of the curve (i.e., value of the trait at the optimum temperature). Note that above we're assuming that the quadratic must be concave down (hence the negative sign), and that the performance goes to zero outside of the thermal limits. In some cases we instead use a concave-up quadratic, although it must be parameterized differently. 
+
+We include eight common TPC models (listed with `get_models()`) in the package (@Tbl-TPCs). Users can obtain the default specification and priors for these models with `get_default_model_specification()`. The package also includes linear and quadratic formulations for Bernoulli, binomial, and Poisson GLMs, assuming canonical link functions.
+
+::: {#tbl-TPCs}
+```{=latex}
+\renewcommand{\arraystretch}{2}
+\begin{center}
+  \begin{table}
+    \begin{tabular}{ l | l }
+    TPC name & TPC mathematical formula \\
+    \hline
+       briere & $qT(T-T_0)\sqrt{|T_{max}-T|}\delta(T_{max} > T)\delta(T > T_{min})$ \\[2mm]
+       gaussian & $r_{max}\exp\left(-0.5\left(\frac{|T - T_{opt}|}{a}\right)^2 \right)$ \\[3mm]  
+       kamykowski & $a \delta(T_{max} > T)\delta(T > T_{min})(1 - \exp(-b(T - T_{min})))(1 - \exp(-c (T_{max} - T)))$ \\[2mm]
+       pawar\_shsch & $\delta(e_h > e) r_{T_{ref}} \frac{\exp\left[\frac{e}{8.62*10^{-5}} \left(\frac1{T_{ref} + 273.15} - \frac1{T + 273.15}\right)\right]} {1 + \frac e {e_h - e} \exp\left[\frac{e}{8.62*10^{-5}} \left(\frac1{T_{ref} + 273.15} - \frac1{T + 273.15}\right)\right]}$ \\[4mm]
+       quadratic & $-q(T-T_{min})(T-T_{max})\delta(T_{max} > T)\delta(T > T_{min})$ \\[2mm]
+       ratkowsky & $\delta(T_{max} > T)\delta(T > T_{min}) \left[ a(T-T_{min})(1-\exp(b(T-T_{max}))\right]^2$ \\[2mm]
+       stinner & $\frac C {1 + exp(k_1 + k_2  (T_{opt} - |T_{opt} - T|))}$ \\[2mm]
+       weibull & $a\left(\frac{c - 1}{c}\right)^{\frac{1 - c}{c}}\left[\frac{T - T_{opt}}{b} + \left(\frac{c - 1}{c}\right)^{1/c}\right]^{c - 1} \exp\left[-\left(\frac{T - T_{opt}}{b} + (\frac{c - 1}{c})^{1/c}\right)^c + \frac{c-1}c\right]$\\[2mm]
+       \hline
+    \end{tabular}
+  \end{table}
+\end{center}
+```
+
+Thermal performance curves included in `bayesTPC`.
+:::
+
+For example, if you want to see all of the TPCs you run: 
+```{r}
+get_models()
+```
+
+We can view the form of the implemented TPC using the `get_formula` function:
+
+```{r}
+get_formula("briere")
+```
+
+Currently, the default likelihood for all TPCs a normal distribution with a lower truncation at zero, and where the mean of the normal distribution is set to be the TPC (here a quadratic). The last piece of the Bayesian puzzle is the prior. You can see the default parameter names and their default priors using `get_default_priors`:
+
+```{r}
+get_default_priors("briere")
+```
+
+As you can see, for the quadratic function, the default priors are specified via uniform distributions (the two arguments specific the lower and upper bounds, respectively). For the quadratic (and the Briere), the curvature parameter must be positive, and the priors need to be specified to ensure that $T_{min}<T_{max}$. Note that if you want to set a prior to a normal distribution, unlike in R and most other programs, in nimble (and thus `bayesTPC`) the inverse of the variance of the normal distribution is used, denoted by $\tau = \frac{1}{\sigma^2}$.
+
+
+# Fitting using `bayesTPC` {#sec-fitting}
+
+The workhorse of the `bayesTPC` package is the `b_TPC` function which requires two user-specified inputs. The first is `data`; a list with expected entries named "Trait" corresponding to the trait being modeled by the TPC and "Temp" corresponding to the temperature in Celsius that the trait was measured at (as described above). The second input is `model`, which is a string specifying the model name or a `btpc_model` object. If a string is provided, the default model specification is used. 
+
+
+# Example 1: Adult Mosquito Lifespan
+
+Let's first explore the basic functionality of `bayesTPC` through an example on adult mosquito lifespan (the VecTraits dataset 579 downloaded above). We already formatted the dataset appropriately above for the `b_TPC()` function:
+
+```{r}
+data.frame(adult_life)[1:5,]
+```
+
+
+## Inference with default settings
+
+Once we have the data formatted as required by `b_TPC()`, we can fit each of the datasets with a single call, using the default settings. As we saw in the plot above, adult lifespan are numeric data where a concave down unimodal response is likely appropriate. For adult lifespan, we chose to fit a Briere function with the default specification:
+
+```{r}
+get_default_model_specification("briere")
+```
+
+To fit the model then requires a single line of code with the first argument being the name of the formatted data object and the second being the name of the TPC that we want to use for fitting. By default we take 10000 samples, no burn-in, using a random walk sampler.
+
+**Noted (Jun 28, 2025):** Downgraded nimble to v0.13.2 using remotes::install_version() to fix b_TPC() error caused by missing getNimbleOption().
+
+```{r, results = F}
+#| cache: true
+adult_life_fit <- b_TPC(adult_life, "briere")
+```
+
+Once the fitting process has completed (which can take a few minutes), we can have a gander at the fitted model object using `print`. This command provides details about the model fit, the priors, and some simple summaries of the fitted model.
+
+```{r}
+print(adult_life_fit)
+```
+
+We can also see what is in the object:
+```{r}
+names(adult_life_fit)
+```
+
+Most of what we do relies on the "samples" portion of the object, although `bayesTPC` has helper functions to reduce the need to interact with these directly in most cases.
+
+## MCMC Diagnotic Plots
+
+`b_TPC()` returns an object of class `btpc_MCMC` which contains (along with model specification information and data) the MCMC samples as an `mcmc` object from the package `coda`. As mentioned in the previous portion of the training, it is important to check the MCMC traceplot before using or interpreting a fitted model to ensure the chains have converged. An MCMC traceplot shows each sample for a parameter in the order that the samples were taken. If the model has converged, the traceplot will eventually start varying around a single point, resembling a "fuzzy caterpillar".
+
+```{r,fig.height=6, fig.width=8}
+#| label: fig-plotTrace1
+#| fig-cap: "Traceplots for the three parameters of the Briere TPC  and the observation parameter for model fitted to the Adult Longevity data."
+
+par(mfrow=c(2,2), mar=c(4,3,3,1)+.1)
+traceplot(adult_life_fit)
+```
+
+We notice that it takes a while for the chains to converge. Thus we need to specify a burn-in period and only consider samples obtained after the burn-in. For this example, a burn-in of around 3000 should give us a good result. We can re-visualize with this burn-in (by adding burn=`r myburn<-3000; myburn` as an argument to traceplot):
+
+```{r,fig.height=6, fig.width=8}
+#| label: fig-plotTraceBurn1
+#| fig-cap: "Traceplots for the three parameters of the Briere TPC  and the observation parameter for model fitted to the Adult Longevity data. Here the burn-in portion of the MCMC chains has been dropped. "
+
+par(mfrow=c(2,2), mar=c(4,3,3,1)+.1)
+myburn<-3000
+traceplot(adult_life_fit, burn=myburn)
+```
+
+This is much better! All of the chains now have the desired "fuzzy caterpillar" look. Typically one would at this point go back to the original fitting function, and specify the burn-in time, along with potentially increasing the total sample size in order to ensure sufficient samples. This approach drops the burnin samples from the returned object. For brevity herewe will simply specify the value of `burn` as an argument for the remaining plotting functions.
+
+
+We can examine the ACF of the chains as well (one for each parameter), similarly to a time series, to again check for autocorrelation within the chain (we want the autocorrelation to be fairly low):
+
+```{r, fig.align='center', fig.width=8, fig.height=6}
+#| label: fig-plotACF1
+#| fig-cap: "ACF plots of the MCMC chains for the three parameters of the Briere TPC  and the observation parameter for model fitted to the Adult Longevity data. Here the burn-in portion of the MCMC chains has been dropped."
+
+s1<-as.data.frame(adult_life_fit$samples[myburn:10000,])
+par(mfrow=c(2,2), bty="n", mar=c(4,4,3,1)+.1)
+for(i in 1:4) {
+  acf(s1[,i], lag.max=50, main="",
+      ylab = paste("ACF: ", names(s1)[i], sep=""))
+}
+```
+
+There is still autocorrelation, especially for two of the quadratic parameters. The chain for $\sigma$ is mixing best (the ACF falls off the most quickly). We could reduce the autocorrelation even further by thinning the chain **(i.e., change the `nt` parameter to 5 or 10)**, or changing the type of sampler.
+
+
+A second important diagnostic step is to compare the marginal priors and posteriors of our model parameters. This enables us to confirm that (unless we've purposefully specified an informative prior) that our posterior distributions have been informed by the data. `bayesTPC` includes a built in function, `ppo_plot()`, that creates posterior/prior overlap plots for all model parameters (note that the priors are smoothed because the algorithm uses kernel smoothing instead of the exact distribution).
+
+
+```{r, fig.width=8, fig.height=6}
+#| label: fig-plotPP1
+#| fig-cap: "Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for these plots using the `burn` argument. "
+
+par(mfrow=c(2,2), mar=c(4,3,3,1)+.1)
+ppo_plot(adult_life_fit, burn=myburn, legend_position = "topright")
+
+```
+
+The prior distribution here is very different from the posterior. These data are highly informative for the parameters of interest and are very unlikely to be influenced much by the prior distribution (although you can always change the priors to check this). However, notice that the posterior $T_0$ is slightly truncated by their priors. If priors and posteriors are very similar one should shift the priors, and re-run. 
+
+## Additional plotting
+
+After we have established appropriate burn-in values, we can use `plot()`, `posterior_predictive()`, and `plot_prediction()` to examine the fit of the model in two ways. The defaults for the `plot()` function plots the median and 95% Highest Posterior Density (HPD) interval of the *fitted function* (i.e., plugging the samples into the TPC function, and calculating the median and HPD interval at all evaluated temperatures). In contrast, the `posterior_predictive()` function uses simulation to draw points from the posterior predictive distribution, and so it includes both the samples describing the TPC function and the observational model. It then uses these samples to calculate the mean/median and the HPD interval of those simulated points. Both kinds of plots are shown in @Fig-plotFit1 for comparison.
+
+```{r, fig.width=8, echo=FALSE}
+#| label: fig-plotFit1
+#| fig-cap: "Comparison of the plots produced by the `plot()`  function (LEFT) and the combination of the `posterior_predictive()`, and `plot_prediction()` functions (RIGHT). By default both functions would only make plots/predictions within the range of temperatures included in the fitted data. However here we show the use of the temp_interval argument to enable plotting of predictions across a broader temperature range."
+
+par(mfrow=c(1,2), mar=c(4,3,3,1)+.1)
+Ts<-seq(5, 37, length=100)
+plot(adult_life_fit, burn=myburn,
+     temp_interval = Ts, main = "", lwd=2,
+     legend_position = "topleft")
+plot_prediction(posterior_predictive(adult_life_fit,
+                                     temp_interval = Ts,
+                                     burn=myburn), lwd=2,
+                legend_position = "topleft")
+```
+Note that the two bottom fits show different output. On the left we show the HPD bounds and median of the fitted Briere function, only. On the right, in contrast, shows the bounds and mean/median of the posterior predictive distribution (so it includes the randomness that is part of the truncated normal observation model). Notice that the HPD predictive interval is a bit jagged here. These intervals are generated using sampling from the posterior predictive distribution. Increasing the total number of samples can give smoother bounds in general. 
+
+Now that we've confirmed that things are working well, it's often useful to also look at the joint distribution of all of your parameters together to understand how estimates are related to each other. Of course, if you have a high dimensional posterior, rendering a 2-D representation can be difficult. The standard is to examine the pair-wise posterior distribution. We can do this using the function `bayesTPC_ipairs()`:
+
+**Noted (Jun 26, 2025): ** The function ``bayesTPC_ipairs()` has been renamed to `ipairs()`
+
+```{r, fig.width=6, fig.height=5.5, fig.align='center'}
+#| label: fig-plotJoint1
+#| fig-cap: "Pairwise visualization of the joint posterior distribution of parameters for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Adult Longevity data. Note that the burn-in is dropped for this plot using the `burn` argument. "
+
+ipairs(adult_life_fit, burn=myburn)
+```
+
+Notice that there is substantial correlation between $q$ and $T_{min}$ (a.k.a., $T_0$). This is typical for most TPCs, and is one of the reasons why prior choice can be very important!
+
+## Summaries
+
+If we are satisfied with the traceplots, fits, and prior/posterior plots, users may want to examine additional summary output (for example to make tables) or to save summaries. Numerical summaries are available through the `print()` function shown above, but we can see more details using `summary()`.
+
+```{r}
+summary(adult_life_fit, burn=myburn)
+```
+
+We may want to store some of the sample statistics for later use. The sample-based Maximum *a posteriori* (MAP) estimator is calculated and saved as part of our fitting process, and can be obtained directly from the fit object.
+
+```{r}
+# MAP estimator
+adult_life_fit$MAP_parameters |> round(5)
+```
+
+The other sample statistics for each parameter can be obtained by saving the summary of the *samples* in the fitted model object. Then the various statistics may be extracted directly:
+
+```{r}
+estimates <- summary(adult_life_fit$samples)
+
+# Mean
+estimates$statistics[,"Mean"]
+
+# Median and 95% CI bounds
+estimates$quantiles[,c("2.5%", "50%", "97.5%")]
+```
+
+If one instead would like the Highest Posterior Density bounds (instead of the quantile based summaries) the `HPDinterval` function from `coda` may be used.
+
+```{r}
+HPDinterval(adult_life_fit$samples)
+```
+
+
+# Example 2: Juvenile Development Rate
+
+We will use a second example to explore simple modifications that can be made to the baseline fitting routines, especially changing of priors and modification of the default sampler. 
+
+## Fitting with default settings
+
+The default priors chosen in `bayesTPC` are generally as non-restrictive as possible, which can lead to inappropriate fits when the response trait is very close to zero. In this case it may be necessary to modify the priors. It is also possible that mixing may be poor with the default sampler, and so we may need to update the sampling method. We briefly show these issues using the development rate data as an example. These data are also numeric and we assume, again, a Briere functional response:
+
+```{r, echo=FALSE}
+set.seed(4321)
+```
+
+
+```{r, results = F}
+#| cache: true
+dev_rate_fit <- b_TPC(dev_rate, "briere")
+```
+
+However in this case, although the traceplots look ok (after a burnin) the fits are very poor (@fig-plotDevRate1)
+
+```{r,fig.height=8, fig.width=8, echo=FALSE}
+#| label: fig-plotDevRate1
+#| fig-cap: "Traceplots for the three parameters of the Briere TPC and the observation parameter for model fitted to the juvenile development data. (top 4 panels) with the data (bottom left) and corresponding posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped. "
+
+par(mfrow=c(3,2), mar=c(4,3,3,1)+.1)
+myburn<-3000
+traceplot(dev_rate_fit, burn=myburn)
+plot(dev_rate$Temp, dev_rate$Trait, 
+     xlab="Temperature", ylab="Trait", main="Development Rate")
+plot(dev_rate_fit, burn=myburn)
+```
+
+We can see a bit of what is going on by looking at the marginal prior/posterior plots:
+
+```{r, fig.width=8, fig.height=6}
+#| label: fig-plotPP2
+#| fig-cap: "Marginal prior/posterior for the three parameters of the Briere TPC and the observation parameter for the model fitted to the Juvenile development rate data. Note that the burn-in is dropped for these plots using the `burn` argument. "
+
+par(mfrow=c(2,2), mar=c(4,3,3,1)+.1)
+ppo_plot(dev_rate_fit, burn=myburn, legend_position = "topright")
+
+```
+
+Here the posterior for $q$ is effectively the same as the prior, and both $T_{min}$ and $T_{max}$ are bumping up against the edges of their ranges.
+
+## Changing Fitting arguments
+
+In order to try to improve the fitting, we will modify the priors and the sampler. We notice from the plot of the data that the rate seems to increase across the observed range of the data. Thus it is likely that the $T_{\mathrm{max}}$ parameter is at or above the temperature manipulated in the experiment and $T_{\mathrm{min}}$ is below. We can pass this information in as new priors through the `priors` argument as shown. Further, we can switch to a sampler that has a better chance of converging by modifying the `samplerType` parameter. Here, we use automated factor slice sampling. Although this sampler is often more effective (especially when parameters are highly correlated, as they are for most TPCs), it is slower and so is not used by default. These changes result in much better fits (see @fig-plotDevRate2).
+
+```{r, results = F}
+#| cache: true
+
+dev_rate_fit2 <- b_TPC(dev_rate, "briere",
+                       priors = list(T_min = "dunif(0,22)",
+                                     T_max = "dunif(34,50)"),
+                       burn=myburn,
+                       samplerType = "AF_slice")
+```
+
+```{r,fig.height=8, fig.width=8, echo=FALSE}
+#| label: fig-plotDevRate2
+#| fig-cap: "Traceplots for the three parameters of the Briere TPC and the observation parameter for the model fitted to the juvenile development data  (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped as part of the fitting. "
+
+par(mfrow=c(3,2), mar=c(4,3,3,1)+.1)
+traceplot(dev_rate_fit2)
+Ts<-seq(10, 40, length=100)
+plot(dev_rate_fit2, temp_interval = Ts, main = "")
+plot_prediction(posterior_predictive(dev_rate_fit2,
+                                     temp_interval = Ts))
+```
+
+This is much better! The chains mix well, and our predictions now lie along with the data.  If you were to plot the autocorrelation you would notice that it falls off much more quickly. 
+
+## Model Selection
+
+What if we didn't know that the Briere was the preferred model for these development rate data? We can fit with another function, check all of the diagnostics, and then compare via WAIC (Widely Applicable Information Criterion) to choose between them. For the juvenile development rate, let's try a quadratic. Let's look at the implementation details:
+
+```{r}
+get_formula("quadratic")
+```
+
+
+```{r}
+get_default_priors("quadratic")
+```
+
+I will refit using the default priors, except for the prior for $q$ (so you can see an option):
+
+```{r}
+#| cache: true
+ 
+dev_rate_fit_Quad <- b_TPC(data = dev_rate, ## data
+                           model = 'quadratic', ## model to fit
+                           niter = 10000, ## total iterations
+                           burn = 3000, ## number of burn in samples
+                           samplerType = 'AF_slice', ## slice sampler
+                           priors = list(q = 'dexp(1)') ## priors
+                    ) 
+```
+
+```{r}
+summary(dev_rate_fit_Quad)
+```
+
+We again plot the chains of the three main TPC parameters and the standard deviation of the normal observation model:
+
+```{r,fig.height=8, fig.width=8, echo=FALSE}
+#| label: fig-plotDevRate3
+#| fig-cap: "Traceplots for the three parameters of the quadratic TPC and the observation parameter for the model fitted to the juvenile development data  (top 4 panels) with the corresponding summary (bottom left) and posterior predictive (bottom right) plots based on these samples. The burn-in portion of the MCMC chains has been dropped. "
+
+par(mfrow=c(3,2), mar=c(4,3,3,1)+.1)
+myburn<-3000
+traceplot(dev_rate_fit_Quad)
+Ts<-seq(10, 40, length=100)
+plot(dev_rate_fit_Quad, burn=myburn,
+     temp_interval = Ts, main = "")
+plot_prediction(posterior_predictive(dev_rate_fit_Quad,
+                                     temp_interval = Ts,
+                                     burn=myburn))
+```
+
+Once fitted, we want to be able to choose which of these models is best for these data. Although, *a priori* we would expect the Briere fit to be best development rates, both fits seem visually reasonable. We can extract the the values of the wAIC [@watanabe2009algebraic] to compare the performance of our models using `get_WAIC()` (which wraps `nimble`'s `getWAIC()` function and produces a tidier format). The preferred model will be the one with the lowest wAIC value. *Note that because this is based on samples, you want to have the same number of samples in the chains for each of the models you are comparing.*
+
+
+
+```{r, eval = T}
+#| cache: true
+bayesTPC::get_WAIC(dev_rate_fit2)
+bayesTPC::get_WAIC(dev_rate_fit_Quad)
+```
+In this case the WAIC for the Briere fit is more negative and so is the preferred model. 
+
+
+# Independent Practice
+
+## Practice Option 1
+
+For the *Aedes aegypti* life span data, try to fit 3 TPC functional forms (Briere, quadratic, and Stinner) to the data. Use slice sampling for all three of them, and make the chains a bit longer (say 15000 plus the 3000 burnin). Check all of the diagnostics for all models, and plot the fits. Then compare the three models via WAIC. Which one comes out on top. 
+
+## Practice Option 2
+
+You can download some other trait data from the [VectorByte -- VecTraits Databases](https://vectorbyte.crc.nd.edu/vectraits-explorer) or use your own data. Write you own analysis as an independent, self-sufficient `R` script that produces all the plots in a reproducible workflow when sourced. Use the appropriate functional forms for your data.
+
+## Practice Option 3
+
+In addition to the two datasets that we explored here, we downloaded data on juvenile survival. These data are encoded as zeros and ones, and are more appropriately modeled using a Bernoulli/Binomial distribution -- that is as GLMs. `bayesTPC` has implemented two options for fitting these models, either a linear or quadratic:
+
+
+```{r}
+## Linear:
+get_default_model_specification("bernoulli_glm_lin")
+```
+
+```{r}
+## Quadratic:
+get_default_model_specification("bernoulli_glm_quad")
+```
+Fit the juvenile survival data using both of these models. Note that the slice sampler is typically better for these, and you will likely need a longer chain and more burn-in. Make sure to use the same number of samples/burn-in for both models. Check all the diagnostic plots and plot the data with the fits. Then use WAIC to choose between the two model variants. What do you conclude?
+
+
